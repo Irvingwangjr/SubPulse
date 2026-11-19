@@ -19,15 +19,14 @@
 
 ## 第 2 步：替换为你的专属配置
 
-1. **App 图标**：准备一张 `1024x1024` 无透明通道 PNG，拖入 `SubPulse/Assets.xcassets/AppIcon.appiconset/`。
+1. **App 图标**：已完成（1024×1024 无透明通道 PNG 已放入 `SubPulse/Assets.xcassets/AppIcon.appiconset/AppIcon.png`，可随时替换）。
 2. **Bundle ID 与签名**：
    - 在 Xcode 左侧选中 `SubPulse` 工程 → `TARGETS` → `SubPulse` → **Signing & Capabilities**；
    - 选择你的 **Team**（Apple Developer 账号）；
-   - 将 `Bundle Identifier` 从 `com.example.subpulse` 改为你自己的唯一 ID（例如 `com.yourname.subpulse`）。
+   - `Bundle Identifier` 已预配为 `com.irvingwangjr.subpulse`（如需更换可在此修改）。
 3. **托管隐私政策与条款网页**：
    - 修改 `docs/index.html`、`docs/privacy.html`、`docs/terms.html` 中的邮箱 `support@subpulse.example.com` 为你的真实支持邮箱；
-   - 把 `docs/` 文件夹部署到 **GitHub Pages** 或 **Cloudflare Pages**（免费、海外访问快、无需国内备案）；
-   - 把线上链接回填到 `SubPulse/Models/AppConfig.swift` 的 `privacyPolicyURL`、`termsOfServiceURL`、`supportURL`。
+   - GitHub Pages 已开启：`https://irvingwangjr.github.io/SubPulse/`，且已回填到 `SubPulse/Models/AppConfig.swift`。
 
 ---
 
@@ -47,8 +46,8 @@
 4. **配置自动续期订阅（关键！ID 必须与代码一致）**：
    - 在 App Store Connect → **Subscriptions** 创建订阅组 `SubPulse Pro`；
    - 新建两个订阅产品：
-     - Product ID：`com.subpulse.pro.monthly`（1 Month，建议 $2.99）
-     - Product ID：`com.subpulse.pro.yearly`（1 Year，建议 $19.99，可配 7-Day Free Trial Introductory Offer）
+     - Product ID：`com.irvingwangjr.subpulse.pro.monthly`（1 Month，建议 $2.99）
+     - Product ID：`com.irvingwangjr.subpulse.pro.yearly`（1 Year，建议 $19.99，可配 7-Day Free Trial Introductory Offer）
    - 为每个订阅填写英文显示名称和描述，并上传一张 Paywall 审核截图；
    - **注意**：首次提审时必须在 App 版本页面下方勾选关联这两个内购产品一起提交审核！
 5. **App 隐私（Privacy Nutrition Label）**：

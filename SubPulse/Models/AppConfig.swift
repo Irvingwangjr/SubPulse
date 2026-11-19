@@ -10,8 +10,8 @@ enum AppConfig {
     static let supportEmail = "support@subpulse.example.com"
 
     enum ProductID {
-        static let proMonthly = "com.subpulse.pro.monthly"
-        static let proYearly = "com.subpulse.pro.yearly"
+        static let proMonthly = "com.irvingwangjr.subpulse.pro.monthly"
+        static let proYearly = "com.irvingwangjr.subpulse.pro.yearly"
         static let all: [String] = [proMonthly, proYearly]
     }
 }
