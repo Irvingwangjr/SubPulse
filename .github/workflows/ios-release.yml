@@ -1,0 +1,51 @@
+name: iOS Release (TestFlight / App Store)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Upload target"
+        required: true
+        default: "beta"
+        type: choice
+        options:
+          - beta
+          - release
+      submit_for_review:
+        description: "Automatically submit for App Review (release only)"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  build-and-upload:
+    runs-on: macos-15
+    env:
+      APP_IDENTIFIER: ${{ vars.APP_IDENTIFIER }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+      MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      SUBMIT_FOR_REVIEW: ${{ inputs.submit_for_review || 'false' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode 16.2
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
+
+      - name: Set up Ruby & Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Run Fastlane
+        run: |
+          LANE="${{ inputs.target || 'beta' }}"
+          bundle exec fastlane ios "$LANE"

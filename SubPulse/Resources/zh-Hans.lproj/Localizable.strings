@@ -1,0 +1,140 @@
+/* Tabs */
+"tab.overview" = "概览";
+"tab.subscriptions" = "订阅";
+"tab.upcoming" = "即将续费";
+"tab.settings" = "设置";
+
+/* Billing Cycles */
+"cycle.weekly" = "每周";
+"cycle.monthly" = "每月";
+"cycle.quarterly" = "每季度";
+"cycle.yearly" = "每年";
+
+/* Categories */
+"category.streaming" = "流媒体";
+"category.ai_tools" = "AI 工具";
+"category.productivity" = "效率办公";
+"category.cloud" = "云服务";
+"category.music" = "音乐";
+"category.fitness" = "运动健康";
+"category.gaming" = "游戏";
+"category.utilities" = "生活工具";
+"category.other" = "其他";
+
+/* Overview */
+"overview.monthly_spend" = "预计月均支出";
+"overview.yearly_projection" = "年度预计支出";
+"overview.active_subs" = "生效订阅";
+"overview.due_soon" = "即将到期";
+"overview.next_7_days" = "未来 7 天";
+"overview.free_trials" = "免费试用中";
+"overview.watch_closely" = "注意自动扣费";
+"overview.upcoming_renewals" = "近期续费提醒";
+"overview.no_upcoming" = "未来 7 天内暂无待续费项目。";
+"overview.category_breakdown" = "分类支出分布";
+"overview.empty_chart" = "添加订阅后即可查看支出分布。";
+"overview.unlock_analytics" = "升级 SubPulse Pro 解锁完整分类图表";
+
+/* Renewal Badges */
+"badge.trial" = "试用";
+"renewal.overdue" = "已逾期 %d 天";
+"renewal.today" = "今天续费";
+"renewal.tomorrow" = "明天续费";
+"renewal.in_days" = "%d 天后";
+
+/* Subscriptions List */
+"subs.empty_title" = "还没有订阅记录";
+"subs.empty_desc" = "本地隐私记录你的多币种订阅与免费试用，避免忘记取消被自动扣款。";
+"subs.add_first" = "添加订阅";
+"subs.search_prompt" = "搜索订阅服务";
+"subs.free_quota" = "免费版：已用 %d / %d 个订阅";
+"subs.free_quota_desc" = "升级 Pro 解锁无限订阅与提前自定义提醒。";
+"filter.all" = "全部";
+
+/* Actions */
+"action.mark_paid" = "已续费";
+"action.delete" = "删除";
+"action.cancel" = "取消";
+"action.save" = "保存";
+"action.retry" = "重试";
+
+/* Form */
+"form.quick_presets" = "常用服务快捷填充";
+"form.details" = "订阅信息";
+"form.name_placeholder" = "服务名称（例如 Netflix）";
+"form.currency" = "币种";
+"form.cycle" = "扣费周期";
+"form.category" = "分类";
+"form.billing_reminders" = "扣费日期与提醒";
+"form.next_billing" = "下次扣费日";
+"form.is_trial" = "当前处于免费试用期";
+"form.reminder_lead" = "提前提醒";
+"form.notes" = "备注";
+"form.notes_placeholder" = "账号邮箱、退订方式等备注";
+"form.edit_title" = "编辑订阅";
+"form.new_title" = "新建订阅";
+
+/* Reminder Lead Times */
+"reminder.1_day" = "提前 1 天";
+"reminder.3_days" = "提前 3 天";
+"reminder.7_days" = "提前 7 天";
+"reminder.14_days" = "提前 14 天";
+
+/* Upcoming */
+"upcoming.empty_title" = "暂无待续费项";
+"upcoming.empty_desc" = "添加订阅后将按扣费时间自动排序展示。";
+"upcoming.section_7days" = "未来 7 天";
+"upcoming.section_30days" = "未来 30 天";
+"upcoming.section_later" = "更晚";
+
+/* Notifications */
+"notif.trial_title" = "%@ 免费试用即将结束";
+"notif.trial_body" = "将在 %2$d 天后转为付费（%1$@），不需要请及时取消。";
+"notif.renewal_title" = "%@ 即将续费";
+"notif.renewal_body" = "将在 %2$d 天后扣费 %1$@。";
+
+/* Paywall */
+"paywall.upgrade_cta" = "升级 Pro";
+"paywall.upgrade_short" = "升级";
+"paywall.title" = "SubPulse Pro";
+"paywall.subtitle" = "轻松掌控所有海外与多币种订阅，绝不遗漏任何一次试用扣费。";
+"paywall.feat_unlimited" = "无限数量订阅与试用追踪";
+"paywall.feat_alerts" = "自定义提前提醒（提前 3 / 7 / 14 天）";
+"paywall.feat_charts" = "完整分类支出图表与统计分析";
+"paywall.feat_export" = "随时导出 CSV 账单文件";
+"paywall.load_failed" = "暂时无法加载订阅方案，请检查网络后重试。";
+"paywall.best_value" = "最超值";
+"paywall.yearly_desc" = "按年计费 • 相比月付省超 40%";
+"paywall.monthly_desc" = "按月灵活订阅";
+"paywall.free_trial_then" = "先免费试用 %d 天，之后 %@/年";
+"paywall.continue" = "继续";
+"paywall.restore" = "恢复购买";
+"paywall.restore_none" = "当前 Apple 账户下未找到生效中的 Pro 订阅。";
+"paywall.legal_disclosure" = "确认购买后费用将从您的 Apple 账户扣除。除非在当前订阅期结束前至少 24 小时关闭自动续订，否则订阅将自动续期。您可随时在系统“设置”中管理或取消订阅。";
+"store.pending" = "购买正在等待确认。";
+
+/* Settings */
+"settings.pro_active" = "SubPulse Pro 已激活";
+"settings.manage_subscription" = "管理订阅";
+"settings.upgrade_pro" = "升级 SubPulse Pro";
+"settings.preferences" = "偏好设置";
+"settings.base_currency" = "主显示币种";
+"settings.notifications" = "通知权限";
+"settings.enable_notifications" = "开启 / 刷新本地提醒";
+"settings.data" = "数据管理";
+"settings.export_csv" = "导出 CSV";
+"settings.prepare_csv" = "生成 CSV 导出文件";
+"settings.load_samples" = "导入示例数据";
+"settings.delete_all" = "清空本地全部数据";
+"settings.delete_confirm_title" = "确定删除本设备上保存的所有订阅记录吗？";
+"settings.legal" = "法律条款与支持";
+"settings.privacy" = "隐私政策";
+"settings.terms" = "服务条款";
+"settings.support" = "联系支持";
+"settings.version" = "版本";
+"settings.privacy_footer" = "所有订阅数据 100% 仅保存在您的设备本地，SubPulse 不收集任何个人数据。";
+
+/* Status */
+"status.enabled" = "已开启";
+"status.denied" = "已在系统设置中关闭";
+"status.not_set" = "尚未授权";

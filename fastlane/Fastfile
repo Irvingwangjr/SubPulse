@@ -1,0 +1,76 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Load App Store Connect API Key from environment variables (no 2FA required)"
+  private_lane :asc_api_key do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_content: ENV.fetch("ASC_KEY_CONTENT"),
+      is_key_content_base64: true,
+      duration: 1200,
+      in_house: false
+    )
+  end
+
+  desc "Build and upload a new beta build to TestFlight"
+  lane :beta do
+    api_key = asc_api_key
+    setup_ci if ENV["CI"]
+
+    if ENV["MATCH_GIT_URL"]
+      match(type: "appstore", readonly: true, api_key: api_key)
+    end
+
+    increment_build_number(
+      build_number: ENV["GITHUB_RUN_NUMBER"] || latest_testflight_build_number(api_key: api_key) + 1,
+      xcodeproj: "SubPulse.xcodeproj"
+    )
+
+    build_app(
+      project: "SubPulse.xcodeproj",
+      scheme: "SubPulse",
+      export_method: "app-store",
+      clean: true
+    )
+
+    upload_to_testflight(
+      api_key: api_key,
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Build, upload, and submit a release build to the App Store"
+  lane :release do
+    api_key = asc_api_key
+    setup_ci if ENV["CI"]
+
+    if ENV["MATCH_GIT_URL"]
+      match(type: "appstore", readonly: true, api_key: api_key)
+    end
+
+    increment_build_number(
+      build_number: ENV["GITHUB_RUN_NUMBER"] || latest_testflight_build_number(api_key: api_key) + 1,
+      xcodeproj: "SubPulse.xcodeproj"
+    )
+
+    build_app(
+      project: "SubPulse.xcodeproj",
+      scheme: "SubPulse",
+      export_method: "app-store",
+      clean: true
+    )
+
+    upload_to_app_store(
+      api_key: api_key,
+      submit_for_review: ENV["SUBMIT_FOR_REVIEW"] == "true",
+      automatic_release: false,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false
+      }
+    )
+  end
+end
