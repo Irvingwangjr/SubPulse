@@ -25,7 +25,7 @@
    - 选择你的 **Team**（Apple Developer 账号）；
    - `Bundle Identifier` 已预配为 `com.irvingwangjr.subpulse`（如需更换可在此修改）。
 3. **托管隐私政策与条款网页**：
-   - 修改 `docs/index.html`、`docs/privacy.html`、`docs/terms.html` 中的邮箱 `support@subpulse.example.com` 为你的真实支持邮箱；
+   - 支持邮箱已更新为 `kiinkrft@gmail.com`；
    - GitHub Pages 已开启：`https://irvingwangjr.github.io/SubPulse/`，且已回填到 `SubPulse/Models/AppConfig.swift`。
 
 ---

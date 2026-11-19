@@ -7,7 +7,7 @@ enum AppConfig {
     static let privacyPolicyURL = URL(string: "https://irvingwangjr.github.io/SubPulse/privacy.html")!
     static let termsOfServiceURL = URL(string: "https://irvingwangjr.github.io/SubPulse/terms.html")!
     static let supportURL = URL(string: "https://irvingwangjr.github.io/SubPulse/")!
-    static let supportEmail = "support@subpulse.example.com"
+    static let supportEmail = "kiinkrft@gmail.com"
 
     enum ProductID {
         static let proMonthly = "com.irvingwangjr.subpulse.pro.monthly"
