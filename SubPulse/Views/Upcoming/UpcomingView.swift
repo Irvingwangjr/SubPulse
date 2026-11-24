@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct UpcomingView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     let items: [SubscriptionItem]
     let baseCurrency: Currency
 
@@ -80,11 +82,14 @@ struct UpcomingView: View {
 
                     Spacer().frame(height: 92)
                 }
-                .padding(.horizontal, 18)
+                .frame(maxWidth: horizontalSizeClass == .regular ? 960 : .infinity)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
                 .padding(.top, 10)
             }
             .scrollBounceBehavior(.always)
         }
+        .topSafeAreaScrim()
         .sensoryFeedback(.success, trigger: renewTick)
     }
 
@@ -110,37 +115,56 @@ struct UpcomingView: View {
                     .foregroundStyle(tint)
             }
 
-            VStack(spacing: 12) {
-                ForEach(list) { item in
-                    VStack(spacing: 12) {
-                        SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
-
-                        HStack {
-                            Spacer()
-                            Button {
-                                withAnimation(AppMotion.bouncy) {
-                                    item.advanceBillingDate()
-                                    renewTick += 1
-                                }
-                                Task {
-                                    await NotificationManager.shared.scheduleReminder(for: item)
-                                }
-                            } label: {
-                                Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(Color(hex: "#10B981"))
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
-                                    .background(Color(hex: "#10B981").opacity(0.12), in: Capsule())
-                            }
-                            .buttonStyle(BouncyButtonStyle(scale: 0.92))
-                        }
+            if horizontalSizeClass == .regular {
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 20),
+                        GridItem(.flexible(), spacing: 20)
+                    ],
+                    spacing: 14
+                ) {
+                    ForEach(list) { item in
+                        upcomingItemCard(item)
                     }
-                    .tactileCard(cornerRadius: 22, padding: 16)
-                    .scrollCardMotion()
                 }
+                .animation(AppMotion.bouncy, value: list.map(\.id))
+            } else {
+                VStack(spacing: 12) {
+                    ForEach(list) { item in
+                        upcomingItemCard(item)
+                    }
+                }
+                .animation(AppMotion.bouncy, value: list.map(\.id))
             }
-            .animation(AppMotion.bouncy, value: list.map(\.id))
         }
+    }
+
+    private func upcomingItemCard(_ item: SubscriptionItem) -> some View {
+        VStack(spacing: 12) {
+            SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
+
+            HStack {
+                Spacer()
+                Button {
+                    withAnimation(AppMotion.bouncy) {
+                        item.advanceBillingDate()
+                        renewTick += 1
+                    }
+                    Task {
+                        await NotificationManager.shared.scheduleReminder(for: item)
+                    }
+                } label: {
+                    Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color(hex: "#10B981"))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color(hex: "#10B981").opacity(0.12), in: Capsule())
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.92))
+            }
+        }
+        .tactileCard(cornerRadius: 22, padding: 16)
+        .scrollCardMotion()
     }
 }

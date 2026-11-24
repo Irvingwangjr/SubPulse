@@ -55,6 +55,8 @@ struct SubscriptionRowView: View {
                         Text(item.nextBillingDate.formatted(date: .abbreviated, time: .omitted))
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.82)
                     }
                 }
 

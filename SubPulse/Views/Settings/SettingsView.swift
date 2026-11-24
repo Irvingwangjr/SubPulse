@@ -5,6 +5,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(StoreManager.self) private var storeManager
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let items: [SubscriptionItem]
     @Binding var baseCurrencyCode: String
@@ -34,11 +35,21 @@ struct SettingsView: View {
                     proBannerCard
                         .scrollCardMotion()
 
-                    preferencesCard
-                        .scrollCardMotion()
-
-                    dataCard
-                        .scrollCardMotion()
+                    if horizontalSizeClass == .regular {
+                        HStack(alignment: .top, spacing: 24) {
+                            preferencesCard
+                                .scrollCardMotion()
+                                .frame(maxWidth: .infinity)
+                            dataCard
+                                .scrollCardMotion()
+                                .frame(maxWidth: .infinity)
+                        }
+                    } else {
+                        preferencesCard
+                            .scrollCardMotion()
+                        dataCard
+                            .scrollCardMotion()
+                    }
 
                     legalCard
                         .scrollCardMotion()
@@ -58,11 +69,14 @@ struct SettingsView: View {
 
                     Spacer().frame(height: 92)
                 }
-                .padding(.horizontal, 18)
+                .frame(maxWidth: horizontalSizeClass == .regular ? 880 : .infinity)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
                 .padding(.top, 10)
             }
             .scrollBounceBehavior(.always)
         }
+        .topSafeAreaScrim()
         .manageSubscriptionsSheet(isPresented: $showingManageSubscriptions)
         .confirmationDialog(
             NSLocalizedString("settings.delete_confirm_title", comment: ""),

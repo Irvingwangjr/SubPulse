@@ -3,6 +3,7 @@ import SwiftUI
 
 struct OverviewView: View {
     @Environment(StoreManager.self) private var storeManager
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let items: [SubscriptionItem]
     let baseCurrency: Currency
@@ -66,30 +67,57 @@ struct OverviewView: View {
                     moodBanner
                         .offset(y: appeared ? 0 : 10)
                         .opacity(appeared ? 1 : 0)
-                    heroSummaryCard
-                        .scrollCardMotion()
-                        .offset(y: appeared ? 0 : 14)
+
+                    if horizontalSizeClass == .regular {
+                        // Hinge-safe 2-column split for iPhone Duo 7.6" unfolded display & iPad
+                        HStack(alignment: .top, spacing: 24) {
+                            VStack(spacing: 16) {
+                                heroSummaryCard
+                                    .scrollCardMotion()
+                                quickStatsRow
+                                    .scrollCardMotion()
+                            }
+                            .frame(maxWidth: .infinity)
+
+                            VStack(spacing: 16) {
+                                upcomingAlertCard
+                                    .scrollCardMotion()
+                                categoryChartCard
+                                    .scrollCardMotion()
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .offset(y: appeared ? 0 : 16)
                         .opacity(appeared ? 1 : 0)
-                    quickStatsRow
-                        .scrollCardMotion()
-                        .offset(y: appeared ? 0 : 18)
-                        .opacity(appeared ? 1 : 0)
-                    upcomingAlertCard
-                        .scrollCardMotion()
-                        .offset(y: appeared ? 0 : 22)
-                        .opacity(appeared ? 1 : 0)
-                    categoryChartCard
-                        .scrollCardMotion()
-                        .offset(y: appeared ? 0 : 26)
-                        .opacity(appeared ? 1 : 0)
+                    } else {
+                        heroSummaryCard
+                            .scrollCardMotion()
+                            .offset(y: appeared ? 0 : 14)
+                            .opacity(appeared ? 1 : 0)
+                        quickStatsRow
+                            .scrollCardMotion()
+                            .offset(y: appeared ? 0 : 18)
+                            .opacity(appeared ? 1 : 0)
+                        upcomingAlertCard
+                            .scrollCardMotion()
+                            .offset(y: appeared ? 0 : 22)
+                            .opacity(appeared ? 1 : 0)
+                        categoryChartCard
+                            .scrollCardMotion()
+                            .offset(y: appeared ? 0 : 26)
+                            .opacity(appeared ? 1 : 0)
+                    }
 
                     Spacer().frame(height: 92)
                 }
-                .padding(.horizontal, 18)
+                .frame(maxWidth: horizontalSizeClass == .regular ? 960 : .infinity)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
                 .padding(.top, 10)
             }
             .scrollBounceBehavior(.always)
         }
+        .topSafeAreaScrim()
         .onAppear {
             withAnimation(AppMotion.gentle) {
                 appeared = true
@@ -244,6 +272,8 @@ struct OverviewView: View {
                             coffeeEquivalents
                         ))
                         .font(.caption.weight(.medium))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                     }
                     .foregroundStyle(.white.opacity(0.92))
                     .padding(.horizontal, 11)

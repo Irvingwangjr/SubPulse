@@ -4,6 +4,7 @@ import SwiftUI
 struct SubscriptionListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(StoreManager.self) private var storeManager
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let items: [SubscriptionItem]
     let baseCurrency: Currency
@@ -54,6 +55,24 @@ struct SubscriptionListView: View {
                     if filteredItems.isEmpty {
                         emptyStateCard
                             .padding(.top, 20)
+                    } else if horizontalSizeClass == .regular {
+                        LazyVGrid(
+                            columns: [
+                                GridItem(.flexible(), spacing: 20),
+                                GridItem(.flexible(), spacing: 20)
+                            ],
+                            spacing: 16
+                        ) {
+                            ForEach(filteredItems) { item in
+                                subscriptionCard(item)
+                                    .scrollCardMotion()
+                                    .transition(.asymmetric(
+                                        insertion: .scale(scale: 0.94).combined(with: .opacity),
+                                        removal: .scale(scale: 0.9).combined(with: .opacity)
+                                    ))
+                            }
+                        }
+                        .animation(AppMotion.bouncy, value: filteredItems.map(\.id))
                     } else {
                         LazyVStack(spacing: 12) {
                             ForEach(filteredItems) { item in
@@ -70,11 +89,14 @@ struct SubscriptionListView: View {
 
                     Spacer().frame(height: 92)
                 }
-                .padding(.horizontal, 18)
+                .frame(maxWidth: horizontalSizeClass == .regular ? 960 : .infinity)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
                 .padding(.top, 10)
             }
             .scrollBounceBehavior(.always)
         }
+        .topSafeAreaScrim()
         .sensoryFeedback(.success, trigger: renewCelebrationTick)
         .sheet(isPresented: $showingAddForm) {
             SubscriptionFormView(
@@ -173,6 +195,7 @@ struct SubscriptionListView: View {
                     Text(NSLocalizedString("paywall.upgrade_short", comment: ""))
                         .font(.caption.weight(.bold))
                         .foregroundStyle(.white)
+                        .fixedSize(horizontal: true, vertical: false)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
                         .background(

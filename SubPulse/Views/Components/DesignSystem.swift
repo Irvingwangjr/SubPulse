@@ -144,6 +144,10 @@ extension View {
         modifier(TactileCardModifier(cornerRadius: cornerRadius, padding: padding))
     }
 
+    func topSafeAreaScrim() -> some View {
+        modifier(TopSafeAreaScrimModifier())
+    }
+
     func scrollCardMotion() -> some View {
         self.scrollTransition(.interactive, axis: .vertical) { content, phase in
             content
@@ -154,12 +158,59 @@ extension View {
     }
 }
 
+// MARK: - Top Safe-Area Progressive Frosted Scrim (Status Bar & Dynamic Island)
+
+struct TopSafeAreaScrimModifier: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                GeometryReader { proxy in
+                    let topInset = proxy.safeAreaInsets.top
+                    VStack(spacing: 0) {
+                        ZStack {
+                            Rectangle()
+                                .fill(.regularMaterial)
+                                .mask(
+                                    LinearGradient(
+                                        stops: [
+                                            .init(color: .black, location: 0.0),
+                                            .init(color: .black, location: 0.74),
+                                            .init(color: .clear, location: 1.0)
+                                        ],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+
+                            LinearGradient(
+                                stops: [
+                                    .init(color: Color(.systemGroupedBackground).opacity(colorScheme == .dark ? 0.96 : 0.94), location: 0.0),
+                                    .init(color: Color(.systemGroupedBackground).opacity(colorScheme == .dark ? 0.82 : 0.78), location: 0.68),
+                                    .init(color: Color(.systemGroupedBackground).opacity(0.0), location: 1.0)
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        }
+                        .frame(height: max(topInset, 20) + 18)
+                        Spacer(minLength: 0)
+                    }
+                    .offset(y: -topInset)
+                }
+                .allowsHitTesting(false)
+            }
+    }
+}
+
 // MARK: - Floating Translucent Glass Tab Bar
 
 struct FloatingTabBar: View {
     @Binding var selectedTab: AppTab
     @Namespace private var pillNamespace
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         HStack(spacing: 4) {
@@ -180,10 +231,12 @@ struct FloatingTabBar: View {
                         Text(tab.title)
                             .font(.system(size: 10, weight: isSelected ? .bold : .medium))
                             .lineLimit(1)
+                            .minimumScaleFactor(0.76)
                     }
                     .foregroundStyle(isSelected ? Color.white : Color.secondary)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 9)
+                    .padding(.horizontal, 4)
                     .contentShape(Capsule())
                     .background {
                         if isSelected {
@@ -206,6 +259,7 @@ struct FloatingTabBar: View {
             }
         }
         .padding(6)
+        .frame(maxWidth: horizontalSizeClass == .regular ? 440 : .infinity)
         .background(.ultraThinMaterial, in: Capsule())
         .overlay(
             Capsule()
@@ -220,7 +274,7 @@ struct FloatingTabBar: View {
             x: 0,
             y: 10
         )
-        .padding(.horizontal, 18)
+        .padding(.horizontal, 16)
         .padding(.bottom, 6)
         .sensoryFeedback(.selection, trigger: selectedTab)
     }
