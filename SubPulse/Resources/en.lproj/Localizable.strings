@@ -150,10 +150,10 @@
 "status.not_set" = "Not Requested";
 
 /* Onboarding & Zero-Friction Smart Import */
-"onboarding.kinetic_1" = "Track every subscription.";
-"onboarding.kinetic_2" = "Catch trials before they bill.";
-"onboarding.kinetic_3" = "100% private. On-device.";
-"onboarding.kinetic_4" = "Set up in 5 seconds.";
+"onboarding.kinetic_1" = "Track every bill";
+"onboarding.kinetic_2" = "Stop trial traps";
+"onboarding.kinetic_3" = "100% on-device";
+"onboarding.kinetic_4" = "Ready in 5 sec";
 "onboarding.skip" = "Skip";
 "onboarding.welcome_sub" = "Track multi-currency bills and free trials in seconds — no tedious typing required.";
 "onboarding.start_cta" = "Get Started";

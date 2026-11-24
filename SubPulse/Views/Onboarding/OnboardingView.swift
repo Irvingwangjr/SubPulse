@@ -42,13 +42,13 @@ struct OnboardingView: View {
 
     private var kineticCursorLine: Text {
         let content = Text(typedText)
-            .font(.system(size: 38, weight: .bold, design: .rounded))
+            .font(.system(size: 32, weight: .bold, design: .rounded))
             .foregroundStyle(.white)
         let spacer = Text(typedText.isEmpty ? "" : " ")
-            .font(.system(size: 38, weight: .bold, design: .rounded))
+            .font(.system(size: 32, weight: .bold, design: .rounded))
         let dot = Text(Image(systemName: "circle.fill"))
-            .font(.system(size: 22, weight: .bold))
-            .baselineOffset(4)
+            .font(.system(size: 18, weight: .bold))
+            .baselineOffset(3)
             .foregroundStyle(cursorVisible ? Color.white : Color.white.opacity(0.08))
         return content + spacer + dot
     }
@@ -195,11 +195,11 @@ struct OnboardingView: View {
                     }
                 }
 
-                // Left-to-right silky typewriter + solid circle cursor that retracts back right-to-left
+                // Strictly single-line left-to-right silky typewriter + solid circle cursor
                 kineticCursorLine
-                    .multilineTextAlignment(.leading)
-                    .lineSpacing(4)
-                    .frame(maxWidth: .infinity, minHeight: 112, alignment: .topLeading)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+                    .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
                     .animation(nil, value: typedText)
                     .animation(.easeInOut(duration: 0.14), value: cursorVisible)
 

@@ -150,10 +150,10 @@
 "status.not_set" = "尚未授权";
 
 /* Onboarding & Zero-Friction Smart Import */
-"onboarding.kinetic_1" = "订阅账单，一目了然。";
-"onboarding.kinetic_2" = "试用扣费前，准时提醒。";
-"onboarding.kinetic_3" = "纯本地隐私，绝不上传。";
-"onboarding.kinetic_4" = "告别手打，5 秒搞定。";
+"onboarding.kinetic_1" = "订阅一目了然";
+"onboarding.kinetic_2" = "试用准时提醒";
+"onboarding.kinetic_3" = "纯本地零上传";
+"onboarding.kinetic_4" = "5 秒极速搞定";
 "onboarding.skip" = "跳过";
 "onboarding.welcome_sub" = "5 秒点选热门服务或截图离线识别，告别繁琐手动录入。";
 "onboarding.start_cta" = "立即开始";
