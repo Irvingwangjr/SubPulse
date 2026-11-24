@@ -15,11 +15,11 @@ struct SubscriptionListView: View {
     @State private var showingAddForm = false
     @State private var editingItem: SubscriptionItem?
     @State private var renewCelebrationTick = 0
-    @State private var scrollOffset: CGFloat = 0
+    @State private var scrollDistance: CGFloat = 0
     @Namespace private var filterNamespace
 
     private var barProgress: CGFloat {
-        clampedScrollProgress(offset: scrollOffset, start: 14, range: 36)
+        clampedScrollProgress(distance: scrollDistance, start: 10, range: 36)
     }
 
     private var canAddMore: Bool {
@@ -106,15 +106,14 @@ struct SubscriptionListView: View {
                         .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
                         .padding(.top, 10)
                     }
-                    .trackScrollOffset()
+                    .trackLegacyScrollOffset()
                 }
-                .coordinateSpace(name: "subpulse.scroll")
                 .scrollBounceBehavior(.always)
-                .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
-                    scrollOffset = value
+                .onScrollDistanceChange { value in
+                    scrollDistance = value
                 }
             }
-            .overlay {
+            .overlay(alignment: .top) {
                 CollapsingTopBar(
                     title: NSLocalizedString("tab.subscriptions", comment: ""),
                     barProgress: barProgress,

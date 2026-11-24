@@ -12,14 +12,14 @@ struct OverviewView: View {
 
     @State private var appeared = false
     @State private var glowShift = false
-    @State private var scrollOffset: CGFloat = 0
+    @State private var scrollDistance: CGFloat = 0
 
     private var barProgress: CGFloat {
-        clampedScrollProgress(offset: scrollOffset, start: 12, range: 36)
+        clampedScrollProgress(distance: scrollDistance, start: 10, range: 36)
     }
 
     private var summaryBadgeProgress: CGFloat {
-        clampedScrollProgress(offset: scrollOffset, start: 48, range: 44)
+        clampedScrollProgress(distance: scrollDistance, start: 42, range: 44)
     }
 
     private var monthlyTotal: Double {
@@ -131,15 +131,14 @@ struct OverviewView: View {
                         .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
                         .padding(.top, 10)
                     }
-                    .trackScrollOffset()
+                    .trackLegacyScrollOffset()
                 }
-                .coordinateSpace(name: "subpulse.scroll")
                 .scrollBounceBehavior(.always)
-                .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
-                    scrollOffset = value
+                .onScrollDistanceChange { value in
+                    scrollDistance = value
                 }
             }
-            .overlay {
+            .overlay(alignment: .top) {
                 CollapsingTopBar(
                     title: "SubPulse",
                     barProgress: barProgress,
