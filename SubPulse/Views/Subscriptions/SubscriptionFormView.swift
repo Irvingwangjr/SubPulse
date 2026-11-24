@@ -4,11 +4,9 @@ import SwiftUI
 struct SubscriptionFormView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @Environment(StoreManager.self) private var storeManager
 
     let existingItem: SubscriptionItem?
     let defaultCurrency: Currency
-    let onShowPaywall: () -> Void
 
     @State private var name: String = ""
     @State private var amountText: String = ""
@@ -108,15 +106,9 @@ struct SubscriptionFormView: View {
 
                     Picker(NSLocalizedString("form.reminder_lead", comment: ""), selection: $reminderDaysBefore) {
                         Text(NSLocalizedString("reminder.1_day", comment: "")).tag(1)
-                        Text(proReminderLabel("reminder.3_days")).tag(3)
-                        Text(proReminderLabel("reminder.7_days")).tag(7)
-                        Text(proReminderLabel("reminder.14_days")).tag(14)
-                    }
-                    .onChange(of: reminderDaysBefore) { _, newValue in
-                        if newValue > 1 && !storeManager.isPro {
-                            reminderDaysBefore = 1
-                            onShowPaywall()
-                        }
+                        Text(NSLocalizedString("reminder.3_days", comment: "")).tag(3)
+                        Text(NSLocalizedString("reminder.7_days", comment: "")).tag(7)
+                        Text(NSLocalizedString("reminder.14_days", comment: "")).tag(14)
                     }
                 }
 
@@ -145,11 +137,6 @@ struct SubscriptionFormView: View {
             }
             .onAppear(perform: populateInitialValues)
         }
-    }
-
-    private func proReminderLabel(_ key: String) -> String {
-        let base = NSLocalizedString(key, comment: "")
-        return storeManager.isPro ? base : "\(base) (Pro)"
     }
 
     private func populateInitialValues() {

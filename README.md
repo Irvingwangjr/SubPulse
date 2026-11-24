@@ -6,9 +6,9 @@ A clean, zero-backend, privacy-first iOS utility app built with **SwiftUI + Swif
 
 - **Real overseas pain point**: Track recurring subscriptions & free trials across multiple currencies (USD, EUR, GBP, JPY, etc.) with automatic base-currency conversion and local renewal reminders.
 - **Zero backend & minimal privacy friction**: 100% on-device storage via `SwiftData` — qualifies for **"Data Not Collected"** in App Store Privacy Nutrition Labels.
-- **Complete StoreKit 2 subscription loop**:
-  - **Free tier**: Up to 5 subscriptions, multi-currency conversion, 1-day renewal reminders, monthly/yearly totals.
-  - **Pro tier** (`$2.99/mo` or `$19.99/yr` with 7-day free trial): Unlimited subscriptions, custom advance reminder alerts (3 / 7 / 14 days), full Swift Charts spending breakdown, CSV export.
+- **Complete StoreKit 2 subscription loop (Full-Feature Free + Count Limit)**:
+  - **Free tier**: Every feature unlocked (multi-currency conversion, full Swift Charts category breakdown, custom 1/3/7/14-day local reminders, CSV export) for up to **3 subscriptions**.
+  - **Pro tier** (`$2.99/mo` or `$19.99/yr` with 7-day free trial): **Unlimited subscriptions & trials**.
 - **Ready-to-test locally**: Pre-wired with `SubPulse.storekit` in the shared Xcode scheme so you can test purchases, free trials, and Restore Purchases directly in the iOS Simulator without setting up App Store Connect first.
 
 ## Quick Start

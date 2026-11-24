@@ -77,9 +77,9 @@ struct PaywallView: View {
     private var featureListSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             featureRow(icon: "infinity", color: .blue, title: NSLocalizedString("paywall.feat_unlimited", comment: ""))
-            featureRow(icon: "bell.badge.fill", color: .orange, title: NSLocalizedString("paywall.feat_alerts", comment: ""))
-            featureRow(icon: "chart.bar.xaxis", color: .purple, title: NSLocalizedString("paywall.feat_charts", comment: ""))
-            featureRow(icon: "square.and.arrow.up", color: .green, title: NSLocalizedString("paywall.feat_export", comment: ""))
+            featureRow(icon: "checkmark.seal.fill", color: .green, title: NSLocalizedString("paywall.feat_all_included", comment: ""))
+            featureRow(icon: "sparkles", color: .purple, title: NSLocalizedString("paywall.feat_future", comment: ""))
+            featureRow(icon: "heart.fill", color: .orange, title: NSLocalizedString("paywall.feat_support", comment: ""))
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -182,9 +182,26 @@ struct PaywallView: View {
         }
         return String(
             format: NSLocalizedString("paywall.free_trial_then", comment: ""),
-            offer.period.value,
+            trialDurationText(for: offer.period),
             product.displayPrice
         )
+    }
+
+    /// App Store Connect only offers trial durations like "1 week" / "1 month", so the
+    /// period unit must be honored — `period.value` alone would render a 1-week trial as "1-day".
+    private func trialDurationText(for period: Product.SubscriptionPeriod) -> String {
+        switch period.unit {
+        case .day:
+            return String(format: NSLocalizedString("paywall.trial_days", comment: ""), period.value)
+        case .week:
+            return String(format: NSLocalizedString("paywall.trial_days", comment: ""), period.value * 7)
+        case .month:
+            return String(format: NSLocalizedString("paywall.trial_months", comment: ""), period.value)
+        case .year:
+            return String(format: NSLocalizedString("paywall.trial_years", comment: ""), period.value)
+        @unknown default:
+            return String(format: NSLocalizedString("paywall.trial_days", comment: ""), period.value)
+        }
     }
 
     private var actionButtonsSection: some View {

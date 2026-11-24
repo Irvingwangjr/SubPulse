@@ -74,6 +74,7 @@ struct ContentView: View {
             for sample in ServicePreset.sampleItems() {
                 modelContext.insert(sample)
             }
+            try? modelContext.save()
         }
     }
 }

@@ -73,7 +73,7 @@
       "id" : "A1B2C3D4",
       "localizations" : [
         {
-          "description" : "Unlock unlimited subscription tracking, custom alerts, charts, and CSV export.",
+          "description" : "Unlock unlimited subscription & free trial tracking across currencies.",
           "displayName" : "SubPulse Pro",
           "locale" : "en_US"
         }
@@ -94,7 +94,7 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Unlimited subscriptions, custom alerts, charts, and CSV export.",
+              "description" : "Track unlimited subscriptions & free trials, billed monthly.",
               "displayName" : "Pro Monthly",
               "locale" : "en_US"
             }

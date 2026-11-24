@@ -198,15 +198,6 @@ struct OverviewView: View {
                 Text(NSLocalizedString("overview.category_breakdown", comment: ""))
                     .font(.headline)
                 Spacer()
-                if !storeManager.isPro {
-                    Button(action: onShowPaywall) {
-                        Label("Pro", systemImage: "lock.fill")
-                            .font(.caption.weight(.semibold))
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.orange)
-                    .controlSize(.mini)
-                }
             }
 
             if categoryBreakdown.isEmpty {
@@ -215,53 +206,34 @@ struct OverviewView: View {
                     .foregroundStyle(.secondary)
                     .padding(.vertical, 12)
             } else {
-                ZStack {
-                    VStack(spacing: 12) {
-                        Chart(categoryBreakdown, id: \.category) { entry in
-                            BarMark(
-                                x: .value("Amount", entry.monthlyTotal),
-                                y: .value("Category", entry.category.localizedTitle)
-                            )
-                            .foregroundStyle(entry.category.tintColor)
-                            .cornerRadius(6)
-                        }
-                        .frame(height: CGFloat(max(categoryBreakdown.count * 38, 120)))
-                        .chartXAxis {
-                            AxisMarks(position: .bottom)
-                        }
+                VStack(spacing: 12) {
+                    Chart(categoryBreakdown, id: \.category) { entry in
+                        BarMark(
+                            x: .value("Amount", entry.monthlyTotal),
+                            y: .value("Category", entry.category.localizedTitle)
+                        )
+                        .foregroundStyle(entry.category.tintColor)
+                        .cornerRadius(6)
+                    }
+                    .frame(height: CGFloat(max(categoryBreakdown.count * 40, 110)))
+                    .chartXAxis {
+                        AxisMarks(position: .bottom)
+                    }
 
-                        VStack(spacing: 6) {
-                            ForEach(categoryBreakdown, id: \.category) { entry in
-                                HStack {
-                                    Circle()
-                                        .fill(entry.category.tintColor)
-                                        .frame(width: 8, height: 8)
-                                    Text(entry.category.localizedTitle)
-                                        .font(.caption)
-                                    Spacer()
-                                    Text("\(baseCurrency.formatted(entry.monthlyTotal))/mo")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(.secondary)
-                                }
+                    VStack(spacing: 6) {
+                        ForEach(categoryBreakdown, id: \.category) { entry in
+                            HStack {
+                                Circle()
+                                    .fill(entry.category.tintColor)
+                                    .frame(width: 8, height: 8)
+                                Text(entry.category.localizedTitle)
+                                    .font(.caption)
+                                Spacer()
+                                Text("\(baseCurrency.formatted(entry.monthlyTotal))/mo")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
                             }
                         }
-                    }
-                    .blur(radius: storeManager.isPro ? 0 : 6)
-
-                    if !storeManager.isPro {
-                        VStack(spacing: 8) {
-                            Image(systemName: "chart.bar.xaxis")
-                                .font(.title2)
-                                .foregroundStyle(.orange)
-                            Text(NSLocalizedString("overview.unlock_analytics", comment: ""))
-                                .font(.subheadline.weight(.semibold))
-                                .multilineTextAlignment(.center)
-                            Button(NSLocalizedString("paywall.upgrade_cta", comment: ""), action: onShowPaywall)
-                                .buttonStyle(.borderedProminent)
-                                .controlSize(.small)
-                        }
-                        .padding(16)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     }
                 }
             }

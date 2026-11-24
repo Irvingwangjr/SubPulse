@@ -73,34 +73,20 @@ struct SettingsView: View {
                 }
 
                 Section(NSLocalizedString("settings.data", comment: "")) {
-                    if storeManager.isPro {
-                        if let url = exportFileURL {
-                            ShareLink(item: url) {
-                                Label(NSLocalizedString("settings.export_csv", comment: ""), systemImage: "square.and.arrow.up")
-                            }
-                        } else {
-                            Button {
-                                exportFileURL = CSVExporter.exportURL(for: items, baseCurrency: baseCurrency)
-                            } label: {
-                                Label(NSLocalizedString("settings.prepare_csv", comment: ""), systemImage: "doc.text")
-                            }
+                    if let url = exportFileURL {
+                        ShareLink(item: url) {
+                            Label(NSLocalizedString("settings.export_csv", comment: ""), systemImage: "square.and.arrow.up")
                         }
                     } else {
-                        Button(action: onShowPaywall) {
-                            HStack {
-                                Label(NSLocalizedString("settings.export_csv", comment: ""), systemImage: "square.and.arrow.up")
-                                Spacer()
-                                Text("Pro")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.orange)
-                            }
+                        Button {
+                            exportFileURL = CSVExporter.exportURL(for: items, baseCurrency: baseCurrency)
+                        } label: {
+                            Label(NSLocalizedString("settings.prepare_csv", comment: ""), systemImage: "doc.text")
                         }
                     }
 
                     Button(NSLocalizedString("settings.load_samples", comment: "")) {
-                        for sample in ServicePreset.sampleItems() {
-                            modelContext.insert(sample)
-                        }
+                        loadSampleSubscriptions()
                     }
 
                     Button(NSLocalizedString("settings.delete_all", comment: ""), role: .destructive) {
@@ -137,12 +123,24 @@ struct SettingsView: View {
                 }
                 Button(NSLocalizedString("action.cancel", comment: ""), role: .cancel) {}
             }
-            .task {
+            .task(id: "\(items.count)-\(baseCurrencyCode)") {
                 await refreshNotificationStatus()
-                if storeManager.isPro {
-                    exportFileURL = CSVExporter.exportURL(for: items, baseCurrency: baseCurrency)
-                }
+                exportFileURL = CSVExporter.exportURL(for: items, baseCurrency: baseCurrency)
             }
+        }
+    }
+
+    private func loadSampleSubscriptions() {
+        if !storeManager.isPro && items.count >= AppConfig.freeSubscriptionLimit {
+            onShowPaywall()
+            return
+        }
+        let samples = ServicePreset.sampleItems()
+        let allowed = storeManager.isPro
+            ? samples.count
+            : max(0, AppConfig.freeSubscriptionLimit - items.count)
+        for sample in samples.prefix(allowed) {
+            modelContext.insert(sample)
         }
     }
 

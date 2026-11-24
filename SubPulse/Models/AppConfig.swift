@@ -1,7 +1,7 @@
 import Foundation
 
 enum AppConfig {
-    static let freeSubscriptionLimit = 5
+    static let freeSubscriptionLimit = 3
 
     // Live GitHub Pages URLs (served from /docs on main branch)
     static let privacyPolicyURL = URL(string: "https://irvingwangjr.github.io/SubPulse/privacy.html")!

@@ -43,43 +43,17 @@ struct ServicePreset: Identifiable, Hashable {
                 colorHex: "#10A37F"
             ),
             SubscriptionItem(
-                name: "Spotify Premium",
+                name: "Spotify",
                 amount: 10.99,
                 currency: .eur,
                 billingCycle: .monthly,
                 category: .music,
-                nextBillingDate: cal.date(byAdding: .day, value: 6, to: today) ?? today,
-                reminderDaysBefore: 1,
-                isTrial: false,
-                notes: "EU account",
-                iconSymbol: "music.note",
-                colorHex: "#1DB954"
-            ),
-            SubscriptionItem(
-                name: "iCloud+ 2TB",
-                amount: 9.99,
-                currency: .usd,
-                billingCycle: .monthly,
-                category: .cloud,
-                nextBillingDate: cal.date(byAdding: .day, value: 12, to: today) ?? today,
-                reminderDaysBefore: 1,
-                isTrial: false,
-                notes: "Family photo backup",
-                iconSymbol: "icloud.fill",
-                colorHex: "#0A84FF"
-            ),
-            SubscriptionItem(
-                name: "Notion Plus Trial",
-                amount: 120.00,
-                currency: .usd,
-                billingCycle: .yearly,
-                category: .productivity,
                 nextBillingDate: cal.date(byAdding: .day, value: 2, to: today) ?? today,
                 reminderDaysBefore: 1,
                 isTrial: true,
-                notes: "Cancel before trial converts!",
-                iconSymbol: "doc.text.fill",
-                colorHex: "#5E6AD2"
+                notes: "Cancel before EU trial converts",
+                iconSymbol: "music.note",
+                colorHex: "#1DB954"
             )
         ]
     }

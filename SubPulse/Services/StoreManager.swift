@@ -11,7 +11,9 @@ final class StoreManager {
     private(set) var isPurchasing = false
     var errorMessage: String?
 
-    private var updatesTask: Task<Void, Never>?
+    // Not UI state: keep it out of Observation tracking so it stays a plain stored
+    // property that the nonisolated `deinit` is allowed to cancel.
+    @ObservationIgnored private var updatesTask: Task<Void, Never>?
 
     var isPro: Bool {
         !purchasedProductIDs.isEmpty

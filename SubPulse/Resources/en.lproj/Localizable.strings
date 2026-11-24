@@ -33,7 +33,6 @@
 "overview.no_upcoming" = "No renewals due in the next 7 days.";
 "overview.category_breakdown" = "Category Breakdown";
 "overview.empty_chart" = "Add subscriptions to see your spending breakdown.";
-"overview.unlock_analytics" = "Unlock full spending breakdown with SubPulse Pro";
 
 /* Renewal Badges */
 "badge.trial" = "TRIAL";
@@ -48,7 +47,7 @@
 "subs.add_first" = "Add Subscription";
 "subs.search_prompt" = "Search subscriptions";
 "subs.free_quota" = "Free Plan: %d / %d subscriptions";
-"subs.free_quota_desc" = "Upgrade to Pro for unlimited tracking & custom alerts.";
+"subs.free_quota_desc" = "All features included. Upgrade to Pro for unlimited subscriptions.";
 "filter.all" = "All";
 
 /* Actions */
@@ -97,16 +96,19 @@
 "paywall.upgrade_cta" = "Upgrade to Pro";
 "paywall.upgrade_short" = "Upgrade";
 "paywall.title" = "SubPulse Pro";
-"paywall.subtitle" = "Take full control of every recurring bill and free trial across currencies.";
-"paywall.feat_unlimited" = "Track unlimited subscriptions & trials";
-"paywall.feat_alerts" = "Custom renewal alerts (3, 7, or 14 days before)";
-"paywall.feat_charts" = "Full category spending charts & insights";
-"paywall.feat_export" = "Export all subscriptions to CSV anytime";
+"paywall.subtitle" = "Every feature is already unlocked. Go Pro to track unlimited subscriptions across currencies.";
+"paywall.feat_unlimited" = "Track unlimited subscriptions & free trials";
+"paywall.feat_all_included" = "Full charts, custom alerts & CSV export included";
+"paywall.feat_future" = "Access all future Pro enhancements automatically";
+"paywall.feat_support" = "Support independent, 100% privacy-first development";
 "paywall.load_failed" = "Unable to load subscription options. Please check your connection and retry.";
 "paywall.best_value" = "BEST VALUE";
 "paywall.yearly_desc" = "Billed annually • Save over 40%";
 "paywall.monthly_desc" = "Flexible monthly billing";
-"paywall.free_trial_then" = "%d-day free trial, then %@/yr";
+"paywall.free_trial_then" = "%1$@ free trial, then %2$@/yr";
+"paywall.trial_days" = "%d-day";
+"paywall.trial_months" = "%d-month";
+"paywall.trial_years" = "%d-year";
 "paywall.continue" = "Continue";
 "paywall.restore" = "Restore Purchases";
 "paywall.restore_none" = "No active Pro subscription found for this Apple Account.";

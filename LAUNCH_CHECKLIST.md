@@ -11,7 +11,7 @@
 3. 验证完整功能：
    - 概览页自动汇总多币种月/年支出；
    - 订阅页新增、编辑、左滑删除、右滑标记“已续费”；
-   - 当订阅达到 5 个时自动触发 Paywall；
+   - 当订阅达到 3 个后再新增时自动触发 Paywall（免费版已含完整图表、提醒与 CSV 导出）；
    - 在 Paywall 页点 **Continue** 测试 StoreKit 2 订阅购买（已自动绑定 `SubPulse.storekit`，无需联网或配置苹果后台）；
    - 在 Xcode 菜单 **Debug → StoreKit → Manage Transactions** 可查看/退款/重置沙盒订阅，测试 **Restore Purchases**。
 
@@ -60,7 +60,7 @@
 1. 在 Xcode 顶部设备选 **Any iOS Device (arm64)** → 菜单 **Product → Archive** → **Distribute App → App Store Connect**。
 2. 准备截图（6.9" / 6.7" iPhone 模拟器直接 **⌘S** 截 4–5 张核心界面图：Overview、Subscriptions、Upcoming、Paywall）。
 3. 填写审核备注（**App Review Information → Notes**），可直接复制：
-   > SubPulse is a 100% on-device subscription tracker and does not require login or an account. On first launch, 4 sample subscriptions are pre-loaded so you can immediately test the multi-currency overview, upcoming reminders, and swipe-to-renew features. To test the Pro subscription paywall, tap the "Pro" button in the top-right corner of Overview or go to Settings → Upgrade to SubPulse Pro.
+   > SubPulse is a 100% on-device subscription tracker and does not require login or an account. On first launch, 2 sample subscriptions are pre-loaded so you can immediately test the multi-currency overview, full category charts, upcoming reminders, CSV export, and swipe-to-renew features. Free users can track up to 3 subscriptions with all features unlocked; tapping "+" when 3 subscriptions exist (or tapping the Pro crown icon / Settings → Upgrade to SubPulse Pro) opens the Pro subscription paywall for unlimited subscriptions.
 4. 发布方式先选 **Manually release this version**，审核通过后自己点发布。
 
 ---

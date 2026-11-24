@@ -99,15 +99,13 @@ struct SubscriptionListView: View {
             .sheet(isPresented: $showingAddForm) {
                 SubscriptionFormView(
                     existingItem: nil,
-                    defaultCurrency: baseCurrency,
-                    onShowPaywall: onShowPaywall
+                    defaultCurrency: baseCurrency
                 )
             }
             .sheet(item: $editingItem) { item in
                 SubscriptionFormView(
                     existingItem: item,
-                    defaultCurrency: baseCurrency,
-                    onShowPaywall: onShowPaywall
+                    defaultCurrency: baseCurrency
                 )
             }
         }

@@ -33,7 +33,6 @@
 "overview.no_upcoming" = "未来 7 天内暂无待续费项目。";
 "overview.category_breakdown" = "分类支出分布";
 "overview.empty_chart" = "添加订阅后即可查看支出分布。";
-"overview.unlock_analytics" = "升级 SubPulse Pro 解锁完整分类图表";
 
 /* Renewal Badges */
 "badge.trial" = "试用";
@@ -48,7 +47,7 @@
 "subs.add_first" = "添加订阅";
 "subs.search_prompt" = "搜索订阅服务";
 "subs.free_quota" = "免费版：已用 %d / %d 个订阅";
-"subs.free_quota_desc" = "升级 Pro 解锁无限订阅与提前自定义提醒。";
+"subs.free_quota_desc" = "已含全部完整功能，升级 Pro 解除数量限制。";
 "filter.all" = "全部";
 
 /* Actions */
@@ -97,16 +96,19 @@
 "paywall.upgrade_cta" = "升级 Pro";
 "paywall.upgrade_short" = "升级";
 "paywall.title" = "SubPulse Pro";
-"paywall.subtitle" = "轻松掌控所有海外与多币种订阅，绝不遗漏任何一次试用扣费。";
-"paywall.feat_unlimited" = "无限数量订阅与试用追踪";
-"paywall.feat_alerts" = "自定义提前提醒（提前 3 / 7 / 14 天）";
-"paywall.feat_charts" = "完整分类支出图表与统计分析";
-"paywall.feat_export" = "随时导出 CSV 账单文件";
+"paywall.subtitle" = "所有完整功能已向你开放。升级 Pro 解除 3 个数量限制，无限追踪所有订阅与试用。";
+"paywall.feat_unlimited" = "无限数量订阅与免费试用追踪";
+"paywall.feat_all_included" = "完整图表、多档提前提醒与 CSV 导出全包含";
+"paywall.feat_future" = "自动解锁后续全部 Pro 新特性";
+"paywall.feat_support" = "支持独立开发者持续打磨 100% 本地隐私应用";
 "paywall.load_failed" = "暂时无法加载订阅方案，请检查网络后重试。";
 "paywall.best_value" = "最超值";
 "paywall.yearly_desc" = "按年计费 • 相比月付省超 40%";
 "paywall.monthly_desc" = "按月灵活订阅";
-"paywall.free_trial_then" = "先免费试用 %d 天，之后 %@/年";
+"paywall.free_trial_then" = "先免费试用 %1$@，之后 %2$@/年";
+"paywall.trial_days" = "%d 天";
+"paywall.trial_months" = "%d 个月";
+"paywall.trial_years" = "%d 年";
 "paywall.continue" = "继续";
 "paywall.restore" = "恢复购买";
 "paywall.restore_none" = "当前 Apple 账户下未找到生效中的 Pro 订阅。";
