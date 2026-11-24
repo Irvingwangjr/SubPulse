@@ -17,7 +17,7 @@
 ### 2.2 Views, Motion & Aesthetic
 - **Design System (`DesignSystem.swift`)**：统一弹簧物理动效参数（`AppMotion.snappy / bouncy / gentle`）、触感按压按钮 `BouncyButtonStyle`、呼吸光点 `PulseDotView`、自适应明暗环境光晕 `AmbientBackgroundView`、滚动驱动折叠吸顶毛玻璃顶栏 `CollapsingTopBar`（iOS 18 原生 `onScrollGeometryChange` 驱动 + iOS 17 降级兼容，展示页面紧凑标题 + 核心摘要胶囊 + 快捷操作，点击回顶）、`24pt` 柔和悬浮卡片 `.tactileCard()`、iOS 17 原生 `.scrollTransition` 滚动呼吸缩放 `.scrollCardMotion()`。
 - **Haptic Kinetic Onboarding (`OnboardingView`)**：冷启动首帧直出深色极光 3 页可滑动引导（无白屏闪烁）：
-  - **Page 0**：仿 ChatGPT 逐词/分节浮现开屏，基于稳定占位 `AttributedString` 零重影渲染，每拍同步触发 `UIImpactFeedbackGenerator(.soft)` 轻震与中心脉搏光环微跳，自动轮播 3 组核心价值主张。
+  - **Page 0**：仿 ChatGPT 往返打字机轻震开屏——实心白色圆形光标 `●` 独立闪烁 2 次（1s）→ 从左向右高速逐字打出（英文 `34ms/字`、中文 `60ms/字`，同步预热 `UIImpactFeedbackGenerator(.soft)` 高频细腻微震）→ 停顿阅读并呼吸一次 → 从右向左快速回退抹除（`20ms / 36ms`）→ 整屏深色极光顺滑换色进入下一句（4 组核心价值主张循环）。
   - **Page 1**：5 秒热门服务图标墙（3 列 12 项海外高频预设），点击即时累计月均支出并受 3 个免费额度保护。
   - **Page 2**：一键跳转系统 Apple 订阅页（`itms-apps://apps.apple.com/account/subscriptions`）+ 零权限相册选图离线 OCR 识别 + 通知授权启动；跳过全部时自动预置 2 条示例数据。
 - **Zero-Friction Smart Import (`SmartImportView` + `ScreenshotOCRParser`)**：在订阅页顶栏、折叠顶栏与空态均提供「快捷 / 识图」入口；支持 12 项热门预设一键点选、基于 Apple `Vision` (`VNRecognizeTextRequest`, `en-US` + `zh-Hans`) 的 100% 本机离线截图识别（通过 out-of-process `PhotosPicker` 免相册权限弹窗）及剪贴板账单文本解析。

@@ -17,9 +17,10 @@ struct OnboardingView: View {
     @State private var selectedPresets: Set<ServicePreset> = []
     @State private var quotaHintVisible = false
 
-    // Kinetic ChatGPT-style splash state
+    // Kinetic ChatGPT-style typewriter splash state
     @State private var phraseIndex = 0
-    @State private var visibleWordCount = 0
+    @State private var typedText = ""
+    @State private var cursorVisible = true
     @State private var orbBreath = false
 
     // OCR screenshot import inside onboarding page 2
@@ -31,37 +32,25 @@ struct OnboardingView: View {
     private let kineticPhrases: [(accentHex: String, textKey: String)] = [
         ("#38BDF8", "onboarding.kinetic_1"),
         ("#F97316", "onboarding.kinetic_2"),
-        ("#34D399", "onboarding.kinetic_3")
+        ("#34D399", "onboarding.kinetic_3"),
+        ("#A78BFA", "onboarding.kinetic_4")
     ]
 
-    private var currentRawPhrase: String {
+    private var currentFullPhrase: String {
         NSLocalizedString(kineticPhrases[phraseIndex].textKey, comment: "")
     }
 
-    private var currentWords: [String] {
-        if currentRawPhrase.contains("|") {
-            return currentRawPhrase.components(separatedBy: "|")
-        }
-        return currentRawPhrase.components(separatedBy: " ")
-    }
-
-    private var kineticAttributedText: AttributedString {
-        let separator = currentRawPhrase.contains("|") ? "" : " "
-        var result = AttributedString()
-        let words = currentWords
-
-        for (index, word) in words.enumerated() {
-            var token = AttributedString(word)
-            token.foregroundColor = index < visibleWordCount ? .white : .clear
-            result.append(token)
-
-            if index < words.count - 1 && !separator.isEmpty {
-                var space = AttributedString(separator)
-                space.foregroundColor = .clear
-                result.append(space)
-            }
-        }
-        return result
+    private var kineticCursorLine: Text {
+        let content = Text(typedText)
+            .font(.system(size: 38, weight: .bold, design: .rounded))
+            .foregroundStyle(.white)
+        let spacer = Text(typedText.isEmpty ? "" : " ")
+            .font(.system(size: 38, weight: .bold, design: .rounded))
+        let dot = Text(Image(systemName: "circle.fill"))
+            .font(.system(size: 22, weight: .bold))
+            .baselineOffset(4)
+            .foregroundStyle(cursorVisible ? Color.white : Color.white.opacity(0.08))
+        return content + spacer + dot
     }
 
     private var remainingFreeSlots: Int {
@@ -163,60 +152,64 @@ struct OnboardingView: View {
         .padding(.bottom, 8)
     }
 
-    // MARK: - Page 0: ChatGPT-Style Kinetic Haptic Splash
+    // MARK: - Page 0: ChatGPT-Style Kinetic Typewriter Splash
 
     private var kineticWelcomePage: some View {
-        VStack(spacing: 28) {
+        VStack(alignment: .leading, spacing: 26) {
             Spacer()
 
-            ZStack {
-                Circle()
-                    .fill(pageAccent.opacity(0.25))
-                    .frame(width: 126, height: 126)
-                    .scaleEffect(orbBreath ? 1.18 : 0.92)
-                    .blur(radius: 16)
+            VStack(alignment: .leading, spacing: 22) {
+                HStack(spacing: 14) {
+                    ZStack {
+                        Circle()
+                            .fill(pageAccent.opacity(0.28))
+                            .frame(width: 72, height: 72)
+                            .scaleEffect(orbBreath ? 1.18 : 0.92)
+                            .blur(radius: 12)
 
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Color(hex: "#2563EB"), pageAccent],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 88, height: 88)
-                    .scaleEffect(visibleWordCount.isMultiple(of: 2) ? 1.04 : 0.98)
-                    .animation(.spring(response: 0.22, dampingFraction: 0.65), value: visibleWordCount)
-                    .shadow(color: pageAccent.opacity(0.55), radius: 24, y: 8)
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color(hex: "#2563EB"), pageAccent],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 54, height: 54)
+                            .shadow(color: pageAccent.opacity(0.55), radius: 18, y: 6)
 
-                Image(systemName: "waveform.path.ecg")
-                    .font(.system(size: 36, weight: .bold))
-                    .foregroundStyle(.white)
-                    .symbolEffect(.pulse, value: phraseIndex)
-            }
+                        Image(systemName: "waveform.path.ecg")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundStyle(.white)
+                            .symbolEffect(.pulse, value: phraseIndex)
+                    }
 
-            VStack(spacing: 16) {
-                Text("SubPulse")
-                    .font(.caption.weight(.bold))
-                    .tracking(2.2)
-                    .textCase(.uppercase)
-                    .foregroundStyle(.white.opacity(0.65))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("SUBPULSE")
+                            .font(.caption.weight(.bold))
+                            .tracking(2.2)
+                            .foregroundStyle(.white.opacity(0.78))
+                        Text(NSLocalizedString("overview.tagline", comment: ""))
+                            .font(.caption2.weight(.medium))
+                            .foregroundStyle(pageAccent.opacity(0.95))
+                    }
+                }
 
-                // Stable-layout word-by-word kinetic text reveal synced with soft Taptic ticks
-                Text(kineticAttributedText)
-                    .font(.system(size: 36, weight: .bold, design: .rounded))
-                    .multilineTextAlignment(.center)
-                    .frame(minHeight: 120, alignment: .top)
-                    .padding(.horizontal, 24)
-                    .id(phraseIndex)
-                    .transition(.opacity.combined(with: .scale(scale: 0.97)))
+                // Left-to-right silky typewriter + solid circle cursor that retracts back right-to-left
+                kineticCursorLine
+                    .multilineTextAlignment(.leading)
+                    .lineSpacing(4)
+                    .frame(maxWidth: .infinity, minHeight: 112, alignment: .topLeading)
+                    .animation(nil, value: typedText)
+                    .animation(.easeInOut(duration: 0.14), value: cursorVisible)
 
                 Text(NSLocalizedString("onboarding.welcome_sub", comment: ""))
                     .font(.subheadline)
                     .foregroundStyle(.white.opacity(0.72))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
+                    .multilineTextAlignment(.leading)
+                    .lineSpacing(3)
             }
+            .padding(.horizontal, 26)
 
             Spacer()
 
@@ -628,29 +621,85 @@ struct OnboardingView: View {
     }
 
     private func runKineticLoop() async {
+        let softHaptic = UIImpactFeedbackGenerator(style: .soft)
+
         while !Task.isCancelled {
             guard currentPage == 0 else {
-                try? await Task.sleep(nanoseconds: 400_000_000)
+                try? await Task.sleep(nanoseconds: 300_000_000)
                 continue
             }
 
-            let words = currentWords
-            visibleWordCount = 0
-            for step in 1...max(1, words.count) {
+            typedText = ""
+            cursorVisible = true
+
+            // 1. Cursor blinks twice over ~1.0s before typing begins
+            for _ in 0..<2 {
+                guard !Task.isCancelled, currentPage == 0 else { break }
+                cursorVisible = true
+                try? await Task.sleep(nanoseconds: 250_000_000)
+                guard !Task.isCancelled, currentPage == 0 else { break }
+                cursorVisible = false
+                try? await Task.sleep(nanoseconds: 250_000_000)
+            }
+            guard !Task.isCancelled else { return }
+            guard currentPage == 0 else { continue }
+
+            // 2. Rapid silky left-to-right character typing with synchronized soft Taptic purr
+            cursorVisible = true
+            let phrase = currentFullPhrase
+            let characters = Array(phrase)
+            let isCJK = characters.contains { $0.unicodeScalars.first.map { $0.value >= 0x4E00 && $0.value <= 0x9FFF } ?? false }
+            let typeDelayNs: UInt64 = isCJK ? 60_000_000 : 34_000_000
+            let eraseDelayNs: UInt64 = isCJK ? 36_000_000 : 20_000_000
+            let typeHapticStride = isCJK ? 1 : 2
+            let eraseHapticStride = isCJK ? 2 : 3
+
+            softHaptic.prepare()
+            for (idx, char) in characters.enumerated() {
                 guard !Task.isCancelled else { return }
                 if currentPage != 0 { break }
-                visibleWordCount = step
-                triggerHaptic(.soft)
-                try? await Task.sleep(nanoseconds: 180_000_000)
-            }
-
-            try? await Task.sleep(nanoseconds: 1_850_000_000)
-            guard !Task.isCancelled else { return }
-            if currentPage == 0 {
-                withAnimation(AppMotion.gentle) {
-                    phraseIndex = (phraseIndex + 1) % kineticPhrases.count
+                typedText.append(char)
+                if idx.isMultiple(of: typeHapticStride) && char != " " {
+                    softHaptic.impactOccurred(intensity: 0.58)
+                    softHaptic.prepare()
                 }
+                try? await Task.sleep(nanoseconds: typeDelayNs)
             }
+            guard !Task.isCancelled else { return }
+            guard currentPage == 0 else { continue }
+
+            // 3. Brief reading pause with a gentle cursor breath
+            try? await Task.sleep(nanoseconds: 450_000_000)
+            guard !Task.isCancelled, currentPage == 0 else { continue }
+            cursorVisible = false
+            try? await Task.sleep(nanoseconds: 280_000_000)
+            guard !Task.isCancelled, currentPage == 0 else { continue }
+            cursorVisible = true
+            try? await Task.sleep(nanoseconds: 450_000_000)
+            guard !Task.isCancelled, currentPage == 0 else { continue }
+
+            // 4. Snappy right-to-left retraction back to the lone cursor
+            softHaptic.prepare()
+            var removedCount = 0
+            while !typedText.isEmpty {
+                guard !Task.isCancelled else { return }
+                if currentPage != 0 { break }
+                typedText.removeLast()
+                removedCount += 1
+                if removedCount.isMultiple(of: eraseHapticStride) {
+                    softHaptic.impactOccurred(intensity: 0.35)
+                    softHaptic.prepare()
+                }
+                try? await Task.sleep(nanoseconds: eraseDelayNs)
+            }
+            guard !Task.isCancelled else { return }
+            guard currentPage == 0 else { continue }
+
+            // 5. Shift ambient aurora color to next phrase
+            withAnimation(.easeInOut(duration: 0.55)) {
+                phraseIndex = (phraseIndex + 1) % kineticPhrases.count
+            }
+            try? await Task.sleep(nanoseconds: 140_000_000)
         }
     }
 
