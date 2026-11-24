@@ -15,7 +15,12 @@ struct SubscriptionListView: View {
     @State private var showingAddForm = false
     @State private var editingItem: SubscriptionItem?
     @State private var renewCelebrationTick = 0
+    @State private var scrollOffset: CGFloat = 0
     @Namespace private var filterNamespace
+
+    private var barProgress: CGFloat {
+        clampedScrollProgress(offset: scrollOffset, start: 14, range: 36)
+    }
 
     private var canAddMore: Bool {
         storeManager.isPro || items.count < AppConfig.freeSubscriptionLimit
@@ -32,71 +37,124 @@ struct SubscriptionListView: View {
     }
 
     var body: some View {
-        ZStack {
-            AmbientBackgroundView(
-                accent: Color(hex: "#2563EB"),
-                secondaryAccent: Color(hex: "#8B5CF6")
-            )
+        ScrollViewReader { scrollProxy in
+            ZStack {
+                AmbientBackgroundView(
+                    accent: Color(hex: "#2563EB"),
+                    secondaryAccent: Color(hex: "#8B5CF6")
+                )
 
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 16) {
-                    headerBar
-                    searchBar
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        Color.clear
+                            .frame(height: 0)
+                            .id("scrollTop")
 
-                    if !storeManager.isPro {
-                        freeTierCard
-                            .scrollCardMotion()
-                    }
+                        VStack(spacing: 16) {
+                            headerBar
+                                .opacity(1.0 - Double(barProgress) * 0.85)
+                            searchBar
 
-                    if !items.isEmpty {
-                        categoryFilterBar
-                    }
-
-                    if filteredItems.isEmpty {
-                        emptyStateCard
-                            .padding(.top, 20)
-                    } else if horizontalSizeClass == .regular {
-                        LazyVGrid(
-                            columns: [
-                                GridItem(.flexible(), spacing: 20),
-                                GridItem(.flexible(), spacing: 20)
-                            ],
-                            spacing: 16
-                        ) {
-                            ForEach(filteredItems) { item in
-                                subscriptionCard(item)
+                            if !storeManager.isPro {
+                                freeTierCard
                                     .scrollCardMotion()
-                                    .transition(.asymmetric(
-                                        insertion: .scale(scale: 0.94).combined(with: .opacity),
-                                        removal: .scale(scale: 0.9).combined(with: .opacity)
-                                    ))
                             }
-                        }
-                        .animation(AppMotion.bouncy, value: filteredItems.map(\.id))
-                    } else {
-                        LazyVStack(spacing: 12) {
-                            ForEach(filteredItems) { item in
-                                subscriptionCard(item)
-                                    .scrollCardMotion()
-                                    .transition(.asymmetric(
-                                        insertion: .scale(scale: 0.94).combined(with: .opacity),
-                                        removal: .scale(scale: 0.9).combined(with: .opacity)
-                                    ))
-                            }
-                        }
-                        .animation(AppMotion.bouncy, value: filteredItems.map(\.id))
-                    }
 
-                    Spacer().frame(height: 92)
+                            if !items.isEmpty {
+                                categoryFilterBar
+                            }
+
+                            if filteredItems.isEmpty {
+                                emptyStateCard
+                                    .padding(.top, 20)
+                            } else if horizontalSizeClass == .regular {
+                                LazyVGrid(
+                                    columns: [
+                                        GridItem(.flexible(), spacing: 20),
+                                        GridItem(.flexible(), spacing: 20)
+                                    ],
+                                    spacing: 16
+                                ) {
+                                    ForEach(filteredItems) { item in
+                                        subscriptionCard(item)
+                                            .scrollCardMotion()
+                                            .transition(.asymmetric(
+                                                insertion: .scale(scale: 0.94).combined(with: .opacity),
+                                                removal: .scale(scale: 0.9).combined(with: .opacity)
+                                            ))
+                                    }
+                                }
+                                .animation(AppMotion.bouncy, value: filteredItems.map(\.id))
+                            } else {
+                                LazyVStack(spacing: 12) {
+                                    ForEach(filteredItems) { item in
+                                        subscriptionCard(item)
+                                            .scrollCardMotion()
+                                            .transition(.asymmetric(
+                                                insertion: .scale(scale: 0.94).combined(with: .opacity),
+                                                removal: .scale(scale: 0.9).combined(with: .opacity)
+                                            ))
+                                    }
+                                }
+                                .animation(AppMotion.bouncy, value: filteredItems.map(\.id))
+                            }
+
+                            Spacer().frame(height: 92)
+                        }
+                        .frame(maxWidth: horizontalSizeClass == .regular ? 960 : .infinity)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
+                        .padding(.top, 10)
+                    }
+                    .trackScrollOffset()
                 }
-                .frame(maxWidth: horizontalSizeClass == .regular ? 960 : .infinity)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
-                .padding(.top, 10)
+                .coordinateSpace(name: "subpulse.scroll")
+                .scrollBounceBehavior(.always)
+                .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                    scrollOffset = value
+                }
             }
-            .scrollBounceBehavior(.always)
+            .overlay {
+                CollapsingTopBar(
+                    title: NSLocalizedString("tab.subscriptions", comment: ""),
+                    barProgress: barProgress,
+                    badgeProgress: barProgress,
+                    onTapToTop: {
+                        withAnimation(AppMotion.bouncy) {
+                            scrollProxy.scrollTo("scrollTop", anchor: .top)
+                        }
+                    },
+                    badge: {
+                        Text(storeManager.isPro ? "\(items.count)" : "\(items.count)/\(AppConfig.freeSubscriptionLimit)")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(storeManager.isPro ? Color.accentColor : Color.orange)
+                            .padding(.horizontal, 9)
+                            .padding(.vertical, 3)
+                            .background(
+                                (storeManager.isPro ? Color.accentColor : Color.orange).opacity(0.14),
+                                in: Capsule()
+                            )
+                    },
+                    trailing: {
+                        Button(action: handleAddTapped) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundStyle(.white)
+                                .frame(width: 30, height: 30)
+                                .background(
+                                    LinearGradient(
+                                        colors: [Color(hex: "#2563EB"), Color(hex: "#6366F1")],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    in: Circle()
+                                )
+                        }
+                        .buttonStyle(BouncyButtonStyle(scale: 0.88))
+                    }
+                )
+            }
         }
-        .topSafeAreaScrim()
         .sensoryFeedback(.success, trigger: renewCelebrationTick)
         .sheet(isPresented: $showingAddForm) {
             SubscriptionFormView(

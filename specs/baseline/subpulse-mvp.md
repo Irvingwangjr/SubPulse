@@ -15,7 +15,7 @@
 - 支持 9 种内置离线参考汇率币种：`USD`, `EUR`, `GBP`, `JPY`, `CAD`, `AUD`, `CNY`, `HKD`, `SGD`。
 
 ### 2.2 Views, Motion & Aesthetic
-- **Design System (`DesignSystem.swift`)**：统一弹簧物理动效参数（`AppMotion.snappy / bouncy / gentle`）、触感按压按钮 `BouncyButtonStyle`、呼吸光点 `PulseDotView`、自适应明暗环境光晕 `AmbientBackgroundView`、顶部状态栏/灵动岛渐隐毛玻璃遮罩 `TopSafeAreaScrim`、`24pt` 柔和悬浮卡片 `.tactileCard()`、iOS 17 原生 `.scrollTransition` 滚动呼吸缩放 `.scrollCardMotion()`。
+- **Design System (`DesignSystem.swift`)**：统一弹簧物理动效参数（`AppMotion.snappy / bouncy / gentle`）、触感按压按钮 `BouncyButtonStyle`、呼吸光点 `PulseDotView`、自适应明暗环境光晕 `AmbientBackgroundView`、滚动驱动折叠吸顶毛玻璃顶栏 `CollapsingTopBar`（`ScrollOffsetPreferenceKey` 实时驱动，展示页面紧凑标题 + 核心摘要胶囊 + 快捷操作，点击回顶）、`24pt` 柔和悬浮卡片 `.tactileCard()`、iOS 17 原生 `.scrollTransition` 滚动呼吸缩放 `.scrollCardMotion()`。
 - **Adaptive Multi-Screen & iPhone Duo Support**：严格基于 `@Environment(\.horizontalSizeClass)` 适配，兼容 5.4" 折叠外屏/小屏（紧凑缩放零截断）与 7.6" iPhone Duo 展开内屏 / iPad（`Overview` 左右双栏、`Subscriptions` / `Upcoming` / `Settings` 2 列折痕安全网格、`FloatingTabBar` 宽屏 `440pt` 居中悬浮）。
 - **Navigation (`FloatingTabBar`)**：自定义悬浮毛玻璃胶囊底栏，支持 `matchedGeometryEffect` 液体滑动指示器、`.symbolEffect(.bounce)` 图标弹性反馈、`.sensoryFeedback(.selection)` 触感震动，及带方向感知的弹簧切页过渡动画。
 - **Overview**：`ScrollView` + `.scrollBounceBehavior(.always)`；动态情绪状态脉搏条（试用临近 / 本周续费 / 安心躺平）、极光呼吸 Hero 金额卡（带 `.numericText()` 机械滚动数字动画与每日咖啡等价洞察）、带彩色光晕的指标卡片、带续费倒计时进度条的近期续费列表、无遮挡 Swift Charts 分类支出柱状图。

@@ -15,68 +15,133 @@ struct SettingsView: View {
     @State private var showingResetConfirmation = false
     @State private var showingManageSubscriptions = false
     @State private var exportFileURL: URL?
+    @State private var scrollOffset: CGFloat = 0
+
+    private var barProgress: CGFloat {
+        clampedScrollProgress(offset: scrollOffset, start: 14, range: 36)
+    }
 
     private var baseCurrency: Currency {
         Currency.from(code: baseCurrencyCode)
     }
 
     var body: some View {
-        ZStack {
-            AmbientBackgroundView(
-                accent: Color(hex: "#6366F1"),
-                secondaryAccent: Color(hex: "#0EA5E9")
-            )
+        ScrollViewReader { scrollProxy in
+            ZStack {
+                AmbientBackgroundView(
+                    accent: Color(hex: "#6366F1"),
+                    secondaryAccent: Color(hex: "#0EA5E9")
+                )
 
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 18) {
-                    Text(NSLocalizedString("tab.settings", comment: ""))
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        Color.clear
+                            .frame(height: 0)
+                            .id("scrollTop")
 
-                    proBannerCard
-                        .scrollCardMotion()
+                        VStack(alignment: .leading, spacing: 18) {
+                            Text(NSLocalizedString("tab.settings", comment: ""))
+                                .font(.system(size: 32, weight: .bold, design: .rounded))
+                                .opacity(1.0 - Double(barProgress) * 0.85)
 
-                    if horizontalSizeClass == .regular {
-                        HStack(alignment: .top, spacing: 24) {
-                            preferencesCard
+                            proBannerCard
                                 .scrollCardMotion()
-                                .frame(maxWidth: .infinity)
-                            dataCard
+
+                            if horizontalSizeClass == .regular {
+                                HStack(alignment: .top, spacing: 24) {
+                                    preferencesCard
+                                        .scrollCardMotion()
+                                        .frame(maxWidth: .infinity)
+                                    dataCard
+                                        .scrollCardMotion()
+                                        .frame(maxWidth: .infinity)
+                                }
+                            } else {
+                                preferencesCard
+                                    .scrollCardMotion()
+                                dataCard
+                                    .scrollCardMotion()
+                            }
+
+                            legalCard
                                 .scrollCardMotion()
-                                .frame(maxWidth: .infinity)
+
+                            VStack(spacing: 6) {
+                                Text("\(NSLocalizedString("settings.version", comment: "")) \(appVersion)")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                Text(NSLocalizedString("settings.privacy_footer", comment: ""))
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 12)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 4)
+
+                            Spacer().frame(height: 92)
                         }
-                    } else {
-                        preferencesCard
-                            .scrollCardMotion()
-                        dataCard
-                            .scrollCardMotion()
+                        .frame(maxWidth: horizontalSizeClass == .regular ? 880 : .infinity)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
+                        .padding(.top, 10)
                     }
-
-                    legalCard
-                        .scrollCardMotion()
-
-                    VStack(spacing: 6) {
-                        Text("\(NSLocalizedString("settings.version", comment: "")) \(appVersion)")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                        Text(NSLocalizedString("settings.privacy_footer", comment: ""))
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 12)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 4)
-
-                    Spacer().frame(height: 92)
+                    .trackScrollOffset()
                 }
-                .frame(maxWidth: horizontalSizeClass == .regular ? 880 : .infinity)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
-                .padding(.top, 10)
+                .coordinateSpace(name: "subpulse.scroll")
+                .scrollBounceBehavior(.always)
+                .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                    scrollOffset = value
+                }
             }
-            .scrollBounceBehavior(.always)
+            .overlay {
+                CollapsingTopBar(
+                    title: NSLocalizedString("tab.settings", comment: ""),
+                    barProgress: barProgress,
+                    badgeProgress: barProgress,
+                    maxWidth: 880,
+                    onTapToTop: {
+                        withAnimation(AppMotion.bouncy) {
+                            scrollProxy.scrollTo("scrollTop", anchor: .top)
+                        }
+                    },
+                    badge: {
+                        if storeManager.isPro {
+                            Text("Pro")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(Color(hex: "#10B981"))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(Color(hex: "#10B981").opacity(0.14), in: Capsule())
+                        }
+                    },
+                    trailing: {
+                        if !storeManager.isPro {
+                            Button(action: onShowPaywall) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "crown.fill")
+                                        .font(.caption2.weight(.bold))
+                                    Text("Pro")
+                                        .font(.caption.weight(.bold))
+                                }
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 11)
+                                .padding(.vertical, 6)
+                                .background(
+                                    LinearGradient(
+                                        colors: [Color(hex: "#FF9F0A"), Color(hex: "#FF5E3A")],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    in: Capsule()
+                                )
+                            }
+                            .buttonStyle(BouncyButtonStyle(scale: 0.92))
+                        }
+                    }
+                )
+            }
         }
-        .topSafeAreaScrim()
         .manageSubscriptionsSheet(isPresented: $showingManageSubscriptions)
         .confirmationDialog(
             NSLocalizedString("settings.delete_confirm_title", comment: ""),

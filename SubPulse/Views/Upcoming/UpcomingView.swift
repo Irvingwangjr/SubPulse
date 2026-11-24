@@ -7,6 +7,15 @@ struct UpcomingView: View {
     let baseCurrency: Currency
 
     @State private var renewTick = 0
+    @State private var scrollOffset: CGFloat = 0
+
+    private var barProgress: CGFloat {
+        clampedScrollProgress(offset: scrollOffset, start: 14, range: 36)
+    }
+
+    private var dueSoonTotal: Double {
+        dueSoonItems.reduce(0.0) { $0 + $1.currency.convert($1.amount, to: baseCurrency) }
+    }
 
     private var sortedItems: [SubscriptionItem] {
         items.sorted { $0.nextBillingDate < $1.nextBillingDate }
@@ -25,71 +34,110 @@ struct UpcomingView: View {
     }
 
     var body: some View {
-        ZStack {
-            AmbientBackgroundView(
-                accent: Color(hex: "#F97316"),
-                secondaryAccent: Color(hex: "#6366F1")
-            )
+        ScrollViewReader { scrollProxy in
+            ZStack {
+                AmbientBackgroundView(
+                    accent: Color(hex: "#F97316"),
+                    secondaryAccent: Color(hex: "#6366F1")
+                )
 
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 18) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(NSLocalizedString("tab.upcoming", comment: ""))
-                            .font(.system(size: 32, weight: .bold, design: .rounded))
-                        Text(NSLocalizedString("upcoming.subtitle", comment: ""))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        Color.clear
+                            .frame(height: 0)
+                            .id("scrollTop")
 
-                    if sortedItems.isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: "calendar.badge.checkmark")
-                                .font(.system(size: 36))
-                                .foregroundStyle(.green)
-                            Text(NSLocalizedString("upcoming.empty_title", comment: ""))
-                                .font(.headline.weight(.bold))
-                            Text(NSLocalizedString("upcoming.empty_desc", comment: ""))
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.center)
+                        VStack(alignment: .leading, spacing: 18) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(NSLocalizedString("tab.upcoming", comment: ""))
+                                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                                Text(NSLocalizedString("upcoming.subtitle", comment: ""))
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .opacity(1.0 - Double(barProgress) * 0.85)
+
+                            if sortedItems.isEmpty {
+                                VStack(spacing: 12) {
+                                    Image(systemName: "calendar.badge.checkmark")
+                                        .font(.system(size: 36))
+                                        .foregroundStyle(.green)
+                                    Text(NSLocalizedString("upcoming.empty_title", comment: ""))
+                                        .font(.headline.weight(.bold))
+                                    Text(NSLocalizedString("upcoming.empty_desc", comment: ""))
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                        .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .tactileCard(cornerRadius: 24, padding: 30)
+                                .padding(.top, 16)
+                            } else {
+                                if !dueSoonItems.isEmpty {
+                                    sectionBlock(
+                                        title: NSLocalizedString("upcoming.section_7days", comment: ""),
+                                        tint: Color(hex: "#F97316"),
+                                        list: dueSoonItems
+                                    )
+                                }
+                                if !thisMonthItems.isEmpty {
+                                    sectionBlock(
+                                        title: NSLocalizedString("upcoming.section_30days", comment: ""),
+                                        tint: Color(hex: "#4F46E5"),
+                                        list: thisMonthItems
+                                    )
+                                }
+                                if !laterItems.isEmpty {
+                                    sectionBlock(
+                                        title: NSLocalizedString("upcoming.section_later", comment: ""),
+                                        tint: Color(hex: "#10B981"),
+                                        list: laterItems
+                                    )
+                                }
+                            }
+
+                            Spacer().frame(height: 92)
                         }
+                        .frame(maxWidth: horizontalSizeClass == .regular ? 960 : .infinity)
                         .frame(maxWidth: .infinity)
-                        .tactileCard(cornerRadius: 24, padding: 30)
-                        .padding(.top, 16)
-                    } else {
-                        if !dueSoonItems.isEmpty {
-                            sectionBlock(
-                                title: NSLocalizedString("upcoming.section_7days", comment: ""),
-                                tint: Color(hex: "#F97316"),
-                                list: dueSoonItems
-                            )
-                        }
-                        if !thisMonthItems.isEmpty {
-                            sectionBlock(
-                                title: NSLocalizedString("upcoming.section_30days", comment: ""),
-                                tint: Color(hex: "#4F46E5"),
-                                list: thisMonthItems
-                            )
-                        }
-                        if !laterItems.isEmpty {
-                            sectionBlock(
-                                title: NSLocalizedString("upcoming.section_later", comment: ""),
-                                tint: Color(hex: "#10B981"),
-                                list: laterItems
-                            )
-                        }
+                        .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
+                        .padding(.top, 10)
                     }
-
-                    Spacer().frame(height: 92)
+                    .trackScrollOffset()
                 }
-                .frame(maxWidth: horizontalSizeClass == .regular ? 960 : .infinity)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
-                .padding(.top, 10)
+                .coordinateSpace(name: "subpulse.scroll")
+                .scrollBounceBehavior(.always)
+                .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                    scrollOffset = value
+                }
             }
-            .scrollBounceBehavior(.always)
+            .overlay {
+                CollapsingTopBar(
+                    title: NSLocalizedString("tab.upcoming", comment: ""),
+                    barProgress: barProgress,
+                    badgeProgress: barProgress,
+                    onTapToTop: {
+                        withAnimation(AppMotion.bouncy) {
+                            scrollProxy.scrollTo("scrollTop", anchor: .top)
+                        }
+                    },
+                    badge: {
+                        if dueSoonTotal > 0 {
+                            Text(baseCurrency.formatted(dueSoonTotal))
+                                .font(.caption.weight(.bold))
+                                .contentTransition(.numericText(value: dueSoonTotal))
+                                .foregroundStyle(Color(hex: "#F97316"))
+                                .padding(.horizontal, 9)
+                                .padding(.vertical, 3)
+                                .background(Color(hex: "#F97316").opacity(0.14), in: Capsule())
+                        }
+                    },
+                    trailing: {
+                        EmptyView()
+                    }
+                )
+            }
         }
-        .topSafeAreaScrim()
         .sensoryFeedback(.success, trigger: renewTick)
     }
 

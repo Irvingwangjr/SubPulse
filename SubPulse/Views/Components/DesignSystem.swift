@@ -144,10 +144,6 @@ extension View {
         modifier(TactileCardModifier(cornerRadius: cornerRadius, padding: padding))
     }
 
-    func topSafeAreaScrim() -> some View {
-        modifier(TopSafeAreaScrimModifier())
-    }
-
     func scrollCardMotion() -> some View {
         self.scrollTransition(.interactive, axis: .vertical) { content, phase in
             content
@@ -158,50 +154,103 @@ extension View {
     }
 }
 
-// MARK: - Top Safe-Area Progressive Frosted Scrim (Status Bar & Dynamic Island)
+// MARK: - Scroll Offset Tracking & Collapsing Sticky Top Bar
 
-struct TopSafeAreaScrimModifier: ViewModifier {
-    @Environment(\.colorScheme) private var colorScheme
-
-    func body(content: Content) -> some View {
-        content
-            .overlay {
-                GeometryReader { proxy in
-                    let topInset = proxy.safeAreaInsets.top
-                    VStack(spacing: 0) {
-                        ZStack {
-                            Rectangle()
-                                .fill(.regularMaterial)
-                                .mask(
-                                    LinearGradient(
-                                        stops: [
-                                            .init(color: .black, location: 0.0),
-                                            .init(color: .black, location: 0.74),
-                                            .init(color: .clear, location: 1.0)
-                                        ],
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    )
-                                )
-
-                            LinearGradient(
-                                stops: [
-                                    .init(color: Color(.systemGroupedBackground).opacity(colorScheme == .dark ? 0.96 : 0.94), location: 0.0),
-                                    .init(color: Color(.systemGroupedBackground).opacity(colorScheme == .dark ? 0.82 : 0.78), location: 0.68),
-                                    .init(color: Color(.systemGroupedBackground).opacity(0.0), location: 1.0)
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        }
-                        .frame(height: max(topInset, 20) + 18)
-                        Spacer(minLength: 0)
-                    }
-                    .offset(y: -topInset)
-                }
-                .allowsHitTesting(false)
-            }
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
+}
+
+struct ScrollOffsetProbe: View {
+    var coordinateSpaceName: String = "subpulse.scroll"
+
+    var body: some View {
+        GeometryReader { geo in
+            Color.clear
+                .preference(
+                    key: ScrollOffsetPreferenceKey.self,
+                    value: geo.frame(in: .named(coordinateSpaceName)).minY
+                )
+        }
+    }
+}
+
+extension View {
+    func trackScrollOffset(in coordinateSpaceName: String = "subpulse.scroll") -> some View {
+        self.background(ScrollOffsetProbe(coordinateSpaceName: coordinateSpaceName))
+    }
+}
+
+struct CollapsingTopBar<Badge: View, Trailing: View>: View {
+    let title: String
+    let barProgress: CGFloat
+    let badgeProgress: CGFloat
+    var maxWidth: CGFloat = 960
+    let onTapToTop: () -> Void
+    @ViewBuilder let badge: () -> Badge
+    @ViewBuilder let trailing: () -> Trailing
+
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    var body: some View {
+        GeometryReader { proxy in
+            let topInset = proxy.safeAreaInsets.top
+            VStack(spacing: 0) {
+                ZStack(alignment: .bottom) {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .overlay(
+                            Color(.systemGroupedBackground)
+                                .opacity(colorScheme == .dark ? 0.36 : 0.48)
+                        )
+
+                    HStack(spacing: 10) {
+                        Button(action: onTapToTop) {
+                            HStack(spacing: 8) {
+                                Text(title)
+                                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.primary)
+                                    .lineLimit(1)
+
+                                badge()
+                                    .opacity(badgeProgress)
+                                    .scaleEffect(0.88 + 0.12 * badgeProgress, anchor: .leading)
+                                    .offset(y: (1 - badgeProgress) * 5)
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+
+                        Spacer(minLength: 8)
+
+                        trailing()
+                    }
+                    .frame(maxWidth: horizontalSizeClass == .regular ? maxWidth : .infinity)
+                    .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
+                    .frame(height: 46)
+                    .padding(.top, topInset)
+
+                    Rectangle()
+                        .fill(colorScheme == .dark ? Color.white.opacity(0.10) : Color.black.opacity(0.08))
+                        .frame(height: 0.5)
+                        .opacity(barProgress)
+                }
+                .frame(height: topInset + 46)
+                .opacity(barProgress)
+                .offset(y: -topInset)
+
+                Spacer(minLength: 0)
+            }
+        }
+        .allowsHitTesting(barProgress > 0.25)
+    }
+}
+
+func clampedScrollProgress(offset: CGFloat, start: CGFloat, range: CGFloat) -> CGFloat {
+    min(1, max(0, (-offset - start) / max(1, range)))
 }
 
 // MARK: - Floating Translucent Glass Tab Bar

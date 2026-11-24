@@ -12,6 +12,15 @@ struct OverviewView: View {
 
     @State private var appeared = false
     @State private var glowShift = false
+    @State private var scrollOffset: CGFloat = 0
+
+    private var barProgress: CGFloat {
+        clampedScrollProgress(offset: scrollOffset, start: 12, range: 36)
+    }
+
+    private var summaryBadgeProgress: CGFloat {
+        clampedScrollProgress(offset: scrollOffset, start: 48, range: 44)
+    }
 
     private var monthlyTotal: Double {
         items.reduce(0) { $0 + $1.monthlyAmount(in: baseCurrency) }
@@ -55,69 +64,134 @@ struct OverviewView: View {
     }
 
     var body: some View {
-        ZStack {
-            AmbientBackgroundView(
-                accent: urgentTrialCount > 0 ? Color(hex: "#F97316") : Color(hex: "#4F46E5"),
-                secondaryAccent: Color(hex: "#EC4899")
-            )
+        ScrollViewReader { scrollProxy in
+            ZStack {
+                AmbientBackgroundView(
+                    accent: urgentTrialCount > 0 ? Color(hex: "#F97316") : Color(hex: "#4F46E5"),
+                    secondaryAccent: Color(hex: "#EC4899")
+                )
 
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 16) {
-                    headerBar
-                    moodBanner
-                        .offset(y: appeared ? 0 : 10)
-                        .opacity(appeared ? 1 : 0)
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        Color.clear
+                            .frame(height: 0)
+                            .id("scrollTop")
 
-                    if horizontalSizeClass == .regular {
-                        // Hinge-safe 2-column split for iPhone Duo 7.6" unfolded display & iPad
-                        HStack(alignment: .top, spacing: 24) {
-                            VStack(spacing: 16) {
+                        VStack(spacing: 16) {
+                            headerBar
+                                .opacity(1.0 - Double(barProgress) * 0.85)
+                            moodBanner
+                                .offset(y: appeared ? 0 : 10)
+                                .opacity(appeared ? 1 : 0)
+
+                            if horizontalSizeClass == .regular {
+                                // Hinge-safe 2-column split for iPhone Duo 7.6" unfolded display & iPad
+                                HStack(alignment: .top, spacing: 24) {
+                                    VStack(spacing: 16) {
+                                        heroSummaryCard
+                                            .scrollCardMotion()
+                                        quickStatsRow
+                                            .scrollCardMotion()
+                                    }
+                                    .frame(maxWidth: .infinity)
+
+                                    VStack(spacing: 16) {
+                                        upcomingAlertCard
+                                            .scrollCardMotion()
+                                        categoryChartCard
+                                            .scrollCardMotion()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                                .offset(y: appeared ? 0 : 16)
+                                .opacity(appeared ? 1 : 0)
+                            } else {
                                 heroSummaryCard
                                     .scrollCardMotion()
+                                    .offset(y: appeared ? 0 : 14)
+                                    .opacity(appeared ? 1 : 0)
                                 quickStatsRow
                                     .scrollCardMotion()
-                            }
-                            .frame(maxWidth: .infinity)
-
-                            VStack(spacing: 16) {
+                                    .offset(y: appeared ? 0 : 18)
+                                    .opacity(appeared ? 1 : 0)
                                 upcomingAlertCard
                                     .scrollCardMotion()
+                                    .offset(y: appeared ? 0 : 22)
+                                    .opacity(appeared ? 1 : 0)
                                 categoryChartCard
                                     .scrollCardMotion()
+                                    .offset(y: appeared ? 0 : 26)
+                                    .opacity(appeared ? 1 : 0)
                             }
-                            .frame(maxWidth: .infinity)
-                        }
-                        .offset(y: appeared ? 0 : 16)
-                        .opacity(appeared ? 1 : 0)
-                    } else {
-                        heroSummaryCard
-                            .scrollCardMotion()
-                            .offset(y: appeared ? 0 : 14)
-                            .opacity(appeared ? 1 : 0)
-                        quickStatsRow
-                            .scrollCardMotion()
-                            .offset(y: appeared ? 0 : 18)
-                            .opacity(appeared ? 1 : 0)
-                        upcomingAlertCard
-                            .scrollCardMotion()
-                            .offset(y: appeared ? 0 : 22)
-                            .opacity(appeared ? 1 : 0)
-                        categoryChartCard
-                            .scrollCardMotion()
-                            .offset(y: appeared ? 0 : 26)
-                            .opacity(appeared ? 1 : 0)
-                    }
 
-                    Spacer().frame(height: 92)
+                            Spacer().frame(height: 92)
+                        }
+                        .frame(maxWidth: horizontalSizeClass == .regular ? 960 : .infinity)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
+                        .padding(.top, 10)
+                    }
+                    .trackScrollOffset()
                 }
-                .frame(maxWidth: horizontalSizeClass == .regular ? 960 : .infinity)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, horizontalSizeClass == .regular ? 24 : 18)
-                .padding(.top, 10)
+                .coordinateSpace(name: "subpulse.scroll")
+                .scrollBounceBehavior(.always)
+                .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                    scrollOffset = value
+                }
             }
-            .scrollBounceBehavior(.always)
+            .overlay {
+                CollapsingTopBar(
+                    title: "SubPulse",
+                    barProgress: barProgress,
+                    badgeProgress: summaryBadgeProgress,
+                    onTapToTop: {
+                        withAnimation(AppMotion.bouncy) {
+                            scrollProxy.scrollTo("scrollTop", anchor: .top)
+                        }
+                    },
+                    badge: {
+                        Text("\(baseCurrency.formatted(monthlyTotal))/mo")
+                            .font(.caption.weight(.bold))
+                            .contentTransition(.numericText(value: monthlyTotal))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .background(
+                                LinearGradient(
+                                    colors: [Color(hex: "#2563EB"), Color(hex: "#6D28D9")],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                ),
+                                in: Capsule()
+                            )
+                    },
+                    trailing: {
+                        if !storeManager.isPro {
+                            Button(action: onShowPaywall) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "crown.fill")
+                                        .font(.caption2.weight(.bold))
+                                    Text("Pro")
+                                        .font(.caption.weight(.bold))
+                                }
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 11)
+                                .padding(.vertical, 6)
+                                .background(
+                                    LinearGradient(
+                                        colors: [Color(hex: "#FF9F0A"), Color(hex: "#FF5E3A")],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    in: Capsule()
+                                )
+                            }
+                            .buttonStyle(BouncyButtonStyle(scale: 0.92))
+                        }
+                    }
+                )
+            }
         }
-        .topSafeAreaScrim()
         .onAppear {
             withAnimation(AppMotion.gentle) {
                 appeared = true
