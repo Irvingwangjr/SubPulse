@@ -24,6 +24,9 @@
 		B00000010000000000000015 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000015 /* PaywallView.swift */; };
 		B00000010000000000000016 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000016 /* SettingsView.swift */; };
 		B00000010000000000000017 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000017 /* DesignSystem.swift */; };
+		B00000010000000000000018 /* ScreenshotOCRParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000018 /* ScreenshotOCRParser.swift */; };
+		B00000010000000000000019 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000019 /* OnboardingView.swift */; };
+		B00000010000000000000023 /* SmartImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000026 /* SmartImportView.swift */; };
 		B00000010000000000000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000020 /* Assets.xcassets */; };
 		B00000010000000000000021 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000021 /* PrivacyInfo.xcprivacy */; };
 		B00000010000000000000022 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = V00000010000000000000001 /* Localizable.strings */; };
@@ -48,6 +51,9 @@
 		F00000010000000000000015 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		F00000010000000000000016 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F00000010000000000000017 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		F00000010000000000000018 /* ScreenshotOCRParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOCRParser.swift; sourceTree = "<group>"; };
+		F00000010000000000000019 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		F00000010000000000000026 /* SmartImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartImportView.swift; sourceTree = "<group>"; };
 		F00000010000000000000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F00000010000000000000021 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F00000010000000000000022 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -115,6 +121,7 @@
 				F00000010000000000000006 /* StoreManager.swift */,
 				F00000010000000000000007 /* NotificationManager.swift */,
 				F00000010000000000000008 /* CSVExporter.swift */,
+				F00000010000000000000018 /* ScreenshotOCRParser.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -124,6 +131,7 @@
 			children = (
 				F00000010000000000000009 /* ContentView.swift */,
 				G00000010000000000000013 /* Components */,
+				G00000010000000000000014 /* Onboarding */,
 				G00000010000000000000007 /* Overview */,
 				G00000010000000000000008 /* Subscriptions */,
 				G00000010000000000000009 /* Upcoming */,
@@ -141,6 +149,14 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		G00000010000000000000014 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				F00000010000000000000019 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		G00000010000000000000007 /* Overview */ = {
 			isa = PBXGroup;
 			children = (
@@ -155,6 +171,7 @@
 				F00000010000000000000011 /* SubscriptionListView.swift */,
 				F00000010000000000000012 /* SubscriptionRowView.swift */,
 				F00000010000000000000013 /* SubscriptionFormView.swift */,
+				F00000010000000000000026 /* SmartImportView.swift */,
 			);
 			path = Subscriptions;
 			sourceTree = "<group>";
@@ -281,6 +298,9 @@
 				B00000010000000000000015 /* PaywallView.swift in Sources */,
 				B00000010000000000000016 /* SettingsView.swift in Sources */,
 				B00000010000000000000017 /* DesignSystem.swift in Sources */,
+				B00000010000000000000018 /* ScreenshotOCRParser.swift in Sources */,
+				B00000010000000000000019 /* OnboardingView.swift in Sources */,
+				B00000010000000000000023 /* SmartImportView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

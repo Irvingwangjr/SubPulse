@@ -148,3 +148,42 @@
 "status.enabled" = "Enabled";
 "status.denied" = "Denied in iOS Settings";
 "status.not_set" = "Not Requested";
+
+/* Onboarding & Zero-Friction Smart Import */
+"onboarding.kinetic_1" = "Every subscription, finally in one calm place.";
+"onboarding.kinetic_2" = "Cancel free trials before they surprise you.";
+"onboarding.kinetic_3" = "100% on-device. Zero bank logins. Pure privacy.";
+"onboarding.skip" = "Skip";
+"onboarding.welcome_sub" = "Track multi-currency bills and free trials in seconds — no tedious typing required.";
+"onboarding.start_cta" = "Get Started";
+"onboarding.swipe_hint" = "Swipe left or tap to continue";
+"onboarding.pick_title" = "Tap what you use";
+"onboarding.pick_subtitle" = "Pick up to %d services for free — we fill in icons, currencies & typical prices automatically.";
+"onboarding.pick_limit_hint" = "Free plan includes up to %d subscriptions — upgrade anytime in-app.";
+"onboarding.selected_summary" = "%1$d selected • ≈ %2$@/mo";
+"onboarding.pick_skip_cta" = "Skip to Screenshot Scan";
+"onboarding.pick_continue_cta" = "Continue with %d Selected";
+"onboarding.scan_title" = "Or snap Apple Subscriptions";
+"onboarding.scan_subtitle" = "Open your Apple Subscriptions list, take a screenshot, and SubPulse extracts names, prices & dates locally on-device.";
+"onboarding.privacy_note" = "On-device Apple Vision OCR. Your screenshots never leave your iPhone.";
+"onboarding.finish_cta" = "Enable Reminders & Launch";
+
+"import.tab_quick_pick" = "Quick Pick";
+"import.tab_scan_ocr" = "Scan / Paste";
+"import.nav_title" = "Smart Import";
+"import.add_selected_cta" = "Add %d Subscription(s)";
+"import.ocr_guide_title" = "Zero-Typing Import";
+"import.ocr_guide_desc" = "Take a screenshot of Apple Subscriptions or copy a billing email, then import with one tap. 100% processed offline.";
+"import.open_apple_subs" = "Apple Subscriptions";
+"import.pick_screenshot" = "Scan Screenshot";
+"import.paste_clipboard" = "Parse Copied Text / Receipt";
+"import.scanning" = "Reading on-device...";
+"import.found_count" = "Found %d subscription(s)";
+"import.none_found" = "No prices detected yet. Try a clearer screenshot showing service names and prices (e.g. $9.99/mo).";
+"import.clipboard_empty" = "Your clipboard is empty. Copy a subscription receipt or text first.";
+
+"subs.smart_import" = "Quick Pick / Scan Screenshot";
+"subs.smart_import_short" = "Quick / Scan";
+"subs.manual_add" = "Or enter manually";
+"settings.open_apple_subs" = "Open Apple Subscriptions";
+"settings.replay_onboarding" = "Replay Welcome & Quick Setup";

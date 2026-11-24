@@ -4,12 +4,14 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openURL) private var openURL
     @Environment(StoreManager.self) private var storeManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let items: [SubscriptionItem]
     @Binding var baseCurrencyCode: String
     let onShowPaywall: () -> Void
+    let onReplayOnboarding: () -> Void
 
     @State private var notificationStatusText = ""
     @State private var showingResetConfirmation = false
@@ -308,6 +310,38 @@ struct SettingsView: View {
                     }
                     .buttonStyle(BouncyButtonStyle(scale: 0.98))
                 }
+
+                Divider().opacity(0.6)
+
+                Button {
+                    if let url = URL(string: "itms-apps://apps.apple.com/account/subscriptions") {
+                        openURL(url)
+                    }
+                } label: {
+                    HStack {
+                        Label(NSLocalizedString("settings.open_apple_subs", comment: ""), systemImage: "apple.logo")
+                            .font(.subheadline.weight(.medium))
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.98))
+
+                Divider().opacity(0.6)
+
+                Button(action: onReplayOnboarding) {
+                    HStack {
+                        Label(NSLocalizedString("settings.replay_onboarding", comment: ""), systemImage: "hand.wave.fill")
+                            .font(.subheadline.weight(.medium))
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.98))
 
                 Divider().opacity(0.6)
 

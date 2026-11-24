@@ -148,3 +148,42 @@
 "status.enabled" = "已开启";
 "status.denied" = "已在系统设置中关闭";
 "status.not_set" = "尚未授权";
+
+/* Onboarding & Zero-Friction Smart Import */
+"onboarding.kinetic_1" = "每一笔|订阅账单，|终于|一目了然。";
+"onboarding.kinetic_2" = "免费试用|扣费前，|准时|震动提醒你。";
+"onboarding.kinetic_3" = "纯本地|隐私守护，|不绑卡，|零上传。";
+"onboarding.skip" = "跳过";
+"onboarding.welcome_sub" = "5 秒点选热门服务或截图离线识别，告别繁琐手动录入。";
+"onboarding.start_cta" = "立即开始";
+"onboarding.swipe_hint" = "左滑或点击按钮继续";
+"onboarding.pick_title" = "点一下你正在用的服务";
+"onboarding.pick_subtitle" = "免费版可先选 %d 个常用服务，图标、币种和常见价格自动填好。";
+"onboarding.pick_limit_hint" = "免费版最多可追踪 %d 个订阅，随时可在应用内升级 Pro。";
+"onboarding.selected_summary" = "已选 %1$d 项 • 约 %2$@/月";
+"onboarding.pick_skip_cta" = "跳过，试试截图识别";
+"onboarding.pick_continue_cta" = "继续（已选 %d 项）";
+"onboarding.scan_title" = "或者直接识别订阅截图";
+"onboarding.scan_subtitle" = "一键跳转 Apple 订阅页并截屏，SubPulse 通过本机 Vision OCR 自动提取名称、金额与续费日。";
+"onboarding.privacy_note" = "全程使用 Apple 本机 Vision 离线识别，截图绝不上传任何服务器。";
+"onboarding.finish_cta" = "开启续费提醒并进入";
+
+"import.tab_quick_pick" = "快捷点选";
+"import.tab_scan_ocr" = "截图 / 粘贴识别";
+"import.nav_title" = "极速导入";
+"import.add_selected_cta" = "一键添加 %d 项订阅";
+"import.ocr_guide_title" = "告别手动打字";
+"import.ocr_guide_desc" = "截取系统「Apple 订阅」页面，或复制账单短信/邮件，本机离线一键解析导入。";
+"import.open_apple_subs" = "打开 Apple 订阅";
+"import.pick_screenshot" = "选择截图识别";
+"import.paste_clipboard" = "识别剪贴板账单文本";
+"import.scanning" = "正在本机离线识别...";
+"import.found_count" = "识别到 %d 项订阅";
+"import.none_found" = "暂未识别到价格信息，请选择包含服务名和金额（如 ¥18/月、$9.99）的清晰截图。";
+"import.clipboard_empty" = "剪贴板为空，请先复制订阅账单或续费短信文本。";
+
+"subs.smart_import" = "快捷点选 / 截图导入";
+"subs.smart_import_short" = "快捷 / 识图";
+"subs.manual_add" = "或者手动录入";
+"settings.open_apple_subs" = "打开系统 Apple 订阅页";
+"settings.replay_onboarding" = "重看开屏引导与极速配置";

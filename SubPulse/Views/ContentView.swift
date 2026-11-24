@@ -8,10 +8,12 @@ struct ContentView: View {
 
     @AppStorage("baseCurrencyCode") private var baseCurrencyCode: String = Currency.usd.rawValue
     @AppStorage("hasSeededDemoData") private var hasSeededDemoData: Bool = false
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
 
     @State private var selectedTab: AppTab = .overview
     @State private var previousTab: AppTab = .overview
     @State private var showingPaywall = false
+    @State private var showingOnboardingReplay = false
 
     private var baseCurrency: Currency {
         Currency.from(code: baseCurrencyCode)
@@ -22,6 +24,29 @@ struct ContentView: View {
     }
 
     var body: some View {
+        Group {
+            if !hasCompletedOnboarding {
+                OnboardingView(
+                    baseCurrency: baseCurrency,
+                    existingCount: items.count,
+                    onComplete: {
+                        withAnimation(AppMotion.bouncy) {
+                            hasCompletedOnboarding = true
+                            hasSeededDemoData = true
+                        }
+                    }
+                )
+                .environment(storeManager)
+                .transition(.opacity.combined(with: .scale(scale: 1.03)))
+            } else {
+                mainAppContent
+                    .transition(.opacity)
+            }
+        }
+        .animation(AppMotion.gentle, value: hasCompletedOnboarding)
+    }
+
+    private var mainAppContent: some View {
         ZStack(alignment: .bottom) {
             Group {
                 switch selectedTab {
@@ -51,7 +76,8 @@ struct ContentView: View {
                     SettingsView(
                         items: items,
                         baseCurrencyCode: $baseCurrencyCode,
-                        onShowPaywall: { showingPaywall = true }
+                        onShowPaywall: { showingPaywall = true },
+                        onReplayOnboarding: { showingOnboardingReplay = true }
                     )
                 }
             }
@@ -79,6 +105,16 @@ struct ContentView: View {
             PaywallView()
                 .environment(storeManager)
         }
+        .fullScreenCover(isPresented: $showingOnboardingReplay) {
+            OnboardingView(
+                baseCurrency: baseCurrency,
+                existingCount: items.count,
+                onComplete: {
+                    showingOnboardingReplay = false
+                }
+            )
+            .environment(storeManager)
+        }
         .task {
             seedDemoDataIfNeeded()
             await NotificationManager.shared.rescheduleAll(items)
@@ -86,7 +122,7 @@ struct ContentView: View {
     }
 
     private func seedDemoDataIfNeeded() {
-        guard !hasSeededDemoData else { return }
+        guard hasCompletedOnboarding, !hasSeededDemoData else { return }
         hasSeededDemoData = true
         if items.isEmpty {
             for sample in ServicePreset.sampleItems() {

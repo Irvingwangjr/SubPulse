@@ -13,6 +13,7 @@ struct SubscriptionListView: View {
     @State private var searchText = ""
     @State private var selectedCategory: SubscriptionCategory?
     @State private var showingAddForm = false
+    @State private var showingSmartImport = false
     @State private var editingItem: SubscriptionItem?
     @State private var renewCelebrationTick = 0
     @State private var scrollDistance: CGFloat = 0
@@ -135,21 +136,32 @@ struct SubscriptionListView: View {
                             )
                     },
                     trailing: {
-                        Button(action: handleAddTapped) {
-                            Image(systemName: "plus")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundStyle(.white)
-                                .frame(width: 30, height: 30)
-                                .background(
-                                    LinearGradient(
-                                        colors: [Color(hex: "#2563EB"), Color(hex: "#6366F1")],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    ),
-                                    in: Circle()
-                                )
+                        HStack(spacing: 8) {
+                            Button(action: handleSmartImportTapped) {
+                                Image(systemName: "doc.viewfinder")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundStyle(Color(hex: "#10B981"))
+                                    .frame(width: 30, height: 30)
+                                    .background(Color(hex: "#10B981").opacity(0.14), in: Circle())
+                            }
+                            .buttonStyle(BouncyButtonStyle(scale: 0.88))
+
+                            Button(action: handleAddTapped) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 30, height: 30)
+                                    .background(
+                                        LinearGradient(
+                                            colors: [Color(hex: "#2563EB"), Color(hex: "#6366F1")],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        in: Circle()
+                                    )
+                            }
+                            .buttonStyle(BouncyButtonStyle(scale: 0.88))
                         }
-                        .buttonStyle(BouncyButtonStyle(scale: 0.88))
                     }
                 )
             }
@@ -161,6 +173,13 @@ struct SubscriptionListView: View {
                 defaultCurrency: baseCurrency
             )
         }
+        .sheet(isPresented: $showingSmartImport) {
+            SmartImportView(
+                existingCount: items.count,
+                onShowPaywall: onShowPaywall
+            )
+            .environment(storeManager)
+        }
         .sheet(item: $editingItem) { item in
             SubscriptionFormView(
                 existingItem: item,
@@ -170,10 +189,30 @@ struct SubscriptionListView: View {
     }
 
     private var headerBar: some View {
-        HStack(alignment: .center) {
+        HStack(alignment: .center, spacing: 10) {
             Text(NSLocalizedString("tab.subscriptions", comment: ""))
                 .font(.system(size: 32, weight: .bold, design: .rounded))
             Spacer()
+
+            Button(action: handleSmartImportTapped) {
+                HStack(spacing: 5) {
+                    Image(systemName: "doc.viewfinder")
+                        .font(.system(size: 13, weight: .bold))
+                    Text(NSLocalizedString("subs.smart_import_short", comment: ""))
+                        .font(.caption.weight(.bold))
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+                .foregroundStyle(Color(hex: "#059669"))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 9)
+                .background(Color(hex: "#10B981").opacity(0.14), in: Capsule())
+                .overlay(
+                    Capsule()
+                        .strokeBorder(Color(hex: "#10B981").opacity(0.24), lineWidth: 0.8)
+                )
+            }
+            .buttonStyle(BouncyButtonStyle(scale: 0.92))
+
             Button(action: handleAddTapped) {
                 Image(systemName: "plus")
                     .font(.system(size: 18, weight: .bold))
@@ -381,25 +420,42 @@ struct SubscriptionListView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-            Button(action: handleAddTapped) {
-                Text(NSLocalizedString("subs.add_first", comment: ""))
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 22)
-                    .padding(.vertical, 11)
-                    .background(
-                        LinearGradient(
-                            colors: [Color(hex: "#2563EB"), Color(hex: "#6366F1")],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        in: Capsule()
-                    )
+            VStack(spacing: 10) {
+                Button(action: handleSmartImportTapped) {
+                    Label(NSLocalizedString("subs.smart_import", comment: ""), systemImage: "doc.viewfinder")
+                        .font(.subheadline.weight(.bold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 22)
+                        .padding(.vertical, 12)
+                        .background(
+                            LinearGradient(
+                                colors: [Color(hex: "#10B981"), Color(hex: "#059669")],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            in: Capsule()
+                        )
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.94))
+
+                Button(action: handleAddTapped) {
+                    Text(NSLocalizedString("subs.manual_add", comment: ""))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.accentColor)
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.94))
             }
-            .buttonStyle(BouncyButtonStyle(scale: 0.94))
         }
         .frame(maxWidth: .infinity)
         .tactileCard(cornerRadius: 24, padding: 28)
+    }
+
+    private func handleSmartImportTapped() {
+        if canAddMore {
+            showingSmartImport = true
+        } else {
+            onShowPaywall()
+        }
     }
 
     private func handleAddTapped() {
