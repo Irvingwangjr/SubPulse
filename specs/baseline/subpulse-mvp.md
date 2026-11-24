@@ -14,11 +14,13 @@
 - 支持周期：`weekly`、`monthly`、`quarterly`、`yearly`，统一折算为月均与年化支出。
 - 支持 9 种内置离线参考汇率币种：`USD`, `EUR`, `GBP`, `JPY`, `CAD`, `AUD`, `CNY`, `HKD`, `SGD`。
 
-### 2.2 Views & Flows
-- **Overview**：主币种月/年支出汇总卡、7 天内到期与试用统计、近期续费列表、全量开放的 Swift Charts 分类支出柱状图（无模糊或门控）。
-- **Subscriptions**：搜索、分类筛选、左滑删除、右滑一键“已续费”（自动推进 `nextBillingDate` 并清除 `isTrial`）、12 个海外常见服务快捷预设；首次启动预置 2 条示例数据（美元 AI 订阅 + 欧元试用订阅），为新用户保留 1 个免费新建名额。
-- **Upcoming**：按「未来 7 天 / 未来 30 天 / 更晚」分组展示待扣费项及分组小计。
-- **Settings**：主币种切换、通知权限检查与刷新、全量开放的 CSV 导出、受免费额度约束的示例数据导入、一键清空本地数据、隐私/条款/支持外链。
+### 2.2 Views, Motion & Aesthetic
+- **Design System (`DesignSystem.swift`)**：统一弹簧物理动效参数（`AppMotion.snappy / bouncy / gentle`）、触感按压按钮 `BouncyButtonStyle`、呼吸光点 `PulseDotView`、自适应明暗环境光晕 `AmbientBackgroundView`、`24pt` 柔和悬浮卡片 `.tactileCard()`、iOS 17 原生 `.scrollTransition` 滚动呼吸缩放 `.scrollCardMotion()`。
+- **Navigation (`FloatingTabBar`)**：自定义悬浮毛玻璃胶囊底栏，支持 `matchedGeometryEffect` 液体滑动指示器、`.symbolEffect(.bounce)` 图标弹性反馈、`.sensoryFeedback(.selection)` 触感震动，及带方向感知的弹簧切页过渡动画。
+- **Overview**：`ScrollView` + `.scrollBounceBehavior(.always)`；动态情绪状态脉搏条（试用临近 / 本周续费 / 安心躺平）、极光呼吸 Hero 金额卡（带 `.numericText()` 机械滚动数字动画与每日咖啡等价洞察）、带彩色光晕的指标卡片、带续费倒计时进度条的近期续费列表、无遮挡 Swift Charts 分类支出柱状图。
+- **Subscriptions**：`ScrollView` + `.scrollBounceBehavior(.always)`；搜索、带进度条的 `2/3` 免费额度卡片、`matchedGeometryEffect` 丝滑分类胶囊筛选、带呼吸试用点与倒计时进度条的卡片（长按快捷菜单支持已续费/编辑/删除）、12 个海外常见服务快捷预设；首次启动预置 2 条示例数据（`ChatGPT Plus` + 欧元 `Spotify` 试用）。
+- **Upcoming**：`ScrollView` + `.scrollBounceBehavior(.always)`；按「未来 7 天 / 未来 30 天 / 更晚」分组展示及小计，支持一键 Q 弹「已续费」按钮与成功触感反馈。
+- **Settings**：`ScrollView` + `.scrollBounceBehavior(.always)`；暖色渐变 Pro 升级横幅卡片、主币种切换、通知权限检查与刷新、全量开放的 CSV 导出、受免费额度约束的示例数据导入、一键清空本地数据、隐私/条款/支持外链。
 
 ### 2.3 Local Notifications (`NotificationManager`)
 - 基于 `UNUserNotificationCenter`，按 `nextBillingDate - reminderDaysBefore` 的上午 9:00 触发本地提醒，区分试用转正提醒与普通续费提醒；1 / 3 / 7 / 14 天提前提醒对所有用户免费开放。

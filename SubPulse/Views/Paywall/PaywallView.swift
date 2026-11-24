@@ -7,6 +7,7 @@ struct PaywallView: View {
 
     @State private var selectedProductID: String = AppConfig.ProductID.proYearly
     @State private var statusBanner: String?
+    @State private var crownPulse = false
 
     private var selectedProduct: Product? {
         storeManager.products.first { $0.id == selectedProductID } ?? storeManager.yearlyProduct ?? storeManager.monthlyProduct
@@ -14,17 +15,24 @@ struct PaywallView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 22) {
-                    headerSection
-                    featureListSection
-                    planSelectionSection
-                    actionButtonsSection
-                    legalDisclosureSection
+            ZStack {
+                AmbientBackgroundView(
+                    accent: Color(hex: "#F97316"),
+                    secondaryAccent: Color(hex: "#7C3AED")
+                )
+
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 22) {
+                        headerSection
+                        featureListSection
+                        planSelectionSection
+                        actionButtonsSection
+                        legalDisclosureSection
+                    }
+                    .padding(20)
                 }
-                .padding(20)
+                .scrollBounceBehavior(.always)
             }
-            .background(Color(.systemGroupedBackground))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -35,6 +43,13 @@ struct PaywallView: View {
                             .font(.title3)
                             .foregroundStyle(.secondary)
                     }
+                    .buttonStyle(BouncyButtonStyle(scale: 0.9))
+                }
+            }
+            .sensoryFeedback(.selection, trigger: selectedProductID)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) {
+                    crownPulse = true
                 }
             }
             .task {
@@ -46,52 +61,64 @@ struct PaywallView: View {
     }
 
     private var headerSection: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 12) {
             ZStack {
+                Circle()
+                    .fill(Color(hex: "#FF7B29").opacity(0.28))
+                    .frame(width: 96, height: 96)
+                    .scaleEffect(crownPulse ? 1.15 : 0.95)
+                    .blur(radius: 14)
+
                 Circle()
                     .fill(
                         LinearGradient(
-                            colors: [.orange, Color(hex: "#FF3B30")],
+                            colors: [Color(hex: "#FFB340"), Color(hex: "#FF5E3A")],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
-                    .frame(width: 68, height: 68)
+                    .frame(width: 74, height: 74)
+                    .shadow(color: Color(hex: "#FF5E3A").opacity(0.35), radius: 14, y: 6)
+
                 Image(systemName: "crown.fill")
-                    .font(.system(size: 30))
+                    .font(.system(size: 32, weight: .bold))
                     .foregroundStyle(.white)
             }
 
             Text(NSLocalizedString("paywall.title", comment: ""))
-                .font(.title.bold())
+                .font(.system(size: 30, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
 
             Text(NSLocalizedString("paywall.subtitle", comment: ""))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .padding(.horizontal, 8)
         }
         .padding(.top, 4)
     }
 
     private var featureListSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            featureRow(icon: "infinity", color: .blue, title: NSLocalizedString("paywall.feat_unlimited", comment: ""))
-            featureRow(icon: "checkmark.seal.fill", color: .green, title: NSLocalizedString("paywall.feat_all_included", comment: ""))
-            featureRow(icon: "sparkles", color: .purple, title: NSLocalizedString("paywall.feat_future", comment: ""))
-            featureRow(icon: "heart.fill", color: .orange, title: NSLocalizedString("paywall.feat_support", comment: ""))
+            featureRow(icon: "infinity", color: Color(hex: "#2563EB"), title: NSLocalizedString("paywall.feat_unlimited", comment: ""))
+            featureRow(icon: "checkmark.seal.fill", color: Color(hex: "#10B981"), title: NSLocalizedString("paywall.feat_all_included", comment: ""))
+            featureRow(icon: "sparkles", color: Color(hex: "#8B5CF6"), title: NSLocalizedString("paywall.feat_future", comment: ""))
+            featureRow(icon: "heart.fill", color: Color(hex: "#F97316"), title: NSLocalizedString("paywall.feat_support", comment: ""))
         }
-        .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .tactileCard(cornerRadius: 24, padding: 18)
     }
 
     private func featureRow(icon: String, color: Color, title: String) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.body.weight(.semibold))
-                .foregroundStyle(color)
-                .frame(width: 26)
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.15))
+                    .frame(width: 32, height: 32)
+                Image(systemName: icon)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(color)
+            }
             Text(title)
                 .font(.subheadline.weight(.medium))
         }
@@ -114,6 +141,8 @@ struct PaywallView: View {
                     .buttonStyle(.bordered)
                 }
                 .padding()
+                .frame(maxWidth: .infinity)
+                .tactileCard(cornerRadius: 20, padding: 16)
             } else {
                 if let yearly = storeManager.yearlyProduct {
                     planCard(
@@ -136,20 +165,29 @@ struct PaywallView: View {
     private func planCard(product: Product, badge: String?, subtitle: String) -> some View {
         let isSelected = selectedProductID == product.id
         return Button {
-            selectedProductID = product.id
+            withAnimation(AppMotion.bouncy) {
+                selectedProductID = product.id
+            }
         } label: {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
                         Text(product.displayName)
-                            .font(.headline)
+                            .font(.headline.weight(.bold))
                             .foregroundStyle(.primary)
                         if let badge {
                             Text(badge)
                                 .font(.caption2.weight(.bold))
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
-                                .background(Color.orange, in: Capsule())
+                                .background(
+                                    LinearGradient(
+                                        colors: [Color(hex: "#FF9F0A"), Color(hex: "#FF5E3A")],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    ),
+                                    in: Capsule()
+                                )
                                 .foregroundStyle(.white)
                         }
                     }
@@ -162,17 +200,23 @@ struct PaywallView: View {
                     .font(.title3.bold())
                     .foregroundStyle(.primary)
             }
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color(.secondarySystemGroupedBackground))
-            )
+            .tactileCard(cornerRadius: 20, padding: 16)
             .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .stroke(isSelected ? Color.accentColor : Color.clear, lineWidth: 2)
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(
+                        isSelected
+                            ? LinearGradient(
+                                colors: [Color(hex: "#2563EB"), Color(hex: "#7C3AED")],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                            : LinearGradient(colors: [.clear], startPoint: .leading, endPoint: .trailing),
+                        lineWidth: 2.2
+                    )
             )
+            .scaleEffect(isSelected ? 1.02 : 0.99)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(BouncyButtonStyle(scale: 0.96))
     }
 
     private func trialSubtitle(for product: Product) -> String? {
@@ -182,26 +226,9 @@ struct PaywallView: View {
         }
         return String(
             format: NSLocalizedString("paywall.free_trial_then", comment: ""),
-            trialDurationText(for: offer.period),
+            offer.period.value,
             product.displayPrice
         )
-    }
-
-    /// App Store Connect only offers trial durations like "1 week" / "1 month", so the
-    /// period unit must be honored — `period.value` alone would render a 1-week trial as "1-day".
-    private func trialDurationText(for period: Product.SubscriptionPeriod) -> String {
-        switch period.unit {
-        case .day:
-            return String(format: NSLocalizedString("paywall.trial_days", comment: ""), period.value)
-        case .week:
-            return String(format: NSLocalizedString("paywall.trial_days", comment: ""), period.value * 7)
-        case .month:
-            return String(format: NSLocalizedString("paywall.trial_months", comment: ""), period.value)
-        case .year:
-            return String(format: NSLocalizedString("paywall.trial_years", comment: ""), period.value)
-        @unknown default:
-            return String(format: NSLocalizedString("paywall.trial_days", comment: ""), period.value)
-        }
     }
 
     private var actionButtonsSection: some View {
@@ -228,13 +255,24 @@ struct PaywallView: View {
                             .tint(.white)
                     } else {
                         Text(NSLocalizedString("paywall.continue", comment: ""))
-                            .font(.headline)
+                            .font(.headline.weight(.bold))
+                            .foregroundStyle(.white)
                     }
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
+                .padding(.vertical, 16)
+                .background(
+                    LinearGradient(
+                        colors: [Color(hex: "#2563EB"), Color(hex: "#6D28D9")],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    ),
+                    in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+                )
+                .shadow(color: Color(hex: "#4F46E5").opacity(0.32), radius: 14, y: 6)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(BouncyButtonStyle(scale: 0.96))
+            .opacity(selectedProduct == nil || storeManager.isPurchasing ? 0.55 : 1.0)
             .disabled(selectedProduct == nil || storeManager.isPurchasing)
 
             Button(NSLocalizedString("paywall.restore", comment: "")) {
@@ -247,7 +285,8 @@ struct PaywallView: View {
                     }
                 }
             }
-            .font(.subheadline.weight(.medium))
+            .font(.subheadline.weight(.semibold))
+            .buttonStyle(BouncyButtonStyle(scale: 0.94))
             .disabled(storeManager.isPurchasing)
         }
     }

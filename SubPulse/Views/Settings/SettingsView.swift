@@ -20,113 +20,293 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("SubPulse Pro") {
-                    if storeManager.isPro {
-                        HStack {
-                            Label(NSLocalizedString("settings.pro_active", comment: ""), systemImage: "checkmark.seal.fill")
-                                .foregroundStyle(.green)
-                            Spacer()
-                            Text("Active")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                        }
-                        Button(NSLocalizedString("settings.manage_subscription", comment: "")) {
-                            showingManageSubscriptions = true
-                        }
-                    } else {
-                        Button(action: onShowPaywall) {
-                            HStack {
-                                Label(NSLocalizedString("settings.upgrade_pro", comment: ""), systemImage: "crown.fill")
-                                    .foregroundStyle(.orange)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(.caption)
-                                    .foregroundStyle(.tertiary)
-                            }
-                        }
-                    }
-                }
+        ZStack {
+            AmbientBackgroundView(
+                accent: Color(hex: "#6366F1"),
+                secondaryAccent: Color(hex: "#0EA5E9")
+            )
 
-                Section(NSLocalizedString("settings.preferences", comment: "")) {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 18) {
+                    Text(NSLocalizedString("tab.settings", comment: ""))
+                        .font(.system(size: 32, weight: .bold, design: .rounded))
+
+                    proBannerCard
+                        .scrollCardMotion()
+
+                    preferencesCard
+                        .scrollCardMotion()
+
+                    dataCard
+                        .scrollCardMotion()
+
+                    legalCard
+                        .scrollCardMotion()
+
+                    VStack(spacing: 6) {
+                        Text("\(NSLocalizedString("settings.version", comment: "")) \(appVersion)")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        Text(NSLocalizedString("settings.privacy_footer", comment: ""))
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 12)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 4)
+
+                    Spacer().frame(height: 92)
+                }
+                .padding(.horizontal, 18)
+                .padding(.top, 10)
+            }
+            .scrollBounceBehavior(.always)
+        }
+        .manageSubscriptionsSheet(isPresented: $showingManageSubscriptions)
+        .confirmationDialog(
+            NSLocalizedString("settings.delete_confirm_title", comment: ""),
+            isPresented: $showingResetConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(NSLocalizedString("settings.delete_all", comment: ""), role: .destructive) {
+                deleteAllItems()
+            }
+            Button(NSLocalizedString("action.cancel", comment: ""), role: .cancel) {}
+        }
+        .task(id: "\(items.count)-\(baseCurrencyCode)") {
+            await refreshNotificationStatus()
+            exportFileURL = CSVExporter.exportURL(for: items, baseCurrency: baseCurrency)
+        }
+    }
+
+    private var proBannerCard: some View {
+        Group {
+            if storeManager.isPro {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Label(NSLocalizedString("settings.pro_active", comment: ""), systemImage: "checkmark.seal.fill")
+                            .font(.headline.weight(.bold))
+                            .foregroundStyle(Color(hex: "#10B981"))
+                        Spacer()
+                        Text("Active")
+                            .font(.caption.weight(.bold))
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .background(Color(hex: "#10B981").opacity(0.14), in: Capsule())
+                            .foregroundStyle(Color(hex: "#10B981"))
+                    }
+                    Button(NSLocalizedString("settings.manage_subscription", comment: "")) {
+                        showingManageSubscriptions = true
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .buttonStyle(BouncyButtonStyle())
+                }
+                .tactileCard(cornerRadius: 24, padding: 18)
+            } else {
+                Button(action: onShowPaywall) {
+                    HStack(spacing: 14) {
+                        ZStack {
+                            Circle()
+                                .fill(.white.opacity(0.22))
+                                .frame(width: 48, height: 48)
+                            Image(systemName: "crown.fill")
+                                .font(.title3.weight(.bold))
+                                .foregroundStyle(.white)
+                        }
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(NSLocalizedString("settings.upgrade_pro", comment: ""))
+                                .font(.headline.weight(.bold))
+                                .foregroundStyle(.white)
+                            Text(NSLocalizedString("settings.pro_card_subtitle", comment: ""))
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.88))
+                                .multilineTextAlignment(.leading)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(.white.opacity(0.85))
+                    }
+                    .padding(18)
+                    .background(
+                        LinearGradient(
+                            colors: [Color(hex: "#FF9F0A"), Color(hex: "#FF5E3A"), Color(hex: "#EC4899")],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        in: RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    )
+                    .shadow(color: Color(hex: "#FF5E3A").opacity(0.32), radius: 16, y: 8)
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.97))
+            }
+        }
+    }
+
+    private var preferencesCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(NSLocalizedString("settings.preferences", comment: "").uppercased())
+                .font(.caption.weight(.bold))
+                .foregroundStyle(.secondary)
+
+            VStack(spacing: 14) {
+                HStack {
+                    Label(NSLocalizedString("settings.base_currency", comment: ""), systemImage: "dollarsign.circle.fill")
+                        .font(.subheadline.weight(.medium))
+                    Spacer()
                     Picker(NSLocalizedString("settings.base_currency", comment: ""), selection: $baseCurrencyCode) {
                         ForEach(Currency.allCases) { currency in
-                            Text("\(currency.flag) \(currency.displayName)").tag(currency.rawValue)
+                            Text("\(currency.flag) \(currency.rawValue)").tag(currency.rawValue)
                         }
                     }
-
-                    HStack {
-                        Text(NSLocalizedString("settings.notifications", comment: ""))
-                        Spacer()
-                        Text(notificationStatusText)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Button(NSLocalizedString("settings.enable_notifications", comment: "")) {
-                        Task {
-                            _ = await NotificationManager.shared.requestAuthorization()
-                            await NotificationManager.shared.rescheduleAll(items)
-                            await refreshNotificationStatus()
-                        }
-                    }
+                    .labelsHidden()
+                    .tint(Color.accentColor)
                 }
 
-                Section(NSLocalizedString("settings.data", comment: "")) {
-                    if let url = exportFileURL {
-                        ShareLink(item: url) {
+                Divider().opacity(0.6)
+
+                HStack {
+                    Label(NSLocalizedString("settings.notifications", comment: ""), systemImage: "bell.fill")
+                        .font(.subheadline.weight(.medium))
+                    Spacer()
+                    Text(notificationStatusText)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Divider().opacity(0.6)
+
+                Button {
+                    Task {
+                        _ = await NotificationManager.shared.requestAuthorization()
+                        await NotificationManager.shared.rescheduleAll(items)
+                        await refreshNotificationStatus()
+                    }
+                } label: {
+                    HStack {
+                        Text(NSLocalizedString("settings.enable_notifications", comment: ""))
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.accentColor)
+                        Spacer()
+                        Image(systemName: "arrow.clockwise")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.accentColor)
+                    }
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.98))
+            }
+            .tactileCard(cornerRadius: 22, padding: 16)
+        }
+    }
+
+    private var dataCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(NSLocalizedString("settings.data", comment: "").uppercased())
+                .font(.caption.weight(.bold))
+                .foregroundStyle(.secondary)
+
+            VStack(spacing: 14) {
+                if let url = exportFileURL {
+                    ShareLink(item: url) {
+                        HStack {
                             Label(NSLocalizedString("settings.export_csv", comment: ""), systemImage: "square.and.arrow.up")
+                                .font(.subheadline.weight(.semibold))
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
                         }
-                    } else {
-                        Button {
-                            exportFileURL = CSVExporter.exportURL(for: items, baseCurrency: baseCurrency)
-                        } label: {
+                    }
+                } else {
+                    Button {
+                        exportFileURL = CSVExporter.exportURL(for: items, baseCurrency: baseCurrency)
+                    } label: {
+                        HStack {
                             Label(NSLocalizedString("settings.prepare_csv", comment: ""), systemImage: "doc.text")
+                                .font(.subheadline.weight(.semibold))
+                            Spacer()
                         }
                     }
-
-                    Button(NSLocalizedString("settings.load_samples", comment: "")) {
-                        loadSampleSubscriptions()
-                    }
-
-                    Button(NSLocalizedString("settings.delete_all", comment: ""), role: .destructive) {
-                        showingResetConfirmation = true
-                    }
+                    .buttonStyle(BouncyButtonStyle(scale: 0.98))
                 }
 
-                Section(NSLocalizedString("settings.legal", comment: "")) {
-                    Link(NSLocalizedString("settings.privacy", comment: ""), destination: AppConfig.privacyPolicyURL)
-                    Link(NSLocalizedString("settings.terms", comment: ""), destination: AppConfig.termsOfServiceURL)
-                    Link(NSLocalizedString("settings.support", comment: ""), destination: AppConfig.supportURL)
-                }
+                Divider().opacity(0.6)
 
-                Section {
+                Button {
+                    loadSampleSubscriptions()
+                } label: {
                     HStack {
-                        Text(NSLocalizedString("settings.version", comment: ""))
+                        Label(NSLocalizedString("settings.load_samples", comment: ""), systemImage: "sparkles")
+                            .font(.subheadline.weight(.medium))
                         Spacer()
-                        Text(appVersion)
-                            .foregroundStyle(.secondary)
                     }
-                } footer: {
-                    Text(NSLocalizedString("settings.privacy_footer", comment: ""))
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.98))
+
+                Divider().opacity(0.6)
+
+                Button(role: .destructive) {
+                    showingResetConfirmation = true
+                } label: {
+                    HStack {
+                        Label(NSLocalizedString("settings.delete_all", comment: ""), systemImage: "trash")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.red)
+                        Spacer()
+                    }
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.98))
+            }
+            .tactileCard(cornerRadius: 22, padding: 16)
+        }
+    }
+
+    private var legalCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(NSLocalizedString("settings.legal", comment: "").uppercased())
+                .font(.caption.weight(.bold))
+                .foregroundStyle(.secondary)
+
+            VStack(spacing: 14) {
+                Link(destination: AppConfig.privacyPolicyURL) {
+                    HStack {
+                        Text(NSLocalizedString("settings.privacy", comment: ""))
+                            .font(.subheadline.weight(.medium))
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+
+                Divider().opacity(0.6)
+
+                Link(destination: AppConfig.termsOfServiceURL) {
+                    HStack {
+                        Text(NSLocalizedString("settings.terms", comment: ""))
+                            .font(.subheadline.weight(.medium))
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+
+                Divider().opacity(0.6)
+
+                Link(destination: AppConfig.supportURL) {
+                    HStack {
+                        Text(NSLocalizedString("settings.support", comment: ""))
+                            .font(.subheadline.weight(.medium))
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
             }
-            .navigationTitle(NSLocalizedString("tab.settings", comment: ""))
-            .manageSubscriptionsSheet(isPresented: $showingManageSubscriptions)
-            .confirmationDialog(
-                NSLocalizedString("settings.delete_confirm_title", comment: ""),
-                isPresented: $showingResetConfirmation,
-                titleVisibility: .visible
-            ) {
-                Button(NSLocalizedString("settings.delete_all", comment: ""), role: .destructive) {
-                    deleteAllItems()
-                }
-                Button(NSLocalizedString("action.cancel", comment: ""), role: .cancel) {}
-            }
-            .task(id: "\(items.count)-\(baseCurrencyCode)") {
-                await refreshNotificationStatus()
-                exportFileURL = CSVExporter.exportURL(for: items, baseCurrency: baseCurrency)
-            }
+            .tactileCard(cornerRadius: 22, padding: 16)
         }
     }
 
@@ -139,8 +319,11 @@ struct SettingsView: View {
         let allowed = storeManager.isPro
             ? samples.count
             : max(0, AppConfig.freeSubscriptionLimit - items.count)
-        for sample in samples.prefix(allowed) {
-            modelContext.insert(sample)
+        withAnimation(AppMotion.bouncy) {
+            for sample in samples.prefix(allowed) {
+                modelContext.insert(sample)
+            }
+            try? modelContext.save()
         }
     }
 
@@ -165,9 +348,12 @@ struct SettingsView: View {
     }
 
     private func deleteAllItems() {
-        for item in items {
-            NotificationManager.shared.cancelReminder(for: item.id)
-            modelContext.delete(item)
+        withAnimation(AppMotion.snappy) {
+            for item in items {
+                NotificationManager.shared.cancelReminder(for: item.id)
+                modelContext.delete(item)
+            }
+            try? modelContext.save()
         }
     }
 }

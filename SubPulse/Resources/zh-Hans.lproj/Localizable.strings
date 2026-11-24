@@ -22,6 +22,12 @@
 "category.other" = "其他";
 
 /* Overview */
+"overview.tagline" = "你的贴心订阅雷达";
+"overview.mood_trial_soon" = "盯紧啦！有 %d 个免费试用快到期，别被悄悄扣费";
+"overview.mood_due_week" = "本周有 %d 笔续费，一切尽在掌控";
+"overview.mood_calm" = "安心躺平，未来 7 天没有任何扣费";
+"overview.daily_coffee" = "约 %@/天 • 相当于每月 %d 杯咖啡";
+"overview.see_all" = "查看全部";
 "overview.monthly_spend" = "预计月均支出";
 "overview.yearly_projection" = "年度预计支出";
 "overview.active_subs" = "生效订阅";
@@ -80,6 +86,7 @@
 "reminder.14_days" = "提前 14 天";
 
 /* Upcoming */
+"upcoming.subtitle" = "点一下「已续费」自动推算下期日期";
 "upcoming.empty_title" = "暂无待续费项";
 "upcoming.empty_desc" = "添加订阅后将按扣费时间自动排序展示。";
 "upcoming.section_7days" = "未来 7 天";
@@ -119,6 +126,7 @@
 "settings.pro_active" = "SubPulse Pro 已激活";
 "settings.manage_subscription" = "管理订阅";
 "settings.upgrade_pro" = "升级 SubPulse Pro";
+"settings.pro_card_subtitle" = "解锁无限订阅追踪，支持独立隐私开发";
 "settings.preferences" = "偏好设置";
 "settings.base_currency" = "主显示币种";
 "settings.notifications" = "通知权限";

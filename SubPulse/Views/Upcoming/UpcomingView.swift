@@ -4,6 +4,8 @@ struct UpcomingView: View {
     let items: [SubscriptionItem]
     let baseCurrency: Currency
 
+    @State private var renewTick = 0
+
     private var sortedItems: [SubscriptionItem] {
         items.sorted { $0.nextBillingDate < $1.nextBillingDate }
     }
@@ -21,68 +23,124 @@ struct UpcomingView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if sortedItems.isEmpty {
-                    ContentUnavailableView(
-                        NSLocalizedString("upcoming.empty_title", comment: ""),
-                        systemImage: "calendar.badge.checkmark",
-                        description: Text(NSLocalizedString("upcoming.empty_desc", comment: ""))
-                    )
-                } else {
-                    List {
+        ZStack {
+            AmbientBackgroundView(
+                accent: Color(hex: "#F97316"),
+                secondaryAccent: Color(hex: "#6366F1")
+            )
+
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(NSLocalizedString("tab.upcoming", comment: ""))
+                            .font(.system(size: 32, weight: .bold, design: .rounded))
+                        Text(NSLocalizedString("upcoming.subtitle", comment: ""))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if sortedItems.isEmpty {
+                        VStack(spacing: 12) {
+                            Image(systemName: "calendar.badge.checkmark")
+                                .font(.system(size: 36))
+                                .foregroundStyle(.green)
+                            Text(NSLocalizedString("upcoming.empty_title", comment: ""))
+                                .font(.headline.weight(.bold))
+                            Text(NSLocalizedString("upcoming.empty_desc", comment: ""))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .tactileCard(cornerRadius: 24, padding: 30)
+                        .padding(.top, 16)
+                    } else {
                         if !dueSoonItems.isEmpty {
-                            sectionView(
+                            sectionBlock(
                                 title: NSLocalizedString("upcoming.section_7days", comment: ""),
+                                tint: Color(hex: "#F97316"),
                                 list: dueSoonItems
                             )
                         }
                         if !thisMonthItems.isEmpty {
-                            sectionView(
+                            sectionBlock(
                                 title: NSLocalizedString("upcoming.section_30days", comment: ""),
+                                tint: Color(hex: "#4F46E5"),
                                 list: thisMonthItems
                             )
                         }
                         if !laterItems.isEmpty {
-                            sectionView(
+                            sectionBlock(
                                 title: NSLocalizedString("upcoming.section_later", comment: ""),
+                                tint: Color(hex: "#10B981"),
                                 list: laterItems
                             )
                         }
                     }
-                    .listStyle(.insetGrouped)
+
+                    Spacer().frame(height: 92)
                 }
+                .padding(.horizontal, 18)
+                .padding(.top, 10)
             }
-            .navigationTitle(NSLocalizedString("tab.upcoming", comment: ""))
+            .scrollBounceBehavior(.always)
         }
+        .sensoryFeedback(.success, trigger: renewTick)
     }
 
-    private func sectionView(title: String, list: [SubscriptionItem]) -> some View {
+    private func sectionBlock(title: String, tint: Color, list: [SubscriptionItem]) -> some View {
         let subtotal = list.reduce(0.0) { $0 + $1.currency.convert($1.amount, to: baseCurrency) }
-        return Section {
-            ForEach(list) { item in
-                HStack {
-                    SubscriptionRowView(item: item, baseCurrency: baseCurrency)
-                }
-                .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                    Button {
-                        item.advanceBillingDate()
-                        Task {
-                            await NotificationManager.shared.scheduleReminder(for: item)
-                        }
-                    } label: {
-                        Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
-                    }
-                    .tint(.green)
-                }
-            }
-        } header: {
+        return VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text(title)
+                HStack(spacing: 7) {
+                    Circle()
+                        .fill(tint)
+                        .frame(width: 8, height: 8)
+                    Text(title.uppercased())
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.secondary)
+                }
                 Spacer()
                 Text(baseCurrency.formatted(subtotal))
-                    .font(.caption.weight(.semibold))
+                    .font(.caption.weight(.bold))
+                    .contentTransition(.numericText(value: subtotal))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(tint.opacity(0.12), in: Capsule())
+                    .foregroundStyle(tint)
             }
+
+            VStack(spacing: 12) {
+                ForEach(list) { item in
+                    VStack(spacing: 12) {
+                        SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
+
+                        HStack {
+                            Spacer()
+                            Button {
+                                withAnimation(AppMotion.bouncy) {
+                                    item.advanceBillingDate()
+                                    renewTick += 1
+                                }
+                                Task {
+                                    await NotificationManager.shared.scheduleReminder(for: item)
+                                }
+                            } label: {
+                                Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(Color(hex: "#10B981"))
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                                    .background(Color(hex: "#10B981").opacity(0.12), in: Capsule())
+                            }
+                            .buttonStyle(BouncyButtonStyle(scale: 0.92))
+                        }
+                    }
+                    .tactileCard(cornerRadius: 22, padding: 16)
+                    .scrollCardMotion()
+                }
+            }
+            .animation(AppMotion.bouncy, value: list.map(\.id))
         }
     }
 }

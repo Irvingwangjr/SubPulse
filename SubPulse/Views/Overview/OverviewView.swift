@@ -7,6 +7,10 @@ struct OverviewView: View {
     let items: [SubscriptionItem]
     let baseCurrency: Currency
     let onShowPaywall: () -> Void
+    let onJumpToSubscriptions: () -> Void
+
+    @State private var appeared = false
+    @State private var glowShift = false
 
     private var monthlyTotal: Double {
         items.reduce(0) { $0 + $1.monthlyAmount(in: baseCurrency) }
@@ -16,8 +20,21 @@ struct OverviewView: View {
         items.reduce(0) { $0 + $1.yearlyAmount(in: baseCurrency) }
     }
 
+    private var dailyTotal: Double {
+        monthlyTotal / 30.0
+    }
+
+    private var coffeeEquivalents: Int {
+        let usdMonthly = items.reduce(0.0) { $0 + $1.monthlyAmount(in: .usd) }
+        return max(1, Int((usdMonthly / 5.0).rounded()))
+    }
+
     private var trialCount: Int {
         items.filter(\.isTrial).count
+    }
+
+    private var urgentTrialCount: Int {
+        items.filter { $0.isTrial && $0.daysUntilRenewal <= 3 }.count
     }
 
     private var dueWithin7Days: [SubscriptionItem] {
@@ -37,142 +54,302 @@ struct OverviewView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
+        ZStack {
+            AmbientBackgroundView(
+                accent: urgentTrialCount > 0 ? Color(hex: "#F97316") : Color(hex: "#4F46E5"),
+                secondaryAccent: Color(hex: "#EC4899")
+            )
+
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
+                    headerBar
+                    moodBanner
+                        .offset(y: appeared ? 0 : 10)
+                        .opacity(appeared ? 1 : 0)
                     heroSummaryCard
+                        .scrollCardMotion()
+                        .offset(y: appeared ? 0 : 14)
+                        .opacity(appeared ? 1 : 0)
                     quickStatsRow
+                        .scrollCardMotion()
+                        .offset(y: appeared ? 0 : 18)
+                        .opacity(appeared ? 1 : 0)
                     upcomingAlertCard
+                        .scrollCardMotion()
+                        .offset(y: appeared ? 0 : 22)
+                        .opacity(appeared ? 1 : 0)
                     categoryChartCard
+                        .scrollCardMotion()
+                        .offset(y: appeared ? 0 : 26)
+                        .opacity(appeared ? 1 : 0)
+
+                    Spacer().frame(height: 92)
                 }
-                .padding()
+                .padding(.horizontal, 18)
+                .padding(.top, 10)
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("SubPulse")
-            .toolbar {
-                if !storeManager.isPro {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: onShowPaywall) {
-                            Label("Pro", systemImage: "crown.fill")
-                                .font(.subheadline.weight(.semibold))
-                        }
-                        .tint(.orange)
-                    }
-                }
+            .scrollBounceBehavior(.always)
+        }
+        .onAppear {
+            withAnimation(AppMotion.gentle) {
+                appeared = true
+            }
+            withAnimation(.easeInOut(duration: 4.0).repeatForever(autoreverses: true)) {
+                glowShift = true
             }
         }
     }
 
-    private var heroSummaryCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Text(NSLocalizedString("overview.monthly_spend", comment: ""))
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.white.opacity(0.85))
-                Spacer()
-                Text("\(baseCurrency.flag) \(baseCurrency.rawValue)")
-                    .font(.caption.weight(.semibold))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
-                    .background(.white.opacity(0.18), in: Capsule())
-                    .foregroundStyle(.white)
+    private var headerBar: some View {
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("SubPulse")
+                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                Text(NSLocalizedString("overview.tagline", comment: ""))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
 
-            Text(baseCurrency.formatted(monthlyTotal))
-                .font(.system(size: 40, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
-                .minimumScaleFactor(0.7)
-                .lineLimit(1)
+            Spacer()
 
-            Divider()
-                .overlay(.white.opacity(0.25))
-
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(NSLocalizedString("overview.yearly_projection", comment: ""))
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.75))
-                    Text(baseCurrency.formatted(yearlyTotal))
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.white)
+            if !storeManager.isPro {
+                Button(action: onShowPaywall) {
+                    HStack(spacing: 5) {
+                        Image(systemName: "crown.fill")
+                            .font(.caption.weight(.bold))
+                        Text("Pro")
+                            .font(.subheadline.weight(.bold))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(
+                        LinearGradient(
+                            colors: [Color(hex: "#FF9F0A"), Color(hex: "#FF5E3A")],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        in: Capsule()
+                    )
+                    .shadow(color: Color(hex: "#FF7B29").opacity(0.35), radius: 8, y: 4)
                 }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(NSLocalizedString("overview.active_subs", comment: ""))
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.75))
-                    Text("\(items.count)")
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.white)
-                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.92))
             }
         }
-        .padding(20)
+        .padding(.bottom, 2)
+    }
+
+    private var moodBanner: some View {
+        let isUrgent = urgentTrialCount > 0
+        let hasUpcoming = !dueWithin7Days.isEmpty
+        let tint: Color = isUrgent ? Color(hex: "#F97316") : (hasUpcoming ? Color(hex: "#4F46E5") : Color(hex: "#10B981"))
+
+        let message: String = {
+            if isUrgent {
+                return String(format: NSLocalizedString("overview.mood_trial_soon", comment: ""), urgentTrialCount)
+            } else if hasUpcoming {
+                return String(format: NSLocalizedString("overview.mood_due_week", comment: ""), dueWithin7Days.count)
+            } else {
+                return NSLocalizedString("overview.mood_calm", comment: "")
+            }
+        }()
+
+        return HStack(spacing: 12) {
+            if isUrgent {
+                PulseDotView(color: tint, size: 9)
+                    .frame(width: 22)
+            } else {
+                Image(systemName: hasUpcoming ? "sparkles" : "sun.max.fill")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(tint)
+                    .frame(width: 22)
+            }
+
+            Text(message)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 13)
         .background(
-            LinearGradient(
-                colors: [Color(hex: "#1D4ED8"), Color(hex: "#4F46E5")],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            ),
-            in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(tint.opacity(0.11))
         )
-        .shadow(color: Color(hex: "#1D4ED8").opacity(0.22), radius: 12, y: 6)
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .strokeBorder(tint.opacity(0.24), lineWidth: 0.9)
+        )
+    }
+
+    private var heroSummaryCard: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(hex: "#1E3A8A"),
+                            Color(hex: "#2563EB"),
+                            Color(hex: "#6D28D9")
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+
+            // Soft animated ambient light orb inside the card
+            Circle()
+                .fill(Color(hex: "#38BDF8").opacity(0.32))
+                .frame(width: 190, height: 190)
+                .blur(radius: 44)
+                .offset(x: glowShift ? 95 : 55, y: glowShift ? -55 : -30)
+
+            Circle()
+                .fill(Color(hex: "#F472B6").opacity(0.26))
+                .frame(width: 150, height: 150)
+                .blur(radius: 42)
+                .offset(x: glowShift ? -90 : -55, y: glowShift ? 65 : 40)
+
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    Text(NSLocalizedString("overview.monthly_spend", comment: ""))
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.white.opacity(0.86))
+                    Spacer()
+                    Text("\(baseCurrency.flag) \(baseCurrency.rawValue)")
+                        .font(.caption.weight(.bold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(.white.opacity(0.18), in: Capsule())
+                        .foregroundStyle(.white)
+                }
+
+                Text(baseCurrency.formatted(monthlyTotal))
+                    .font(.system(size: 46, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .contentTransition(.numericText(value: monthlyTotal))
+                    .animation(AppMotion.snappy, value: monthlyTotal)
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(1)
+
+                if monthlyTotal > 0 {
+                    HStack(spacing: 6) {
+                        Image(systemName: "cup.and.saucer.fill")
+                            .font(.caption)
+                        Text(String(
+                            format: NSLocalizedString("overview.daily_coffee", comment: ""),
+                            baseCurrency.formatted(dailyTotal),
+                            coffeeEquivalents
+                        ))
+                        .font(.caption.weight(.medium))
+                    }
+                    .foregroundStyle(.white.opacity(0.92))
+                    .padding(.horizontal, 11)
+                    .padding(.vertical, 6)
+                    .background(.white.opacity(0.15), in: Capsule())
+                }
+
+                Divider()
+                    .overlay(.white.opacity(0.22))
+
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(NSLocalizedString("overview.yearly_projection", comment: ""))
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.75))
+                        Text(baseCurrency.formatted(yearlyTotal))
+                            .font(.headline.weight(.bold))
+                            .foregroundStyle(.white)
+                            .contentTransition(.numericText(value: yearlyTotal))
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text(NSLocalizedString("overview.active_subs", comment: ""))
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.75))
+                        Text("\(items.count)")
+                            .font(.headline.weight(.bold))
+                            .foregroundStyle(.white)
+                            .contentTransition(.numericText(value: Double(items.count)))
+                    }
+                }
+            }
+            .padding(22)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .strokeBorder(.white.opacity(0.22), lineWidth: 1)
+        )
+        .shadow(color: Color(hex: "#3730A3").opacity(0.28), radius: 20, y: 10)
     }
 
     private var quickStatsRow: some View {
         HStack(spacing: 12) {
             metricTile(
                 title: NSLocalizedString("overview.due_soon", comment: ""),
-                value: "\(dueWithin7Days.count)",
+                value: dueWithin7Days.count,
                 subtitle: NSLocalizedString("overview.next_7_days", comment: ""),
                 icon: "bell.badge.fill",
-                tint: .orange
+                tint: Color(hex: "#F97316")
             )
             metricTile(
                 title: NSLocalizedString("overview.free_trials", comment: ""),
-                value: "\(trialCount)",
+                value: trialCount,
                 subtitle: NSLocalizedString("overview.watch_closely", comment: ""),
                 icon: "hourglass",
-                tint: .purple
+                tint: Color(hex: "#8B5CF6")
             )
         }
     }
 
-    private func metricTile(title: String, value: String, subtitle: String, icon: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+    private func metricTile(title: String, value: Int, subtitle: String, icon: String, tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Image(systemName: icon)
-                    .foregroundStyle(tint)
+                ZStack {
+                    Circle()
+                        .fill(tint.opacity(0.16))
+                        .frame(width: 30, height: 30)
+                    Image(systemName: icon)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(tint)
+                }
                 Text(title)
-                    .font(.caption.weight(.medium))
+                    .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                 Spacer()
             }
-            Text(value)
-                .font(.title2.bold())
+            Text("\(value)")
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .contentTransition(.numericText(value: Double(value)))
             Text(subtitle)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
-        .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .tactileCard(cornerRadius: 22, padding: 16)
     }
 
     private var upcomingAlertCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text(NSLocalizedString("overview.upcoming_renewals", comment: ""))
-                    .font(.headline)
+                    .font(.headline.weight(.bold))
                 Spacer()
-                Text(NSLocalizedString("overview.next_7_days", comment: ""))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Button(action: onJumpToSubscriptions) {
+                    Text(NSLocalizedString("overview.see_all", comment: ""))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.accentColor)
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.94))
             }
 
             if dueWithin7Days.isEmpty {
                 HStack(spacing: 10) {
-                    Image(systemName: "checkmark.circle.fill")
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.title3)
                         .foregroundStyle(.green)
                     Text(NSLocalizedString("overview.no_upcoming", comment: ""))
                         .font(.subheadline)
@@ -180,23 +357,25 @@ struct OverviewView: View {
                 }
                 .padding(.vertical, 6)
             } else {
-                ForEach(dueWithin7Days.prefix(3)) { item in
-                    SubscriptionRowView(item: item, baseCurrency: baseCurrency)
-                    if item.id != dueWithin7Days.prefix(3).last?.id {
-                        Divider()
+                VStack(spacing: 14) {
+                    ForEach(dueWithin7Days.prefix(3)) { item in
+                        SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
+                        if item.id != dueWithin7Days.prefix(3).last?.id {
+                            Divider()
+                                .opacity(0.6)
+                        }
                     }
                 }
             }
         }
-        .padding(16)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .tactileCard(cornerRadius: 24, padding: 18)
     }
 
     private var categoryChartCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text(NSLocalizedString("overview.category_breakdown", comment: ""))
-                    .font(.headline)
+                    .font(.headline.weight(.bold))
                 Spacer()
             }
 
@@ -204,33 +383,39 @@ struct OverviewView: View {
                 Text(NSLocalizedString("overview.empty_chart", comment: ""))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, 10)
             } else {
-                VStack(spacing: 12) {
+                VStack(spacing: 14) {
                     Chart(categoryBreakdown, id: \.category) { entry in
                         BarMark(
                             x: .value("Amount", entry.monthlyTotal),
                             y: .value("Category", entry.category.localizedTitle)
                         )
-                        .foregroundStyle(entry.category.tintColor)
-                        .cornerRadius(6)
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [entry.category.tintColor, entry.category.tintColor.opacity(0.72)],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .cornerRadius(8)
                     }
-                    .frame(height: CGFloat(max(categoryBreakdown.count * 40, 110)))
+                    .frame(height: CGFloat(max(categoryBreakdown.count * 44, 112)))
                     .chartXAxis {
                         AxisMarks(position: .bottom)
                     }
 
-                    VStack(spacing: 6) {
+                    VStack(spacing: 8) {
                         ForEach(categoryBreakdown, id: \.category) { entry in
                             HStack {
                                 Circle()
                                     .fill(entry.category.tintColor)
-                                    .frame(width: 8, height: 8)
+                                    .frame(width: 9, height: 9)
                                 Text(entry.category.localizedTitle)
-                                    .font(.caption)
+                                    .font(.caption.weight(.medium))
                                 Spacer()
                                 Text("\(baseCurrency.formatted(entry.monthlyTotal))/mo")
-                                    .font(.caption.weight(.semibold))
+                                    .font(.caption.weight(.bold))
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -238,7 +423,6 @@ struct OverviewView: View {
                 }
             }
         }
-        .padding(16)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .tactileCard(cornerRadius: 24, padding: 18)
     }
 }

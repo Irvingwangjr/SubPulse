@@ -22,6 +22,12 @@
 "category.other" = "Other";
 
 /* Overview */
+"overview.tagline" = "Your calm subscription radar";
+"overview.mood_trial_soon" = "Heads up! %d free trial converts soon — stay one step ahead.";
+"overview.mood_due_week" = "%d renewal(s) this week — you're totally on top of it.";
+"overview.mood_calm" = "Smooth sailing — nothing bills in the next 7 days.";
+"overview.daily_coffee" = "≈ %@/day • about %d coffees/mo";
+"overview.see_all" = "See All";
 "overview.monthly_spend" = "Estimated Monthly Spend";
 "overview.yearly_projection" = "Yearly Projection";
 "overview.active_subs" = "Active Plans";
@@ -80,6 +86,7 @@
 "reminder.14_days" = "14 days before";
 
 /* Upcoming */
+"upcoming.subtitle" = "Tap Renewed to roll any bill forward";
 "upcoming.empty_title" = "All Clear";
 "upcoming.empty_desc" = "Your upcoming renewals will appear here sorted by due date.";
 "upcoming.section_7days" = "Next 7 Days";
@@ -119,6 +126,7 @@
 "settings.pro_active" = "SubPulse Pro Unlocked";
 "settings.manage_subscription" = "Manage Subscription";
 "settings.upgrade_pro" = "Upgrade to SubPulse Pro";
+"settings.pro_card_subtitle" = "Unlock unlimited tracking & support indie development";
 "settings.preferences" = "Preferences";
 "settings.base_currency" = "Base Currency";
 "settings.notifications" = "Notifications";

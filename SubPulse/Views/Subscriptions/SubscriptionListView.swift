@@ -13,6 +13,8 @@ struct SubscriptionListView: View {
     @State private var selectedCategory: SubscriptionCategory?
     @State private var showingAddForm = false
     @State private var editingItem: SubscriptionItem?
+    @State private var renewCelebrationTick = 0
+    @Namespace private var filterNamespace
 
     private var canAddMore: Bool {
         storeManager.isPro || items.count < AppConfig.freeSubscriptionLimit
@@ -29,142 +31,295 @@ struct SubscriptionListView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                if !storeManager.isPro {
-                    Section {
-                        freeTierBanner
-                    }
-                }
+        ZStack {
+            AmbientBackgroundView(
+                accent: Color(hex: "#2563EB"),
+                secondaryAccent: Color(hex: "#8B5CF6")
+            )
 
-                if !items.isEmpty {
-                    Section {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 16) {
+                    headerBar
+                    searchBar
+
+                    if !storeManager.isPro {
+                        freeTierCard
+                            .scrollCardMotion()
+                    }
+
+                    if !items.isEmpty {
                         categoryFilterBar
                     }
-                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                    .listRowBackground(Color.clear)
-                }
 
-                if filteredItems.isEmpty {
-                    ContentUnavailableView {
-                        Label(NSLocalizedString("subs.empty_title", comment: ""), systemImage: "rectangle.stack.badge.plus")
-                    } description: {
-                        Text(NSLocalizedString("subs.empty_desc", comment: ""))
-                    } actions: {
-                        Button(NSLocalizedString("subs.add_first", comment: "")) {
-                            handleAddTapped()
-                        }
-                        .buttonStyle(.borderedProminent)
-                    }
-                    .listRowBackground(Color.clear)
-                } else {
-                    Section {
-                        ForEach(filteredItems) { item in
-                            Button {
-                                editingItem = item
-                            } label: {
-                                SubscriptionRowView(item: item, baseCurrency: baseCurrency)
-                            }
-                            .buttonStyle(.plain)
-                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                Button {
-                                    markRenewed(item)
-                                } label: {
-                                    Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
-                                }
-                                .tint(.green)
-                            }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    deleteItem(item)
-                                } label: {
-                                    Label(NSLocalizedString("action.delete", comment: ""), systemImage: "trash")
-                                }
+                    if filteredItems.isEmpty {
+                        emptyStateCard
+                            .padding(.top, 20)
+                    } else {
+                        LazyVStack(spacing: 12) {
+                            ForEach(filteredItems) { item in
+                                subscriptionCard(item)
+                                    .scrollCardMotion()
+                                    .transition(.asymmetric(
+                                        insertion: .scale(scale: 0.94).combined(with: .opacity),
+                                        removal: .scale(scale: 0.9).combined(with: .opacity)
+                                    ))
                             }
                         }
+                        .animation(AppMotion.bouncy, value: filteredItems.map(\.id))
                     }
+
+                    Spacer().frame(height: 92)
                 }
+                .padding(.horizontal, 18)
+                .padding(.top, 10)
             }
-            .listStyle(.insetGrouped)
-            .searchable(text: $searchText, prompt: NSLocalizedString("subs.search_prompt", comment: ""))
-            .navigationTitle(NSLocalizedString("tab.subscriptions", comment: ""))
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: handleAddTapped) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title3)
-                    }
-                }
-            }
-            .sheet(isPresented: $showingAddForm) {
-                SubscriptionFormView(
-                    existingItem: nil,
-                    defaultCurrency: baseCurrency
-                )
-            }
-            .sheet(item: $editingItem) { item in
-                SubscriptionFormView(
-                    existingItem: item,
-                    defaultCurrency: baseCurrency
-                )
-            }
+            .scrollBounceBehavior(.always)
+        }
+        .sensoryFeedback(.success, trigger: renewCelebrationTick)
+        .sheet(isPresented: $showingAddForm) {
+            SubscriptionFormView(
+                existingItem: nil,
+                defaultCurrency: baseCurrency
+            )
+        }
+        .sheet(item: $editingItem) { item in
+            SubscriptionFormView(
+                existingItem: item,
+                defaultCurrency: baseCurrency
+            )
         }
     }
 
-    private var freeTierBanner: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "crown.fill")
-                .font(.title3)
-                .foregroundStyle(.orange)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(String(
-                    format: NSLocalizedString("subs.free_quota", comment: ""),
-                    items.count,
-                    AppConfig.freeSubscriptionLimit
-                ))
-                .font(.subheadline.weight(.semibold))
-                Text(NSLocalizedString("subs.free_quota_desc", comment: ""))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+    private var headerBar: some View {
+        HStack(alignment: .center) {
+            Text(NSLocalizedString("tab.subscriptions", comment: ""))
+                .font(.system(size: 32, weight: .bold, design: .rounded))
             Spacer()
-            Button(NSLocalizedString("paywall.upgrade_short", comment: ""), action: onShowPaywall)
-                .buttonStyle(.borderedProminent)
-                .tint(.orange)
-                .controlSize(.small)
+            Button(action: handleAddTapped) {
+                Image(systemName: "plus")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 40, height: 40)
+                    .background(
+                        LinearGradient(
+                            colors: [Color(hex: "#2563EB"), Color(hex: "#6366F1")],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        in: Circle()
+                    )
+                    .shadow(color: Color(hex: "#4F46E5").opacity(0.35), radius: 10, y: 4)
+            }
+            .buttonStyle(BouncyButtonStyle(scale: 0.88))
+            .accessibilityLabel(NSLocalizedString("subs.add_first", comment: ""))
         }
-        .padding(.vertical, 4)
+    }
+
+    private var searchBar: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+            TextField(NSLocalizedString("subs.search_prompt", comment: ""), text: $searchText)
+                .textFieldStyle(.plain)
+            if !searchText.isEmpty {
+                Button {
+                    withAnimation(AppMotion.snappy) {
+                        searchText = ""
+                    }
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(BouncyButtonStyle())
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 11)
+        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.06), lineWidth: 0.75)
+        )
+    }
+
+    private var freeTierCard: some View {
+        let ratio = min(1.0, Double(items.count) / Double(AppConfig.freeSubscriptionLimit))
+        return VStack(spacing: 12) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(Color.orange.opacity(0.16))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "crown.fill")
+                        .font(.body)
+                        .foregroundStyle(.orange)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(String(
+                        format: NSLocalizedString("subs.free_quota", comment: ""),
+                        items.count,
+                        AppConfig.freeSubscriptionLimit
+                    ))
+                    .font(.subheadline.weight(.bold))
+                    Text(NSLocalizedString("subs.free_quota_desc", comment: ""))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 4)
+
+                Button(action: onShowPaywall) {
+                    Text(NSLocalizedString("paywall.upgrade_short", comment: ""))
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(
+                            LinearGradient(
+                                colors: [Color(hex: "#FF9F0A"), Color(hex: "#FF5E3A")],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            in: Capsule()
+                        )
+                }
+                .buttonStyle(BouncyButtonStyle(scale: 0.92))
+            }
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.orange.opacity(0.14))
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color(hex: "#FF9F0A"), Color(hex: "#FF5E3A")],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .frame(width: max(8, geo.size.width * ratio))
+                        .animation(AppMotion.bouncy, value: ratio)
+                }
+            }
+            .frame(height: 6)
+        }
+        .tactileCard(cornerRadius: 22, padding: 16)
     }
 
     private var categoryFilterBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 filterChip(title: NSLocalizedString("filter.all", comment: ""), isSelected: selectedCategory == nil) {
-                    selectedCategory = nil
+                    withAnimation(AppMotion.bouncy) {
+                        selectedCategory = nil
+                    }
                 }
                 ForEach(SubscriptionCategory.allCases) { category in
                     filterChip(title: category.localizedTitle, isSelected: selectedCategory == category) {
-                        selectedCategory = (selectedCategory == category) ? nil : category
+                        withAnimation(AppMotion.bouncy) {
+                            selectedCategory = (selectedCategory == category) ? nil : category
+                        }
                     }
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.vertical, 2)
         }
+        .sensoryFeedback(.selection, trigger: selectedCategory)
     }
 
     private func filterChip(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
                 .font(.caption.weight(.semibold))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(
-                    isSelected ? Color.accentColor : Color(.secondarySystemGroupedBackground),
-                    in: Capsule()
-                )
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
                 .foregroundStyle(isSelected ? .white : .primary)
+                .background {
+                    if isSelected {
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color(hex: "#2563EB"), Color(hex: "#6366F1")],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .matchedGeometryEffect(id: "categoryPill", in: filterNamespace)
+                    } else {
+                        Capsule()
+                            .fill(Color(.secondarySystemGroupedBackground))
+                    }
+                }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(BouncyButtonStyle(scale: 0.94))
+    }
+
+    private func subscriptionCard(_ item: SubscriptionItem) -> some View {
+        Button {
+            editingItem = item
+        } label: {
+            SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
+                .tactileCard(cornerRadius: 22, padding: 16)
+        }
+        .buttonStyle(BouncyButtonStyle(scale: 0.975))
+        .contextMenu {
+            Button {
+                markRenewed(item)
+            } label: {
+                Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
+            }
+
+            Button {
+                editingItem = item
+            } label: {
+                Label(NSLocalizedString("form.edit_title", comment: ""), systemImage: "pencil")
+            }
+
+            Button(role: .destructive) {
+                deleteItem(item)
+            } label: {
+                Label(NSLocalizedString("action.delete", comment: ""), systemImage: "trash")
+            }
+        }
+    }
+
+    private var emptyStateCard: some View {
+        VStack(spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(Color.accentColor.opacity(0.14))
+                    .frame(width: 68, height: 68)
+                Image(systemName: "rectangle.stack.badge.plus")
+                    .font(.system(size: 28, weight: .semibold))
+                    .foregroundStyle(Color.accentColor)
+            }
+            Text(NSLocalizedString("subs.empty_title", comment: ""))
+                .font(.headline.weight(.bold))
+            Text(NSLocalizedString("subs.empty_desc", comment: ""))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            Button(action: handleAddTapped) {
+                Text(NSLocalizedString("subs.add_first", comment: ""))
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 22)
+                    .padding(.vertical, 11)
+                    .background(
+                        LinearGradient(
+                            colors: [Color(hex: "#2563EB"), Color(hex: "#6366F1")],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        in: Capsule()
+                    )
+            }
+            .buttonStyle(BouncyButtonStyle(scale: 0.94))
+        }
+        .frame(maxWidth: .infinity)
+        .tactileCard(cornerRadius: 24, padding: 28)
     }
 
     private func handleAddTapped() {
@@ -176,14 +331,19 @@ struct SubscriptionListView: View {
     }
 
     private func markRenewed(_ item: SubscriptionItem) {
-        item.advanceBillingDate()
+        withAnimation(AppMotion.bouncy) {
+            item.advanceBillingDate()
+            renewCelebrationTick += 1
+        }
         Task {
             await NotificationManager.shared.scheduleReminder(for: item)
         }
     }
 
     private func deleteItem(_ item: SubscriptionItem) {
-        NotificationManager.shared.cancelReminder(for: item.id)
-        modelContext.delete(item)
+        withAnimation(AppMotion.snappy) {
+            NotificationManager.shared.cancelReminder(for: item.id)
+            modelContext.delete(item)
+        }
     }
 }
