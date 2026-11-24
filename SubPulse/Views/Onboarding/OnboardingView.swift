@@ -1,7 +1,69 @@
+import CoreHaptics
 import PhotosUI
 import SwiftData
 import SwiftUI
 import UIKit
+
+@MainActor
+private final class KineticHapticEngine {
+    private var engine: CHHapticEngine?
+    private let rigidFallback = UIImpactFeedbackGenerator(style: .rigid)
+    private let mediumFallback = UIImpactFeedbackGenerator(style: .medium)
+
+    init() {
+        prepare()
+    }
+
+    func prepare() {
+        rigidFallback.prepare()
+        mediumFallback.prepare()
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        do {
+            let eng = try CHHapticEngine()
+            eng.playsHapticsOnly = true
+            eng.isAutoShutdownEnabled = false
+            eng.resetHandler = { [weak eng] in
+                try? eng?.start()
+            }
+            try eng.start()
+            self.engine = eng
+        } catch {
+            self.engine = nil
+        }
+    }
+
+    func tick(intensity: Float, sharpness: Float) {
+        if let engine {
+            let event = CHHapticEvent(
+                eventType: .hapticTransient,
+                parameters: [
+                    CHHapticEventParameter(parameterID: .hapticIntensity, value: intensity),
+                    CHHapticEventParameter(parameterID: .hapticSharpness, value: sharpness)
+                ],
+                relativeTime: 0
+            )
+            do {
+                let pattern = try CHHapticPattern(events: [event], parameters: [])
+                let player = try engine.makePlayer(with: pattern)
+                try player.start(atTime: CHHapticTimeImmediate)
+                return
+            } catch {
+                try? engine.start()
+            }
+        }
+        if sharpness > 0.6 {
+            rigidFallback.impactOccurred(intensity: CGFloat(intensity))
+            rigidFallback.prepare()
+        } else {
+            mediumFallback.impactOccurred(intensity: CGFloat(intensity))
+            mediumFallback.prepare()
+        }
+    }
+
+    func stop() {
+        engine?.stop(completionHandler: nil)
+    }
+}
 
 struct OnboardingView: View {
     @Environment(\.modelContext) private var modelContext
@@ -528,11 +590,11 @@ struct OnboardingView: View {
             if selectedPresets.contains(preset) {
                 selectedPresets.remove(preset)
                 quotaHintVisible = false
-                triggerHaptic(.light)
+                triggerHaptic(.medium)
             } else if selectedPresets.count < remainingFreeSlots {
                 selectedPresets.insert(preset)
                 quotaHintVisible = false
-                triggerHaptic(.light)
+                triggerHaptic(.medium)
             } else {
                 quotaHintVisible = true
                 UINotificationFeedbackGenerator().notificationOccurred(.warning)
@@ -620,8 +682,10 @@ struct OnboardingView: View {
         onComplete()
     }
 
+    @MainActor
     private func runKineticLoop() async {
-        let softHaptic = UIImpactFeedbackGenerator(style: .soft)
+        let haptics = KineticHapticEngine()
+        defer { haptics.stop() }
 
         while !Task.isCancelled {
             guard currentPage == 0 else {
@@ -632,10 +696,11 @@ struct OnboardingView: View {
             typedText = ""
             cursorVisible = true
 
-            // 1. Cursor blinks twice over ~1.0s before typing begins
+            // 1. Cursor blinks twice over ~1.0s with gentle pulse before typing begins
             for _ in 0..<2 {
                 guard !Task.isCancelled, currentPage == 0 else { break }
                 cursorVisible = true
+                haptics.tick(intensity: 0.45, sharpness: 0.3)
                 try? await Task.sleep(nanoseconds: 250_000_000)
                 guard !Task.isCancelled, currentPage == 0 else { break }
                 cursorVisible = false
@@ -644,29 +709,30 @@ struct OnboardingView: View {
             guard !Task.isCancelled else { return }
             guard currentPage == 0 else { continue }
 
-            // 2. Rapid silky left-to-right character typing with synchronized soft Taptic purr
+            // 2. Rapid silky left-to-right character typing with crisp CoreHaptics ticks
             cursorVisible = true
             let phrase = currentFullPhrase
             let characters = Array(phrase)
             let isCJK = characters.contains { $0.unicodeScalars.first.map { $0.value >= 0x4E00 && $0.value <= 0x9FFF } ?? false }
-            let typeDelayNs: UInt64 = isCJK ? 60_000_000 : 34_000_000
-            let eraseDelayNs: UInt64 = isCJK ? 36_000_000 : 20_000_000
+            let typeDelayNs: UInt64 = isCJK ? 65_000_000 : 38_000_000
+            let eraseDelayNs: UInt64 = isCJK ? 38_000_000 : 22_000_000
             let typeHapticStride = isCJK ? 1 : 2
-            let eraseHapticStride = isCJK ? 2 : 3
+            let eraseHapticStride = isCJK ? 1 : 2
 
-            softHaptic.prepare()
             for (idx, char) in characters.enumerated() {
                 guard !Task.isCancelled else { return }
                 if currentPage != 0 { break }
                 typedText.append(char)
                 if idx.isMultiple(of: typeHapticStride) && char != " " {
-                    softHaptic.impactOccurred(intensity: 0.58)
-                    softHaptic.prepare()
+                    haptics.tick(intensity: 0.90, sharpness: 0.85)
                 }
                 try? await Task.sleep(nanoseconds: typeDelayNs)
             }
             guard !Task.isCancelled else { return }
             guard currentPage == 0 else { continue }
+
+            // Satisfying landing thump when the full line completes
+            haptics.tick(intensity: 0.95, sharpness: 0.40)
 
             // 3. Brief reading pause with a gentle cursor breath
             try? await Task.sleep(nanoseconds: 450_000_000)
@@ -679,7 +745,6 @@ struct OnboardingView: View {
             guard !Task.isCancelled, currentPage == 0 else { continue }
 
             // 4. Snappy right-to-left retraction back to the lone cursor
-            softHaptic.prepare()
             var removedCount = 0
             while !typedText.isEmpty {
                 guard !Task.isCancelled else { return }
@@ -687,8 +752,7 @@ struct OnboardingView: View {
                 typedText.removeLast()
                 removedCount += 1
                 if removedCount.isMultiple(of: eraseHapticStride) {
-                    softHaptic.impactOccurred(intensity: 0.35)
-                    softHaptic.prepare()
+                    haptics.tick(intensity: 0.65, sharpness: 0.90)
                 }
                 try? await Task.sleep(nanoseconds: eraseDelayNs)
             }
