@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 // MARK: - App Tabs
 
@@ -333,5 +334,168 @@ struct FloatingTabBar: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 6)
         .sensoryFeedback(.selection, trigger: selectedTab)
+    }
+}
+
+// MARK: - Swipe-to-Delete Card Container (ScrollView-Friendly)
+
+struct SwipeToDeleteCard<Content: View>: View {
+    let itemID: UUID
+    var cornerRadius: CGFloat = 22
+    @Binding var activeSwipeID: UUID?
+    let onDelete: () -> Void
+    @ViewBuilder let content: () -> Content
+
+    @State private var offset: CGFloat = 0
+    @State private var dragStartOffset: CGFloat = 0
+    @State private var isHorizontalDrag: Bool?
+    @State private var didFireFullSwipeHaptic = false
+    @State private var isDeleting = false
+
+    private let revealWidth: CGFloat = 86
+    private let fullSwipeThreshold: CGFloat = 168
+
+    private var deleteButtonWidth: CGFloat {
+        max(revealWidth, -offset - 10)
+    }
+
+    private var revealProgress: Double {
+        min(1.0, max(0.0, Double(-offset) / 44.0))
+    }
+
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            if offset < -2 || isDeleting {
+                Button(role: .destructive) {
+                    performDelete()
+                } label: {
+                    VStack(spacing: 4) {
+                        Image(systemName: "trash.fill")
+                            .font(.system(size: 18, weight: .bold))
+                            .scaleEffect(offset <= -fullSwipeThreshold ? 1.18 : 1.0)
+                        Text(NSLocalizedString("action.delete", comment: ""))
+                            .font(.caption2.weight(.bold))
+                    }
+                    .foregroundStyle(.white)
+                    .frame(width: deleteButtonWidth)
+                    .frame(maxHeight: .infinity)
+                    .background(
+                        LinearGradient(
+                            colors: [Color(hex: "#FF453A"), Color(hex: "#DC2626")],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    )
+                    .opacity(revealProgress)
+                }
+                .buttonStyle(.plain)
+                .animation(.spring(response: 0.22, dampingFraction: 0.72), value: offset <= -fullSwipeThreshold)
+            }
+
+            content()
+                .overlay {
+                    if offset < -4 {
+                        Color.clear
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                closeSwipe()
+                            }
+                    }
+                }
+                .offset(x: offset)
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 14, coordinateSpace: .local)
+                        .onChanged { value in
+                            let dx = value.translation.width
+                            let dy = value.translation.height
+
+                            if isHorizontalDrag == nil {
+                                if abs(dx) > abs(dy) * 1.25 {
+                                    isHorizontalDrag = true
+                                    dragStartOffset = offset
+                                    if activeSwipeID != itemID {
+                                        activeSwipeID = itemID
+                                    }
+                                } else {
+                                    isHorizontalDrag = false
+                                    return
+                                }
+                            }
+
+                            guard isHorizontalDrag == true else { return }
+
+                            var proposed = dragStartOffset + dx
+                            if proposed > 0 {
+                                proposed = 0
+                            } else if proposed < -240 {
+                                proposed = -240 + (proposed + 240) * 0.25
+                            }
+
+                            offset = proposed
+
+                            if proposed <= -fullSwipeThreshold && !didFireFullSwipeHaptic {
+                                didFireFullSwipeHaptic = true
+                                let gen = UIImpactFeedbackGenerator(style: .rigid)
+                                gen.prepare()
+                                gen.impactOccurred(intensity: 0.95)
+                            } else if proposed > -fullSwipeThreshold && didFireFullSwipeHaptic {
+                                didFireFullSwipeHaptic = false
+                                let gen = UIImpactFeedbackGenerator(style: .soft)
+                                gen.impactOccurred(intensity: 0.6)
+                            }
+                        }
+                        .onEnded { value in
+                            defer { isHorizontalDrag = nil }
+                            guard isHorizontalDrag == true else { return }
+
+                            let predictedX = dragStartOffset + value.predictedEndTranslation.width
+                            if offset <= -fullSwipeThreshold || (offset <= -118 && predictedX <= -220) {
+                                performDelete()
+                            } else if offset <= -revealWidth * 0.5 || (dragStartOffset == 0 && predictedX <= -revealWidth) {
+                                withAnimation(AppMotion.snappy) {
+                                    offset = -revealWidth
+                                    activeSwipeID = itemID
+                                }
+                                UISelectionFeedbackGenerator().selectionChanged()
+                            } else {
+                                closeSwipe()
+                            }
+                            didFireFullSwipeHaptic = false
+                        }
+                )
+        }
+        .onChange(of: activeSwipeID) { _, newID in
+            if newID != itemID && offset != 0 && !isDeleting {
+                withAnimation(AppMotion.snappy) {
+                    offset = 0
+                }
+            }
+        }
+    }
+
+    private func closeSwipe() {
+        withAnimation(AppMotion.snappy) {
+            offset = 0
+            if activeSwipeID == itemID {
+                activeSwipeID = nil
+            }
+        }
+    }
+
+    private func performDelete() {
+        guard !isDeleting else { return }
+        isDeleting = true
+        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+        withAnimation(AppMotion.snappy) {
+            offset = -420
+        }
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 140_000_000)
+            if activeSwipeID == itemID {
+                activeSwipeID = nil
+            }
+            onDelete()
+        }
     }
 }

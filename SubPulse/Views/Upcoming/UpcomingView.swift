@@ -1,6 +1,8 @@
+import SwiftData
 import SwiftUI
 
 struct UpcomingView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let items: [SubscriptionItem]
@@ -8,6 +10,7 @@ struct UpcomingView: View {
 
     @State private var renewTick = 0
     @State private var scrollDistance: CGFloat = 0
+    @State private var activeSwipeID: UUID?
 
     private var barProgress: CGFloat {
         clampedScrollProgress(distance: scrollDistance, start: 10, range: 36)
@@ -187,31 +190,46 @@ struct UpcomingView: View {
     }
 
     private func upcomingItemCard(_ item: SubscriptionItem) -> some View {
-        VStack(spacing: 12) {
-            SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
+        SwipeToDeleteCard(
+            itemID: item.id,
+            cornerRadius: 22,
+            activeSwipeID: $activeSwipeID,
+            onDelete: { deleteItem(item) }
+        ) {
+            VStack(spacing: 12) {
+                SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
 
-            HStack {
-                Spacer()
-                Button {
-                    withAnimation(AppMotion.bouncy) {
-                        item.advanceBillingDate()
-                        renewTick += 1
+                HStack {
+                    Spacer()
+                    Button {
+                        withAnimation(AppMotion.bouncy) {
+                            item.advanceBillingDate()
+                            renewTick += 1
+                        }
+                        Task {
+                            await NotificationManager.shared.scheduleReminder(for: item)
+                        }
+                    } label: {
+                        Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color(hex: "#10B981"))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color(hex: "#10B981").opacity(0.12), in: Capsule())
                     }
-                    Task {
-                        await NotificationManager.shared.scheduleReminder(for: item)
-                    }
-                } label: {
-                    Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color(hex: "#10B981"))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color(hex: "#10B981").opacity(0.12), in: Capsule())
+                    .buttonStyle(BouncyButtonStyle(scale: 0.92))
                 }
-                .buttonStyle(BouncyButtonStyle(scale: 0.92))
             }
+            .tactileCard(cornerRadius: 22, padding: 16)
         }
-        .tactileCard(cornerRadius: 22, padding: 16)
         .scrollCardMotion()
+    }
+
+    private func deleteItem(_ item: SubscriptionItem) {
+        withAnimation(AppMotion.snappy) {
+            NotificationManager.shared.cancelReminder(for: item.id)
+            modelContext.delete(item)
+            try? modelContext.save()
+        }
     }
 }

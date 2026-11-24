@@ -15,6 +15,7 @@ struct SubscriptionListView: View {
     @State private var showingAddForm = false
     @State private var showingSmartImport = false
     @State private var editingItem: SubscriptionItem?
+    @State private var activeSwipeID: UUID?
     @State private var renewCelebrationTick = 0
     @State private var scrollDistance: CGFloat = 0
     @Namespace private var filterNamespace
@@ -376,30 +377,41 @@ struct SubscriptionListView: View {
     }
 
     private func subscriptionCard(_ item: SubscriptionItem) -> some View {
-        Button {
-            editingItem = item
-        } label: {
-            SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
-                .tactileCard(cornerRadius: 22, padding: 16)
-        }
-        .buttonStyle(BouncyButtonStyle(scale: 0.975))
-        .contextMenu {
+        SwipeToDeleteCard(
+            itemID: item.id,
+            cornerRadius: 22,
+            activeSwipeID: $activeSwipeID,
+            onDelete: { deleteItem(item) }
+        ) {
             Button {
-                markRenewed(item)
+                if activeSwipeID != nil {
+                    activeSwipeID = nil
+                } else {
+                    editingItem = item
+                }
             } label: {
-                Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
+                SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
+                    .tactileCard(cornerRadius: 22, padding: 16)
             }
+            .buttonStyle(BouncyButtonStyle(scale: 0.975))
+            .contextMenu {
+                Button {
+                    markRenewed(item)
+                } label: {
+                    Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
+                }
 
-            Button {
-                editingItem = item
-            } label: {
-                Label(NSLocalizedString("form.edit_title", comment: ""), systemImage: "pencil")
-            }
+                Button {
+                    editingItem = item
+                } label: {
+                    Label(NSLocalizedString("form.edit_title", comment: ""), systemImage: "pencil")
+                }
 
-            Button(role: .destructive) {
-                deleteItem(item)
-            } label: {
-                Label(NSLocalizedString("action.delete", comment: ""), systemImage: "trash")
+                Button(role: .destructive) {
+                    deleteItem(item)
+                } label: {
+                    Label(NSLocalizedString("action.delete", comment: ""), systemImage: "trash")
+                }
             }
         }
     }
@@ -480,6 +492,7 @@ struct SubscriptionListView: View {
         withAnimation(AppMotion.snappy) {
             NotificationManager.shared.cancelReminder(for: item.id)
             modelContext.delete(item)
+            try? modelContext.save()
         }
     }
 }
