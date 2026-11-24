@@ -1,0 +1,1 @@
+suscripcion,gastos,presupuesto,cancelar,recordatorio,divisas,dolar,euro,finanzas,privado,mensual,app
