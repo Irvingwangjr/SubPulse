@@ -226,9 +226,24 @@ struct PaywallView: View {
         }
         return String(
             format: NSLocalizedString("paywall.free_trial_then", comment: ""),
-            offer.period.value,
+            formattedTrialPeriod(offer.period),
             product.displayPrice
         )
+    }
+
+    private func formattedTrialPeriod(_ period: Product.SubscriptionPeriod) -> String {
+        switch period.unit {
+        case .day:
+            return String(format: NSLocalizedString("paywall.trial_days", comment: ""), period.value)
+        case .week:
+            return String(format: NSLocalizedString("paywall.trial_days", comment: ""), period.value * 7)
+        case .month:
+            return String(format: NSLocalizedString("paywall.trial_months", comment: ""), period.value)
+        case .year:
+            return String(format: NSLocalizedString("paywall.trial_years", comment: ""), period.value)
+        @unknown default:
+            return String(format: NSLocalizedString("paywall.trial_days", comment: ""), period.value)
+        }
     }
 
     private var actionButtonsSection: some View {
