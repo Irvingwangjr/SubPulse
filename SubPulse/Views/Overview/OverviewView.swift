@@ -66,11 +66,6 @@ struct OverviewView: View {
     var body: some View {
         ScrollViewReader { scrollProxy in
             ZStack {
-                AmbientBackgroundView(
-                    accent: urgentTrialCount > 0 ? Color(hex: "#F97316") : Color(hex: "#4F46E5"),
-                    secondaryAccent: Color(hex: "#EC4899")
-                )
-
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
                         Color.clear

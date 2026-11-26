@@ -116,6 +116,24 @@ struct SubscriptionFormView: View {
                     TextField(NSLocalizedString("form.notes_placeholder", comment: ""), text: $notes, axis: .vertical)
                         .lineLimit(2...4)
                 }
+
+                if let existingItem {
+                    Section {
+                        Button(role: .destructive) {
+                            NotificationManager.shared.cancelReminder(for: existingItem.id)
+                            modelContext.delete(existingItem)
+                            try? modelContext.save()
+                            dismiss()
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Label(NSLocalizedString("action.delete", comment: ""), systemImage: "trash")
+                                    .font(.body.weight(.semibold))
+                                Spacer()
+                            }
+                        }
+                    }
+                }
             }
             .navigationTitle(isEditing
                 ? NSLocalizedString("form.edit_title", comment: "")

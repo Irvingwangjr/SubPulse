@@ -17,7 +17,7 @@ on:
 
 jobs:
   build-and-upload:
-    runs-on: macos-26
+    runs-on: xcode-27
     env:
       APP_IDENTIFIER: ${{ vars.APP_IDENTIFIER || 'com.irvingwangjr.subpulseapp' }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}

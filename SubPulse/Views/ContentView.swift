@@ -10,7 +10,6 @@ struct ContentView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
 
     @State private var selectedTab: AppTab = .overview
-    @State private var previousTab: AppTab = .overview
     @State private var showingPaywall = false
     @State private var showingOnboardingReplay = false
 
@@ -18,8 +17,26 @@ struct ContentView: View {
         Currency.from(code: baseCurrencyCode)
     }
 
-    private var slideEdge: Edge {
-        selectedTab.rawValue >= previousTab.rawValue ? .trailing : .leading
+    private var hasUrgentTrial: Bool {
+        items.contains { $0.isTrial && $0.daysUntilRenewal <= 3 }
+    }
+
+    private var tabAccent: Color {
+        switch selectedTab {
+        case .overview: return hasUrgentTrial ? Color(hex: "#F97316") : Color(hex: "#4F46E5")
+        case .subscriptions: return Color(hex: "#2563EB")
+        case .upcoming: return Color(hex: "#F97316")
+        case .settings: return Color(hex: "#6366F1")
+        }
+    }
+
+    private var tabSecondaryAccent: Color {
+        switch selectedTab {
+        case .overview: return Color(hex: "#EC4899")
+        case .subscriptions: return Color(hex: "#8B5CF6")
+        case .upcoming: return Color(hex: "#6366F1")
+        case .settings: return Color(hex: "#0EA5E9")
+        }
     }
 
     var body: some View {
@@ -46,59 +63,54 @@ struct ContentView: View {
 
     private var mainAppContent: some View {
         ZStack(alignment: .bottom) {
-            Group {
-                switch selectedTab {
-                case .overview:
-                    OverviewView(
-                        items: items,
-                        baseCurrency: baseCurrency,
-                        onShowPaywall: { showingPaywall = true },
-                        onJumpToSubscriptions: {
-                            withAnimation(AppMotion.bouncy) {
-                                selectedTab = .subscriptions
-                            }
-                        }
-                    )
-                case .subscriptions:
-                    SubscriptionListView(
-                        items: items,
-                        baseCurrency: baseCurrency,
-                        onShowPaywall: { showingPaywall = true }
-                    )
-                case .upcoming:
-                    UpcomingView(
-                        items: items,
-                        baseCurrency: baseCurrency
-                    )
-                case .settings:
-                    SettingsView(
-                        items: items,
-                        baseCurrencyCode: $baseCurrencyCode,
-                        onShowPaywall: { showingPaywall = true },
-                        onReplayOnboarding: { showingOnboardingReplay = true }
-                    )
-                }
-            }
-            .id(selectedTab)
-            .transition(
-                .asymmetric(
-                    insertion: .opacity
-                        .combined(with: .move(edge: slideEdge))
-                        .combined(with: .scale(scale: 0.985)),
-                    removal: .opacity
-                        .combined(with: .scale(scale: 0.985))
-                )
+            AmbientBackgroundView(
+                accent: tabAccent,
+                secondaryAccent: tabSecondaryAccent
             )
-            .animation(AppMotion.snappy, value: selectedTab)
+            .animation(.easeInOut(duration: 0.45), value: selectedTab)
+
+            TabView(selection: $selectedTab) {
+                OverviewView(
+                    items: items,
+                    baseCurrency: baseCurrency,
+                    onShowPaywall: { showingPaywall = true },
+                    onJumpToSubscriptions: {
+                        withAnimation(AppMotion.bouncy) {
+                            selectedTab = .subscriptions
+                        }
+                    }
+                )
+                .tag(AppTab.overview)
+
+                SubscriptionListView(
+                    items: items,
+                    baseCurrency: baseCurrency,
+                    onShowPaywall: { showingPaywall = true }
+                )
+                .tag(AppTab.subscriptions)
+
+                UpcomingView(
+                    items: items,
+                    baseCurrency: baseCurrency
+                )
+                .tag(AppTab.upcoming)
+
+                SettingsView(
+                    items: items,
+                    baseCurrencyCode: $baseCurrencyCode,
+                    onShowPaywall: { showingPaywall = true },
+                    onReplayOnboarding: { showingOnboardingReplay = true }
+                )
+                .tag(AppTab.settings)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .ignoresSafeArea(.container, edges: .bottom)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             FloatingTabBar(selectedTab: $selectedTab)
                 .zIndex(10)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .onChange(of: selectedTab) { oldValue, _ in
-            previousTab = oldValue
-        }
         .sheet(isPresented: $showingPaywall) {
             PaywallView()
                 .environment(storeManager)

@@ -30,11 +30,6 @@ struct SettingsView: View {
     var body: some View {
         ScrollViewReader { scrollProxy in
             ZStack {
-                AmbientBackgroundView(
-                    accent: Color(hex: "#6366F1"),
-                    secondaryAccent: Color(hex: "#0EA5E9")
-                )
-
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
                         Color.clear

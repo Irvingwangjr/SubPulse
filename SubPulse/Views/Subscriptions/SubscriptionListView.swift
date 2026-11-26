@@ -15,7 +15,6 @@ struct SubscriptionListView: View {
     @State private var showingAddForm = false
     @State private var showingSmartImport = false
     @State private var editingItem: SubscriptionItem?
-    @State private var activeSwipeID: UUID?
     @State private var renewCelebrationTick = 0
     @State private var scrollDistance: CGFloat = 0
     @Namespace private var filterNamespace
@@ -41,11 +40,6 @@ struct SubscriptionListView: View {
     var body: some View {
         ScrollViewReader { scrollProxy in
             ZStack {
-                AmbientBackgroundView(
-                    accent: Color(hex: "#2563EB"),
-                    secondaryAccent: Color(hex: "#8B5CF6")
-                )
-
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
                         Color.clear
@@ -377,41 +371,30 @@ struct SubscriptionListView: View {
     }
 
     private func subscriptionCard(_ item: SubscriptionItem) -> some View {
-        SwipeToDeleteCard(
-            itemID: item.id,
-            cornerRadius: 22,
-            activeSwipeID: $activeSwipeID,
-            onDelete: { deleteItem(item) }
-        ) {
+        Button {
+            editingItem = item
+        } label: {
+            SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
+                .tactileCard(cornerRadius: 22, padding: 16)
+        }
+        .buttonStyle(BouncyButtonStyle(scale: 0.975))
+        .contextMenu {
             Button {
-                if activeSwipeID != nil {
-                    activeSwipeID = nil
-                } else {
-                    editingItem = item
-                }
+                markRenewed(item)
             } label: {
-                SubscriptionRowView(item: item, baseCurrency: baseCurrency, showProgressBar: true)
-                    .tactileCard(cornerRadius: 22, padding: 16)
+                Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
             }
-            .buttonStyle(BouncyButtonStyle(scale: 0.975))
-            .contextMenu {
-                Button {
-                    markRenewed(item)
-                } label: {
-                    Label(NSLocalizedString("action.mark_paid", comment: ""), systemImage: "checkmark.circle.fill")
-                }
 
-                Button {
-                    editingItem = item
-                } label: {
-                    Label(NSLocalizedString("form.edit_title", comment: ""), systemImage: "pencil")
-                }
+            Button {
+                editingItem = item
+            } label: {
+                Label(NSLocalizedString("form.edit_title", comment: ""), systemImage: "pencil")
+            }
 
-                Button(role: .destructive) {
-                    deleteItem(item)
-                } label: {
-                    Label(NSLocalizedString("action.delete", comment: ""), systemImage: "trash")
-                }
+            Button(role: .destructive) {
+                deleteItem(item)
+            } label: {
+                Label(NSLocalizedString("action.delete", comment: ""), systemImage: "trash")
             }
         }
     }
