@@ -10,6 +10,7 @@ struct ContentView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
 
     @State private var selectedTab: AppTab = .overview
+    @State private var pageProgress: CGFloat = 0
     @State private var showingPaywall = false
     @State private var showingOnboardingReplay = false
 
@@ -80,6 +81,9 @@ struct ContentView: View {
                         }
                     }
                 )
+                .trackTabPageProgress(index: AppTab.overview.rawValue, in: "mainTabPager") {
+                    pageProgress = $0
+                }
                 .tag(AppTab.overview)
 
                 SubscriptionListView(
@@ -87,12 +91,18 @@ struct ContentView: View {
                     baseCurrency: baseCurrency,
                     onShowPaywall: { showingPaywall = true }
                 )
+                .trackTabPageProgress(index: AppTab.subscriptions.rawValue, in: "mainTabPager") {
+                    pageProgress = $0
+                }
                 .tag(AppTab.subscriptions)
 
                 UpcomingView(
                     items: items,
                     baseCurrency: baseCurrency
                 )
+                .trackTabPageProgress(index: AppTab.upcoming.rawValue, in: "mainTabPager") {
+                    pageProgress = $0
+                }
                 .tag(AppTab.upcoming)
 
                 SettingsView(
@@ -101,13 +111,22 @@ struct ContentView: View {
                     onShowPaywall: { showingPaywall = true },
                     onReplayOnboarding: { showingOnboardingReplay = true }
                 )
+                .trackTabPageProgress(index: AppTab.settings.rawValue, in: "mainTabPager") {
+                    pageProgress = $0
+                }
                 .tag(AppTab.settings)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .coordinateSpace(name: "mainTabPager")
             .ignoresSafeArea(.container, edges: .bottom)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onChange(of: selectedTab) { _, newTab in
+                withAnimation(AppMotion.bouncy) {
+                    pageProgress = CGFloat(newTab.rawValue)
+                }
+            }
 
-            FloatingTabBar(selectedTab: $selectedTab)
+            FloatingTabBar(selectedTab: $selectedTab, pageProgress: pageProgress)
                 .zIndex(10)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)

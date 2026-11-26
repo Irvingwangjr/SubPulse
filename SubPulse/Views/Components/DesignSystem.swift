@@ -261,60 +261,144 @@ func clampedScrollProgress(distance: CGFloat, start: CGFloat, range: CGFloat) ->
     min(1, max(0, (distance - start) / max(1, range)))
 }
 
+// MARK: - Paged Tab Scroll Progress Tracker
+
+extension View {
+    /// Emits continuous fractional page progress (`0.0 ... N-1`) as the user swipes a paged `TabView`.
+    @ViewBuilder
+    func trackTabPageProgress(
+        index: Int,
+        in coordinateSpace: String,
+        onProgress: @escaping (CGFloat) -> Void
+    ) -> some View {
+        if #available(iOS 18.0, *) {
+            self.onGeometryChange(for: CGFloat.self) { proxy in
+                let width = proxy.size.width
+                guard width > 1 else { return -999 }
+                let minX = proxy.frame(in: .named(coordinateSpace)).minX
+                guard abs(minX) < width else { return -999 }
+                return CGFloat(index) - (minX / width)
+            } action: { _, progress in
+                let maxPage = CGFloat(AppTab.allCases.count - 1)
+                if progress >= -0.25 && progress <= maxPage + 0.25 {
+                    onProgress(progress)
+                }
+            }
+        } else {
+            self
+        }
+    }
+}
+
 // MARK: - Floating Translucent Glass Tab Bar
 
 struct FloatingTabBar: View {
     @Binding var selectedTab: AppTab
-    @Namespace private var pillNamespace
+    var pageProgress: CGFloat
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var scrubProgress: CGFloat?
+
+    private let tabs = AppTab.allCases
+
+    private var effectiveProgress: CGFloat {
+        let raw = scrubProgress ?? pageProgress
+        return min(CGFloat(tabs.count - 1) + 0.12, max(-0.12, raw))
+    }
 
     var body: some View {
-        HStack(spacing: 4) {
-            ForEach(AppTab.allCases) { tab in
-                let isSelected = selectedTab == tab
-                Button {
-                    guard selectedTab != tab else { return }
-                    withAnimation(AppMotion.bouncy) {
-                        selectedTab = tab
-                    }
-                } label: {
-                    VStack(spacing: 3) {
-                        Image(systemName: tab.icon)
-                            .font(.system(size: 18, weight: isSelected ? .bold : .medium))
-                            .symbolEffect(.bounce, value: isSelected)
-                            .scaleEffect(isSelected ? 1.08 : 0.96)
+        let count = CGFloat(tabs.count)
+        GeometryReader { geo in
+            let innerWidth = max(1, geo.size.width)
+            let slotWidth = innerWidth / count
+            let clampedOffset = min(
+                innerWidth - slotWidth + 6,
+                max(-6, effectiveProgress * slotWidth)
+            )
+            let stretch: CGFloat = scrubProgress != nil ? 1.05 : 1.0
 
-                        Text(tab.title)
-                            .font(.system(size: 10, weight: isSelected ? .bold : .medium))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.76)
-                    }
-                    .foregroundStyle(isSelected ? Color.white : Color.secondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 9)
-                    .padding(.horizontal, 4)
-                    .contentShape(Capsule())
-                    .background {
-                        if isSelected {
-                            Capsule()
-                                .fill(
-                                    LinearGradient(
-                                        colors: [Color(hex: "#2563EB"), Color(hex: "#6366F1")],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                )
-                                .shadow(color: Color(hex: "#4F46E5").opacity(0.35), radius: 8, y: 3)
-                                .matchedGeometryEffect(id: "activeTabPill", in: pillNamespace)
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(
+                        LinearGradient(
+                            colors: [Color(hex: "#2563EB"), Color(hex: "#6366F1")],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .shadow(color: Color(hex: "#4F46E5").opacity(0.38), radius: 9, y: 3)
+                    .frame(width: slotWidth, height: geo.size.height)
+                    .scaleEffect(x: stretch, y: 1.0)
+                    .offset(x: clampedOffset)
+                    .animation(
+                        scrubProgress != nil
+                            ? .interactiveSpring(response: 0.14, dampingFraction: 0.86)
+                            : .interactiveSpring(response: 0.24, dampingFraction: 0.80),
+                        value: effectiveProgress
+                    )
+
+                HStack(spacing: 0) {
+                    ForEach(tabs) { tab in
+                        let distance = abs(effectiveProgress - CGFloat(tab.rawValue))
+                        let closeness = max(0, 1 - distance)
+                        let isSelected = selectedTab == tab
+
+                        Button {
+                            guard selectedTab != tab else { return }
+                            withAnimation(AppMotion.bouncy) {
+                                selectedTab = tab
+                            }
+                        } label: {
+                            VStack(spacing: 3) {
+                                Image(systemName: tab.icon)
+                                    .font(.system(size: 18, weight: closeness > 0.5 ? .bold : .medium))
+                                    .symbolEffect(.bounce, value: isSelected)
+                                    .scaleEffect(0.96 + 0.12 * closeness)
+
+                                Text(tab.title)
+                                    .font(.system(size: 10, weight: closeness > 0.5 ? .bold : .medium))
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.76)
+                            }
+                            .foregroundStyle(closeness > 0.5 ? Color.white : Color.secondary)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .contentShape(Capsule())
                         }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(tab.title)
+                        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
                     }
                 }
-                .buttonStyle(BouncyButtonStyle(scale: 0.92))
-                .accessibilityLabel(tab.title)
-                .accessibilityAddTraits(isSelected ? [.isSelected] : [])
             }
+            .contentShape(Capsule())
+            .gesture(
+                DragGesture(minimumDistance: 8, coordinateSpace: .local)
+                    .onChanged { value in
+                        let rawIndex = (value.location.x / slotWidth) - 0.5
+                        let clamped = min(CGFloat(tabs.count - 1), max(0, rawIndex))
+                        scrubProgress = clamped
+                        let nearest = Int(clamped.rounded())
+                        if let target = AppTab(rawValue: nearest), target != selectedTab {
+                            withAnimation(AppMotion.snappy) {
+                                selectedTab = target
+                            }
+                        }
+                    }
+                    .onEnded { value in
+                        let rawIndex = (value.location.x / slotWidth) - 0.5
+                        let nearest = Int(min(CGFloat(tabs.count - 1), max(0, rawIndex)).rounded())
+                        if let target = AppTab(rawValue: nearest), target != selectedTab {
+                            withAnimation(AppMotion.bouncy) {
+                                selectedTab = target
+                            }
+                        }
+                        withAnimation(AppMotion.bouncy) {
+                            scrubProgress = nil
+                        }
+                    }
+            )
         }
+        .frame(height: 52)
         .padding(6)
         .frame(maxWidth: horizontalSizeClass == .regular ? 440 : .infinity)
         .background(.ultraThinMaterial, in: Capsule())
