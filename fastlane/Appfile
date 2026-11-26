@@ -1,2 +1,2 @@
-app_identifier(ENV["APP_IDENTIFIER"] || "com.irvingwangjr.subpulse")
+app_identifier(ENV["APP_IDENTIFIER"] || "com.irvingwangjr.subpulseapp")
 team_id(ENV["APPLE_TEAM_ID"]) if ENV["APPLE_TEAM_ID"]

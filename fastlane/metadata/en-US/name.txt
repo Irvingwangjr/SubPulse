@@ -1,1 +1,1 @@
-SubPulse: Subscription Tracker
+SubPulse: Bill & Trial Tracker

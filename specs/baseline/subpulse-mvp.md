@@ -2,7 +2,7 @@
 
 > **Status**: Implemented (`main`)  
 > **Target Platform**: iOS 17.0+ (SwiftUI, SwiftData, StoreKit 2, Swift Charts)  
-> **Bundle ID**: `com.irvingwangjr.subpulse`
+> **Bundle ID**: `com.irvingwangjr.subpulseapp`
 
 ## 1. Product Positioning
 100% 本地隐私的多币种订阅与免费试用追踪器，面向海外 App Store 市场（无后端、免注册登录、Data Not Collected）。
@@ -35,8 +35,8 @@
 - **策略**：全功能完整开放 + 单一数量上限（Free ≤ 3 个订阅，Pro 无限数量）。
 - **Free Tier**：最多 **3 个订阅**，包含全部核心功能（多币种折算、完整分类图表、1/3/7/14 天自定义提醒、CSV 导出）。已有 ≥3 条记录的免费用户（含 Pro 过期用户）不丢数据，可正常查看/编辑/续费/导出/删除，仅在继续新增时触发 Paywall。
 - **Pro Tier**：
-  - `com.irvingwangjr.subpulse.pro.monthly`（$2.99/mo）
-  - `com.irvingwangjr.subpulse.pro.yearly`（$19.99/yr，含 7 天免费试用）
+  - `com.irvingwangjr.subpulseapp.pro.monthly`（$2.99/mo）
+  - `com.irvingwangjr.subpulseapp.pro.yearly`（$19.99/yr，含 7 天免费试用）
   - 解锁：无限数量订阅与试用追踪、自动获取后续 Pro 新特性。
 - 严格遵循 Apple Guideline 3.1.2：展示清晰续费声明、Restore Purchases 按钮、Terms & Privacy 链接。
 

@@ -99,7 +99,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.irvingwangjr.subpulse.pro.monthly",
+          "productID" : "com.irvingwangjr.subpulseapp.pro.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pro Monthly",
           "subscriptionGroupID" : "A1B2C3D4",
@@ -128,7 +128,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.irvingwangjr.subpulse.pro.yearly",
+          "productID" : "com.irvingwangjr.subpulseapp.pro.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Pro Yearly",
           "subscriptionGroupID" : "A1B2C3D4",
