@@ -203,7 +203,7 @@ struct OnboardingView: View {
             Spacer()
 
             Button(NSLocalizedString("onboarding.skip", comment: "")) {
-                finishOnboarding(seedDefaultsIfEmpty: true)
+                finishOnboarding()
             }
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(.white.opacity(0.72))
@@ -562,7 +562,7 @@ struct OnboardingView: View {
                 Button {
                     Task {
                         _ = await NotificationManager.shared.requestAuthorization()
-                        finishOnboarding(seedDefaultsIfEmpty: true)
+                        finishOnboarding()
                     }
                 } label: {
                     HStack(spacing: 8) {
@@ -618,7 +618,7 @@ struct OnboardingView: View {
         }
     }
 
-    private func finishOnboarding(seedDefaultsIfEmpty: Bool) {
+    private func finishOnboarding() {
         let cal = Calendar.current
         let today = Date()
         let allowed = remainingFreeSlots
@@ -662,14 +662,6 @@ struct OnboardingView: View {
             )
             modelContext.insert(item)
             inserted.append(item)
-        }
-
-        // If user skipped everything on a clean install, seed 2 friendly examples so Overview shines immediately
-        if inserted.isEmpty && existingCount == 0 && seedDefaultsIfEmpty {
-            for sample in ServicePreset.sampleItems() {
-                modelContext.insert(sample)
-                inserted.append(sample)
-            }
         }
 
         try? modelContext.save()

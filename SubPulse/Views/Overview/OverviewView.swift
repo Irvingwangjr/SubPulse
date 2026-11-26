@@ -449,7 +449,30 @@ struct OverviewView: View {
                 .buttonStyle(BouncyButtonStyle(scale: 0.94))
             }
 
-            if dueWithin7Days.isEmpty {
+            if items.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(NSLocalizedString("subs.empty_desc", comment: ""))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Button(action: onJumpToSubscriptions) {
+                        Label(NSLocalizedString("subs.smart_import", comment: ""), systemImage: "doc.viewfinder")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 10)
+                            .background(
+                                LinearGradient(
+                                    colors: [Color(hex: "#10B981"), Color(hex: "#059669")],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                in: Capsule()
+                            )
+                    }
+                    .buttonStyle(BouncyButtonStyle(scale: 0.94))
+                }
+                .padding(.vertical, 4)
+            } else if dueWithin7Days.isEmpty {
                 HStack(spacing: 10) {
                     Image(systemName: "checkmark.seal.fill")
                         .font(.title3)

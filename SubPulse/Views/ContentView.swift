@@ -7,7 +7,6 @@ struct ContentView: View {
     @Query(sort: \SubscriptionItem.nextBillingDate) private var items: [SubscriptionItem]
 
     @AppStorage("baseCurrencyCode") private var baseCurrencyCode: String = Currency.usd.rawValue
-    @AppStorage("hasSeededDemoData") private var hasSeededDemoData: Bool = false
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
 
     @State private var selectedTab: AppTab = .overview
@@ -32,7 +31,6 @@ struct ContentView: View {
                     onComplete: {
                         withAnimation(AppMotion.bouncy) {
                             hasCompletedOnboarding = true
-                            hasSeededDemoData = true
                         }
                     }
                 )
@@ -116,19 +114,7 @@ struct ContentView: View {
             .environment(storeManager)
         }
         .task {
-            seedDemoDataIfNeeded()
             await NotificationManager.shared.rescheduleAll(items)
-        }
-    }
-
-    private func seedDemoDataIfNeeded() {
-        guard hasCompletedOnboarding, !hasSeededDemoData else { return }
-        hasSeededDemoData = true
-        if items.isEmpty {
-            for sample in ServicePreset.sampleItems() {
-                modelContext.insert(sample)
-            }
-            try? modelContext.save()
         }
     }
 }

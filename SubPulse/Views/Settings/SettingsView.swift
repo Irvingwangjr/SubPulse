@@ -345,19 +345,6 @@ struct SettingsView: View {
 
                 Divider().opacity(0.6)
 
-                Button {
-                    loadSampleSubscriptions()
-                } label: {
-                    HStack {
-                        Label(NSLocalizedString("settings.load_samples", comment: ""), systemImage: "sparkles")
-                            .font(.subheadline.weight(.medium))
-                        Spacer()
-                    }
-                }
-                .buttonStyle(BouncyButtonStyle(scale: 0.98))
-
-                Divider().opacity(0.6)
-
                 Button(role: .destructive) {
                     showingResetConfirmation = true
                 } label: {
@@ -419,23 +406,6 @@ struct SettingsView: View {
                 }
             }
             .tactileCard(cornerRadius: 22, padding: 16)
-        }
-    }
-
-    private func loadSampleSubscriptions() {
-        if !storeManager.isPro && items.count >= AppConfig.freeSubscriptionLimit {
-            onShowPaywall()
-            return
-        }
-        let samples = ServicePreset.sampleItems()
-        let allowed = storeManager.isPro
-            ? samples.count
-            : max(0, AppConfig.freeSubscriptionLimit - items.count)
-        withAnimation(AppMotion.bouncy) {
-            for sample in samples.prefix(allowed) {
-                modelContext.insert(sample)
-            }
-            try? modelContext.save()
         }
     }
 
