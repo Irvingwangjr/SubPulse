@@ -1,0 +1,36 @@
+{
+  "target_version": "1.0.1",
+  "notes": "Apply via App Store Connect API immediately after v1.0 approves. All names and subtitles verified <= 30 chars.",
+  "locales": {
+    "ja": {
+      "name": "サブスク管理・サブパル (SubPulse)",
+      "subtitle": "固定費スッキリ見える化・解約忘れ防止通知",
+      "keywords": "サブスク,サブスク管理,固定費,家計簿,解約忘れ,無料トライアル,更新通知,節約,月額,支払い管理,シンプル,プライバシー",
+      "promotionalText": "固定費をスッキリ見える化！銀行連携不要・100%端末内保存。スクショ読み取りと事前通知で無料トライアルの解約忘れをゼロに。"
+    },
+    "de-DE": {
+      "name": "Abo-Manager & Radar - SubPulse",
+      "subtitle": "Ohne Banklogin • Abo-Wecker",
+      "keywords": "abo,abos,abo manager,abofalle,fixkosten,kündigen,probeabo,haushaltsbuch,erinnerung,ausgaben,datenschutz,lokal",
+      "promotionalText": "Fixkosten im Griff — ganz ohne Banklogin! Schütze dich vor Abo-Fallen und vergessenen Probeabos, 100 % lokal auf deinem iPhone."
+    },
+    "es-MX": {
+      "name": "SubPulse: Control Suscripción",
+      "subtitle": "Adiós cobros fantasma y gastos",
+      "keywords": "suscripciones,gastos hormiga,cobros fantasma,prueba gratis,recordatorio,presupuesto,pagos,cancelar,finanzas,privado",
+      "promotionalText": "Adiós a los cobros fantasma y gastos hormiga. Controla tus suscripciones y pruebas gratis sin dar contraseñas bancarias."
+    },
+    "en-US": {
+      "name": "SubPulse: Bill & Trial Tracker",
+      "subtitle": "No Bank Login • Trial Alerts",
+      "keywords": "subscription,tracker,free trial,cancel,recurring bills,budget,reminder,expense,renewal,manager,privacy,offline",
+      "promotionalText": "Stop paying for forgotten free trials. Screenshot your Apple Subscriptions to import in 5 seconds — 100% on-device, zero bank logins."
+    },
+    "zh-Hans": {
+      "name": "SubPulse: 多币种订阅与试用提醒",
+      "subtitle": "防自动续费刺客・纯本地账单管理",
+      "keywords": "订阅管理,自动续费,免费试用,续费提醒,记账,固定支出,多币种,隐私,离线,账单,海外订阅,防扣费",
+      "promotionalText": "告别自动续费刺客！5 秒点选热门服务或本机离线截图识别，提前精准提醒免费试用与多币种扣费，零上传、零绑定银行卡。"
+    }
+  }
+}

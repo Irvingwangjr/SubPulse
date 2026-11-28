@@ -26,11 +26,11 @@
 "category.other" = "Sonstiges";
 
 /* Overview */
-"overview.tagline" = "Dein entspannter Abo-Radar";
-"overview.mood_trial_soon" = "Achtung! %d Probeabo endet bald — rechtzeitig prüfen.";
-"overview.mood_due_week" = "%d Verlängerung(en) diese Woche — alles im Blick.";
-"overview.mood_calm" = "Alles ruhig — in den nächsten 7 Tagen wird nichts abgebucht.";
-"overview.daily_coffee" = "≈ %1$@/Tag • ca. %2$d Kaffee/Mo.";
+"overview.tagline" = "Fixkosten im Griff — ganz ohne Banklogin";
+"overview.mood_trial_soon" = "Achtung Abo-Falle! %d Probeabo endet bald — rechtzeitig prüfen.";
+"overview.mood_due_week" = "%d Verlängerung(en) diese Woche — alles im Griff.";
+"overview.mood_calm" = "Entspannt zurücklehnen — 7 Tage lang keine Abbuchung.";
+"overview.daily_coffee" = "≈ %1$@/Tag • ca. %2$d Coffee-to-go/Mo.";
 "overview.see_all" = "Alle anzeigen";
 "overview.monthly_spend" = "Monatliche Fixkosten";
 "overview.yearly_projection" = "Jahresprognose";
@@ -155,9 +155,9 @@
 "status.not_set" = "Nicht festgelegt";
 
 /* Onboarding & Zero-Friction Smart Import */
-"onboarding.kinetic_1" = "Alle Fixkosten im Blick";
-"onboarding.kinetic_2" = "Keine Abo-Fallen";
-"onboarding.kinetic_3" = "100 % auf dem Gerät";
+"onboarding.kinetic_1" = "Fixkosten im Griff";
+"onboarding.kinetic_2" = "Stopp für Abo-Fallen";
+"onboarding.kinetic_3" = "Ganz ohne Banklogin";
 "onboarding.kinetic_4" = "Startklar in 5 Sek.";
 "onboarding.skip" = "Überspringen";
 "onboarding.welcome_sub" = "Erfasse Abos und Probezeiträume in Sekunden — ganz ohne lästiges Abtippen.";

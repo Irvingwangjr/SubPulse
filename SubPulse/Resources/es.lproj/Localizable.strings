@@ -26,10 +26,10 @@
 "category.other" = "Otros";
 
 /* Overview */
-"overview.tagline" = "Tu radar tranquilo de suscripciones";
-"overview.mood_trial_soon" = "¡Atención! %d prueba gratis termina pronto — anticípate al cobro.";
+"overview.tagline" = "Adiós cobros fantasma y gastos hormiga";
+"overview.mood_trial_soon" = "¡Ojo! %d prueba gratis vence pronto — evita el cobro sorpresa.";
 "overview.mood_due_week" = "%d renovación(es) esta semana — todo bajo control.";
-"overview.mood_calm" = "Todo tranquilo — sin cobros en los próximos 7 días.";
+"overview.mood_calm" = "Todo en calma — sin sustos en tu tarjeta los próximos 7 días.";
 "overview.daily_coffee" = "≈ %1$@/día • unos %2$d cafés/mes";
 "overview.see_all" = "Ver todo";
 "overview.monthly_spend" = "Gasto mensual estimado";
@@ -155,10 +155,10 @@
 "status.not_set" = "Sin configurar";
 
 /* Onboarding & Zero-Friction Smart Import */
-"onboarding.kinetic_1" = "Controla cada cobro";
-"onboarding.kinetic_2" = "Sin cobros sorpresa";
-"onboarding.kinetic_3" = "100 % en tu iPhone";
-"onboarding.kinetic_4" = "Listo en 5 seg.";
+"onboarding.kinetic_1" = "Adiós gastos hormiga";
+"onboarding.kinetic_2" = "Cero cobros fantasma";
+"onboarding.kinetic_3" = "Sin claves bancarias";
+"onboarding.kinetic_4" = "Listo en 5 segundos";
 "onboarding.skip" = "Omitir";
 "onboarding.welcome_sub" = "Registra suscripciones y pruebas gratis en segundos, sin escribir datos tediosos.";
 "onboarding.start_cta" = "Comenzar";

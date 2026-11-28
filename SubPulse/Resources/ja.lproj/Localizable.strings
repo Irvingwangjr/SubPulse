@@ -26,11 +26,11 @@
 "category.other" = "その他";
 
 /* Overview */
-"overview.tagline" = "解約忘れゼロ、安心のサブスク管理";
-"overview.mood_trial_soon" = "要注意！まもなく終了する無料トライアルが %d 件あります";
-"overview.mood_due_week" = "今週の更新は %d 件。しっかり把握できています";
-"overview.mood_calm" = "安心です。今後 7 日間の請求予定はありません";
-"overview.daily_coffee" = "1日あたり約 %1$@ • コーヒー約 %2$d 杯/月";
+"overview.tagline" = "固定費スッキリ、解約忘れゼロの相棒";
+"overview.mood_trial_soon" = "要注意！まもなく課金される無料体験が %d 件あります";
+"overview.mood_due_week" = "今週の更新は %d 件。ムダなく把握できています";
+"overview.mood_calm" = "今週はスッキリ！今後 7 日間の請求予定はありません";
+"overview.daily_coffee" = "1日あたり約 %1$@ • カフェラテ約 %2$d 杯分/月";
 "overview.see_all" = "すべて見る";
 "overview.monthly_spend" = "月間支出（目安）";
 "overview.yearly_projection" = "年間見込み額";
@@ -155,9 +155,9 @@
 "status.not_set" = "未設定";
 
 /* Onboarding & Zero-Friction Smart Import */
-"onboarding.kinetic_1" = "固定費を見える化";
-"onboarding.kinetic_2" = "解約忘れを防止";
-"onboarding.kinetic_3" = "完全オフライン";
+"onboarding.kinetic_1" = "固定費をスッキリ";
+"onboarding.kinetic_2" = "解約忘れをゼロに";
+"onboarding.kinetic_3" = "銀行連携は不要";
 "onboarding.kinetic_4" = "5秒で登録完了";
 "onboarding.skip" = "スキップ";
 "onboarding.welcome_sub" = "人気サービスのタップ選択やスクショ読み取りで、面倒な手入力なしにすぐ始められます。";
