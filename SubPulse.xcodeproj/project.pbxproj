@@ -30,6 +30,8 @@
 		B00000010000000000000021 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000021 /* PrivacyInfo.xcprivacy */; };
 		B00000010000000000000022 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = V00000010000000000000001 /* Localizable.strings */; };
 		B00000010000000000000023 /* SmartImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000026 /* SmartImportView.swift */; };
+		B00000010000000000000024 /* ReviewPrompter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000030 /* ReviewPrompter.swift */; };
+		B00000010000000000000025 /* SpendShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000010000000000000031 /* SpendShareCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +65,8 @@
 		F00000010000000000000027 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F00000010000000000000028 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F00000010000000000000029 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F00000010000000000000030 /* ReviewPrompter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPrompter.swift; sourceTree = "<group>"; };
+		F00000010000000000000031 /* SpendShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendShareCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +129,7 @@
 				F00000010000000000000007 /* NotificationManager.swift */,
 				F00000010000000000000008 /* CSVExporter.swift */,
 				F00000010000000000000018 /* ScreenshotOCRParser.swift */,
+				F00000010000000000000030 /* ReviewPrompter.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				F00000010000000000000010 /* OverviewView.swift */,
+				F00000010000000000000031 /* SpendShareCardView.swift */,
 			);
 			path = Overview;
 			sourceTree = "<group>";
@@ -307,6 +313,8 @@
 				B00000010000000000000018 /* ScreenshotOCRParser.swift in Sources */,
 				B00000010000000000000019 /* OnboardingView.swift in Sources */,
 				B00000010000000000000023 /* SmartImportView.swift in Sources */,
+				B00000010000000000000024 /* ReviewPrompter.swift in Sources */,
+				B00000010000000000000025 /* SpendShareCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -193,3 +193,17 @@
 "subs.manual_add" = "または手動で入力";
 "settings.open_apple_subs" = "Apple サブスクリプションを開く";
 "settings.replay_onboarding" = "初期設定ガイドをもう一度見る";
+
+/* v1.0.1 Lifetime IAP, Review & Share Card */
+"paywall.lifetime_badge" = "買い切り";
+"paywall.lifetime_desc" = "1回きりの買い切り • サブスク不要でずっと使える";
+"paywall.unlock_lifetime" = "買い切りで Pro を解除";
+"paywall.legal_lifetime" = "1回限りの買い切り購入です。購入確定時にお使いの Apple Account に課金され、自動更新や追加課金は一切ありません。";
+"settings.pro_lifetime_active" = "SubPulse Pro（買い切り版）";
+"settings.pro_badge_lifetime" = "買い切り";
+"settings.rate_app" = "App Store で応援レビューを書く";
+"share.card_title" = "年間サブスク集計カード";
+"share.card_subtitle" = "固定費スナップショット";
+"share.watermark" = "SubPulse で完全オフライン管理中";
+"share.privacy_note" = "合計金額とカテゴリ割合のみを表示します。個別のサービス名やメモは一切含まれません。";
+"share.cta" = "カードをシェア・保存";

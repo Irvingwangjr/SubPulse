@@ -160,22 +160,33 @@ struct SettingsView: View {
             if storeManager.isPro {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        Label(NSLocalizedString("settings.pro_active", comment: ""), systemImage: "checkmark.seal.fill")
+                        Label(
+                            storeManager.isLifetimePro
+                                ? NSLocalizedString("settings.pro_lifetime_active", comment: "")
+                                : NSLocalizedString("settings.pro_active", comment: ""),
+                            systemImage: "checkmark.seal.fill"
+                        )
                             .font(.headline.weight(.bold))
                             .foregroundStyle(Color(hex: "#10B981"))
                         Spacer()
-                        Text(NSLocalizedString("settings.pro_badge_active", comment: ""))
+                        Text(
+                            storeManager.isLifetimePro
+                                ? NSLocalizedString("settings.pro_badge_lifetime", comment: "")
+                                : NSLocalizedString("settings.pro_badge_active", comment: "")
+                        )
                             .font(.caption.weight(.bold))
                             .padding(.horizontal, 10)
                             .padding(.vertical, 4)
                             .background(Color(hex: "#10B981").opacity(0.14), in: Capsule())
                             .foregroundStyle(Color(hex: "#10B981"))
                     }
-                    Button(NSLocalizedString("settings.manage_subscription", comment: "")) {
-                        showingManageSubscriptions = true
+                    if storeManager.hasActiveSubscription {
+                        Button(NSLocalizedString("settings.manage_subscription", comment: "")) {
+                            showingManageSubscriptions = true
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        .buttonStyle(BouncyButtonStyle())
                     }
-                    .font(.subheadline.weight(.semibold))
-                    .buttonStyle(BouncyButtonStyle())
                 }
                 .tactileCard(cornerRadius: 24, padding: 18)
             } else {
@@ -363,6 +374,20 @@ struct SettingsView: View {
                 .foregroundStyle(.secondary)
 
             VStack(spacing: 14) {
+                Link(destination: AppConfig.writeReviewURL) {
+                    HStack {
+                        Label(NSLocalizedString("settings.rate_app", comment: ""), systemImage: "star.fill")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(Color(hex: "#F59E0B"))
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+
+                Divider().opacity(0.6)
+
                 Link(destination: AppConfig.privacyPolicyURL) {
                     HStack {
                         Text(NSLocalizedString("settings.privacy", comment: ""))

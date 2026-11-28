@@ -14,7 +14,21 @@
 
   ],
   "products" : [
-
+    {
+      "displayPrice" : "29.99",
+      "familyShareable" : false,
+      "internalID" : "10000003",
+      "localizations" : [
+        {
+          "description" : "Pay once and unlock unlimited subscription tracking forever.",
+          "displayName" : "Pro Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.irvingwangjr.subpulseapp.pro.lifetime",
+      "referenceName" : "Pro Lifetime",
+      "type" : "NonConsumable"
+    }
   ],
   "settings" : {
     "_failTransactionsEnabled" : false,

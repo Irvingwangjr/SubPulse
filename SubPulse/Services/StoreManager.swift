@@ -19,12 +19,25 @@ final class StoreManager {
         !purchasedProductIDs.isEmpty
     }
 
+    var isLifetimePro: Bool {
+        purchasedProductIDs.contains(AppConfig.ProductID.proLifetime)
+    }
+
+    var hasActiveSubscription: Bool {
+        purchasedProductIDs.contains(AppConfig.ProductID.proMonthly) ||
+        purchasedProductIDs.contains(AppConfig.ProductID.proYearly)
+    }
+
     var monthlyProduct: Product? {
         products.first { $0.id == AppConfig.ProductID.proMonthly }
     }
 
     var yearlyProduct: Product? {
         products.first { $0.id == AppConfig.ProductID.proYearly }
+    }
+
+    var lifetimeProduct: Product? {
+        products.first { $0.id == AppConfig.ProductID.proLifetime }
     }
 
     init() {

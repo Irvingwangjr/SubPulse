@@ -10,7 +10,14 @@ struct PaywallView: View {
     @State private var crownPulse = false
 
     private var selectedProduct: Product? {
-        storeManager.products.first { $0.id == selectedProductID } ?? storeManager.yearlyProduct ?? storeManager.monthlyProduct
+        storeManager.products.first { $0.id == selectedProductID }
+            ?? storeManager.yearlyProduct
+            ?? storeManager.lifetimeProduct
+            ?? storeManager.monthlyProduct
+    }
+
+    private var isLifetimeSelected: Bool {
+        selectedProduct?.id == AppConfig.ProductID.proLifetime
     }
 
     var body: some View {
@@ -151,6 +158,13 @@ struct PaywallView: View {
                         subtitle: trialSubtitle(for: yearly) ?? NSLocalizedString("paywall.yearly_desc", comment: "")
                     )
                 }
+                if let lifetime = storeManager.lifetimeProduct {
+                    planCard(
+                        product: lifetime,
+                        badge: NSLocalizedString("paywall.lifetime_badge", comment: ""),
+                        subtitle: NSLocalizedString("paywall.lifetime_desc", comment: "")
+                    )
+                }
                 if let monthly = storeManager.monthlyProduct {
                     planCard(
                         product: monthly,
@@ -269,7 +283,11 @@ struct PaywallView: View {
                         ProgressView()
                             .tint(.white)
                     } else {
-                        Text(NSLocalizedString("paywall.continue", comment: ""))
+                        Text(
+                            isLifetimeSelected
+                                ? NSLocalizedString("paywall.unlock_lifetime", comment: "")
+                                : NSLocalizedString("paywall.continue", comment: "")
+                        )
                             .font(.headline.weight(.bold))
                             .foregroundStyle(.white)
                     }
@@ -308,7 +326,11 @@ struct PaywallView: View {
 
     private var legalDisclosureSection: some View {
         VStack(spacing: 10) {
-            Text(NSLocalizedString("paywall.legal_disclosure", comment: ""))
+            Text(
+                isLifetimeSelected
+                    ? NSLocalizedString("paywall.legal_lifetime", comment: "")
+                    : NSLocalizedString("paywall.legal_disclosure", comment: "")
+            )
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

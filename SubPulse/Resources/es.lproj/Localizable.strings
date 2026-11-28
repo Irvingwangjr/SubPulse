@@ -193,3 +193,17 @@
 "subs.manual_add" = "O agregar manualmente";
 "settings.open_apple_subs" = "Abrir Suscripciones de Apple";
 "settings.replay_onboarding" = "Volver a ver la bienvenida";
+
+/* v1.0.1 Lifetime IAP, Review & Share Card */
+"paywall.lifetime_badge" = "PAGO ÚNICO";
+"paywall.lifetime_desc" = "Paga una sola vez • Sin suscripción, tuyo para siempre";
+"paywall.unlock_lifetime" = "Desbloquear Pro de por vida";
+"paywall.legal_lifetime" = "Compra única sin renovación automática. El pago se realiza una sola vez en tu Cuenta de Apple para acceso permanente.";
+"settings.pro_lifetime_active" = "SubPulse Pro de por vida";
+"settings.pro_badge_lifetime" = "De por vida";
+"settings.rate_app" = "Calificar SubPulse en el App Store";
+"share.card_title" = "Resumen anual de suscripciones";
+"share.card_subtitle" = "Radiografía de gastos fijos";
+"share.watermark" = "Controlado en privado con SubPulse";
+"share.privacy_note" = "Solo muestra totales y categorías — nunca expone tus notas ni servicios privados.";
+"share.cta" = "Compartir tarjeta";

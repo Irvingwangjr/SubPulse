@@ -1,8 +1,10 @@
+import StoreKit
 import SwiftData
 import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.requestReview) private var requestReview
     @Environment(StoreManager.self) private var storeManager
     @Query(sort: \SubscriptionItem.nextBillingDate) private var items: [SubscriptionItem]
 
@@ -146,6 +148,17 @@ struct ContentView: View {
         }
         .task {
             await NotificationManager.shared.rescheduleAll(items)
+        }
+        .onChange(of: items.count) { oldCount, newCount in
+            guard hasCompletedOnboarding,
+                  newCount > oldCount,
+                  ReviewPrompter.consumeIfEligible(itemCount: newCount) else {
+                return
+            }
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(1100))
+                requestReview()
+            }
         }
     }
 }

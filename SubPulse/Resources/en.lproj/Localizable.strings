@@ -193,3 +193,17 @@
 "subs.manual_add" = "Or enter manually";
 "settings.open_apple_subs" = "Open Apple Subscriptions";
 "settings.replay_onboarding" = "Replay Welcome & Quick Setup";
+
+/* v1.0.1 Lifetime IAP, Review & Share Card */
+"paywall.lifetime_badge" = "ONE-TIME";
+"paywall.lifetime_desc" = "Pay once • No recurring sub, yours forever";
+"paywall.unlock_lifetime" = "Unlock Lifetime Pro";
+"paywall.legal_lifetime" = "One-time purchase with no recurring billing. Payment is charged once to your Apple Account for permanent Pro access.";
+"settings.pro_lifetime_active" = "SubPulse Pro Lifetime";
+"settings.pro_badge_lifetime" = "Lifetime";
+"settings.rate_app" = "Rate SubPulse on the App Store";
+"share.card_title" = "Annual Spend Snapshot";
+"share.card_subtitle" = "Yearly Subscription Radar";
+"share.watermark" = "Tracked privately on-device with SubPulse";
+"share.privacy_note" = "Shows aggregate totals & categories only — individual services and private notes are never included.";
+"share.cta" = "Share Snapshot Card";

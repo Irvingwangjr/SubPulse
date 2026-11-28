@@ -13,6 +13,7 @@ struct OverviewView: View {
     @State private var appeared = false
     @State private var glowShift = false
     @State private var scrollDistance: CGFloat = 0
+    @State private var showingShareCard = false
 
     private var barProgress: CGFloat {
         clampedScrollProgress(distance: scrollDistance, start: 10, range: 36)
@@ -194,6 +195,17 @@ struct OverviewView: View {
                 glowShift = true
             }
         }
+        .sheet(isPresented: $showingShareCard) {
+            SpendShareCardSheet(
+                baseCurrency: baseCurrency,
+                monthlyTotal: monthlyTotal,
+                yearlyTotal: yearlyTotal,
+                dailyTotal: dailyTotal,
+                coffeeEquivalents: coffeeEquivalents,
+                activeCount: items.count,
+                topCategories: categoryBreakdown
+            )
+        }
     }
 
     private var headerBar: some View {
@@ -314,12 +326,27 @@ struct OverviewView: View {
                         .font(.subheadline.weight(.medium))
                         .foregroundStyle(.white.opacity(0.86))
                     Spacer()
-                    Text("\(baseCurrency.flag) \(baseCurrency.rawValue)")
-                        .font(.caption.weight(.bold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(.white.opacity(0.18), in: Capsule())
-                        .foregroundStyle(.white)
+                    HStack(spacing: 8) {
+                        if !items.isEmpty {
+                            Button {
+                                showingShareCard = true
+                            } label: {
+                                Image(systemName: "square.and.arrow.up")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(.white)
+                                    .padding(7)
+                                    .background(.white.opacity(0.18), in: Circle())
+                            }
+                            .buttonStyle(BouncyButtonStyle(scale: 0.9))
+                            .accessibilityLabel(NSLocalizedString("share.card_title", comment: ""))
+                        }
+                        Text("\(baseCurrency.flag) \(baseCurrency.rawValue)")
+                            .font(.caption.weight(.bold))
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(.white.opacity(0.18), in: Capsule())
+                            .foregroundStyle(.white)
+                    }
                 }
 
                 Text(baseCurrency.formatted(monthlyTotal))

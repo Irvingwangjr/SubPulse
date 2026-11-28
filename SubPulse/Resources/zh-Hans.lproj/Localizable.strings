@@ -193,3 +193,17 @@
 "subs.manual_add" = "或者手动录入";
 "settings.open_apple_subs" = "打开系统 Apple 订阅页";
 "settings.replay_onboarding" = "重看开屏引导与极速配置";
+
+/* v1.0.1 Lifetime IAP, Review & Share Card */
+"paywall.lifetime_badge" = "终身买断";
+"paywall.lifetime_desc" = "一次付费 • 告别订阅焦虑，永久解锁";
+"paywall.unlock_lifetime" = "解锁终身买断 Pro";
+"paywall.legal_lifetime" = "本项为一次性买断制购买，确认后仅从您的 Apple 账户扣款一次，无自动续费，永久有效。";
+"settings.pro_lifetime_active" = "SubPulse Pro 终身版";
+"settings.pro_badge_lifetime" = "终身版";
+"settings.rate_app" = "去 App Store 给个好评";
+"share.card_title" = "年度订阅账单卡片";
+"share.card_subtitle" = "固定支出年度速览";
+"share.watermark" = "由 SubPulse 纯本地隐私记录";
+"share.privacy_note" = "仅展示汇总金额与分类占比，绝不包含具体服务名或隐私备注。";
+"share.cta" = "分享 / 保存卡片";
