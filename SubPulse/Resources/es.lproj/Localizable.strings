@@ -1,0 +1,195 @@
+/* Tabs */
+"tab.overview" = "Resumen";
+"tab.subscriptions" = "Suscrip.";
+"tab.upcoming" = "Próximos";
+"tab.settings" = "Ajustes";
+
+/* Billing Cycles */
+"cycle.weekly" = "Semanal";
+"cycle.monthly" = "Mensual";
+"cycle.quarterly" = "Trimestral";
+"cycle.yearly" = "Anual";
+"cycle.short_weekly" = "/sem";
+"cycle.short_monthly" = "/mes";
+"cycle.short_quarterly" = "/trim";
+"cycle.short_yearly" = "/año";
+
+/* Categories */
+"category.streaming" = "Streaming";
+"category.ai_tools" = "Herram. IA";
+"category.productivity" = "Productividad";
+"category.cloud" = "Nube";
+"category.music" = "Música";
+"category.fitness" = "Fitness";
+"category.gaming" = "Juegos";
+"category.utilities" = "Utilidades";
+"category.other" = "Otros";
+
+/* Overview */
+"overview.tagline" = "Tu radar tranquilo de suscripciones";
+"overview.mood_trial_soon" = "¡Atención! %d prueba gratis termina pronto — anticípate al cobro.";
+"overview.mood_due_week" = "%d renovación(es) esta semana — todo bajo control.";
+"overview.mood_calm" = "Todo tranquilo — sin cobros en los próximos 7 días.";
+"overview.daily_coffee" = "≈ %1$@/día • unos %2$d cafés/mes";
+"overview.see_all" = "Ver todo";
+"overview.monthly_spend" = "Gasto mensual estimado";
+"overview.yearly_projection" = "Proyección anual";
+"overview.active_subs" = "Planes activos";
+"overview.due_soon" = "Próximos";
+"overview.next_7_days" = "Próximos 7 días";
+"overview.free_trials" = "Pruebas gratis";
+"overview.watch_closely" = "Vigilar antes del cobro";
+"overview.upcoming_renewals" = "Próximas renovaciones";
+"overview.no_upcoming" = "Sin renovaciones en los próximos 7 días.";
+"overview.category_breakdown" = "Gasto por categoría";
+"overview.empty_chart" = "Agrega suscripciones para ver el desglose de tus gastos.";
+
+/* Renewal Badges */
+"badge.trial" = "PRUEBA";
+"renewal.overdue" = "Vencido hace %dd";
+"renewal.today" = "Vence hoy";
+"renewal.tomorrow" = "Mañana";
+"renewal.in_days" = "En %d días";
+
+/* Subscriptions List */
+"subs.empty_title" = "Sin suscripciones aún";
+"subs.empty_desc" = "Controla pagos recurrentes, pruebas gratis y varias monedas de forma 100 % privada.";
+"subs.add_first" = "Agregar suscripción";
+"subs.search_prompt" = "Buscar suscripciones";
+"subs.free_quota" = "Plan gratis: %d / %d suscripciones";
+"subs.free_quota_desc" = "Todas las funciones incluidas. Pasa a Pro para seguimiento ilimitado.";
+"filter.all" = "Todas";
+
+/* Actions */
+"action.mark_paid" = "Renovada";
+"action.delete" = "Eliminar";
+"action.cancel" = "Cancelar";
+"action.save" = "Guardar";
+"action.retry" = "Reintentar";
+
+/* Form */
+"form.quick_presets" = "Servicios populares";
+"form.details" = "Detalles";
+"form.name_placeholder" = "Nombre del servicio (ej. Netflix)";
+"form.currency" = "Moneda";
+"form.cycle" = "Ciclo de cobro";
+"form.category" = "Categoría";
+"form.billing_reminders" = "Cobro y recordatorios";
+"form.next_billing" = "Próxima fecha de cobro";
+"form.is_trial" = "Actualmente en prueba gratis";
+"form.reminder_lead" = "Avisarme";
+"form.notes" = "Notas";
+"form.notes_placeholder" = "Correo de la cuenta, notas para cancelar, etc.";
+"form.edit_title" = "Editar suscripción";
+"form.new_title" = "Nueva suscripción";
+
+/* Reminder Lead Times */
+"reminder.1_day" = "1 día antes";
+"reminder.3_days" = "3 días antes";
+"reminder.7_days" = "7 días antes";
+"reminder.14_days" = "14 días antes";
+
+/* Upcoming */
+"upcoming.subtitle" = "Toca «Renovada» para avanzar al siguiente cobro";
+"upcoming.empty_title" = "Todo despejado";
+"upcoming.empty_desc" = "Tus próximas renovaciones aparecerán aquí ordenadas por fecha.";
+"upcoming.section_7days" = "Próximos 7 días";
+"upcoming.section_30days" = "Próximos 30 días";
+"upcoming.section_later" = "Más adelante";
+
+/* Notifications */
+"notif.trial_title" = "Prueba gratis de %@ por terminar";
+"notif.trial_body" = "Pasará a cobro de %1$@ en %2$d día(s). Cancela si ya no la necesitas.";
+"notif.renewal_title" = "%@ se renueva pronto";
+"notif.renewal_body" = "Próximo cobro de %1$@ en %2$d día(s).";
+
+/* Paywall */
+"paywall.upgrade_cta" = "Pasar a Pro";
+"paywall.upgrade_short" = "Pro";
+"paywall.title" = "SubPulse Pro";
+"paywall.subtitle" = "Todas las funciones ya están activas. Con Pro puedes registrar suscripciones ilimitadas en varias monedas.";
+"paywall.feat_unlimited" = "Suscripciones y pruebas gratis ilimitadas";
+"paywall.feat_all_included" = "Gráficas, recordatorios y exportación CSV incluidos";
+"paywall.feat_future" = "Acceso automático a futuras mejoras Pro";
+"paywall.feat_support" = "Apoya el desarrollo independiente y 100 % privado";
+"paywall.load_failed" = "No se pudieron cargar los planes. Revisa tu conexión e inténtalo de nuevo.";
+"paywall.best_value" = "MEJOR OPCIÓN";
+"paywall.yearly_desc" = "Pago anual • Ahorra más del 40 %";
+"paywall.monthly_desc" = "Pago mensual flexible";
+"paywall.free_trial_then" = "Prueba gratis %1$@, luego %2$@/año";
+"paywall.trial_days" = "%d días";
+"paywall.trial_months" = "%d meses";
+"paywall.trial_years" = "%d años";
+"paywall.continue" = "Continuar";
+"paywall.restore" = "Restaurar compras";
+"paywall.restore_none" = "No se encontró ninguna suscripción Pro activa en esta Cuenta de Apple.";
+"paywall.legal_disclosure" = "El pago se cargará a tu Cuenta de Apple al confirmar la compra. La suscripción se renueva automáticamente salvo que se desactive al menos 24 horas antes del fin del período actual. Puedes gestionarla o cancelarla en cualquier momento en los Ajustes de tu Cuenta de Apple.";
+"store.pending" = "Compra pendiente de aprobación.";
+
+/* Settings */
+"settings.pro_active" = "SubPulse Pro activo";
+"settings.pro_badge_active" = "Activo";
+"settings.manage_subscription" = "Gestionar suscripción";
+"settings.upgrade_pro" = "Pasar a SubPulse Pro";
+"settings.pro_card_subtitle" = "Desbloquea seguimiento ilimitado y apoya el desarrollo indie";
+"settings.preferences" = "Preferencias";
+"settings.base_currency" = "Moneda principal";
+"settings.notifications" = "Notificaciones";
+"settings.enable_notifications" = "Activar / actualizar recordatorios";
+"settings.data" = "Datos";
+"settings.export_csv" = "Exportar CSV";
+"settings.prepare_csv" = "Preparar archivo CSV";
+"settings.load_samples" = "Cargar ejemplos";
+"settings.delete_all" = "Borrar todos los datos locales";
+"settings.delete_confirm_title" = "¿Eliminar todas las suscripciones guardadas en este dispositivo?";
+"settings.legal" = "Legal y soporte";
+"settings.privacy" = "Política de privacidad";
+"settings.terms" = "Términos de servicio";
+"settings.support" = "Soporte";
+"settings.version" = "Versión";
+"settings.privacy_footer" = "Todos tus datos se guardan 100 % en tu dispositivo. SubPulse no recopila ningún dato personal.";
+
+/* Status */
+"status.enabled" = "Activado";
+"status.denied" = "Desactivado en Ajustes de iOS";
+"status.not_set" = "Sin configurar";
+
+/* Onboarding & Zero-Friction Smart Import */
+"onboarding.kinetic_1" = "Controla cada cobro";
+"onboarding.kinetic_2" = "Sin cobros sorpresa";
+"onboarding.kinetic_3" = "100 % en tu iPhone";
+"onboarding.kinetic_4" = "Listo en 5 seg.";
+"onboarding.skip" = "Omitir";
+"onboarding.welcome_sub" = "Registra suscripciones y pruebas gratis en segundos, sin escribir datos tediosos.";
+"onboarding.start_cta" = "Comenzar";
+"onboarding.swipe_hint" = "Desliza a la izquierda o toca para continuar";
+"onboarding.pick_title" = "Elige lo que usas";
+"onboarding.pick_subtitle" = "Elige hasta %d servicios gratis — completamos íconos, monedas y precios habituales automáticamente.";
+"onboarding.pick_limit_hint" = "El plan gratis incluye hasta %d suscripciones — pasa a Pro cuando quieras.";
+"onboarding.selected_summary" = "%1$d seleccionados • ≈ %2$@/mes";
+"onboarding.pick_skip_cta" = "Omitir e ir al escáner";
+"onboarding.pick_continue_cta" = "Continuar con %d";
+"onboarding.scan_title" = "O escanea tus Suscripciones";
+"onboarding.scan_subtitle" = "Toma una captura de tu lista de Suscripciones de Apple y SubPulse extrae nombres, precios y fechas sin salir de tu iPhone.";
+"onboarding.privacy_note" = "Apple Vision OCR local. Tus capturas nunca salen de tu iPhone.";
+"onboarding.finish_cta" = "Activar recordatorios y entrar";
+
+"import.tab_quick_pick" = "Selección rápida";
+"import.tab_scan_ocr" = "Escanear / Pegar";
+"import.nav_title" = "Importación inteligente";
+"import.add_selected_cta" = "Agregar %d suscripción(es)";
+"import.ocr_guide_title" = "Importa sin escribir";
+"import.ocr_guide_desc" = "Toma una captura de Suscripciones de Apple o copia un recibo por correo y agrégalo con un toque, 100 % sin conexión.";
+"import.open_apple_subs" = "Suscripciones Apple";
+"import.pick_screenshot" = "Escanear captura";
+"import.paste_clipboard" = "Leer texto copiado";
+"import.scanning" = "Leyendo en el dispositivo...";
+"import.found_count" = "%d suscripción(es) detectada(s)";
+"import.none_found" = "No se detectaron precios aún. Prueba una captura más nítida con nombre y precio (ej. $9.99/mes).";
+"import.clipboard_empty" = "Tu portapapeles está vacío. Copia primero un recibo o correo de cobro.";
+
+"subs.smart_import" = "Selección rápida / Escanear";
+"subs.smart_import_short" = "Rápido / Scan";
+"subs.manual_add" = "O agregar manualmente";
+"settings.open_apple_subs" = "Abrir Suscripciones de Apple";
+"settings.replay_onboarding" = "Volver a ver la bienvenida";

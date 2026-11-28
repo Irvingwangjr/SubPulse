@@ -9,6 +9,10 @@
 "cycle.monthly" = "每月";
 "cycle.quarterly" = "每季度";
 "cycle.yearly" = "每年";
+"cycle.short_weekly" = "/周";
+"cycle.short_monthly" = "/月";
+"cycle.short_quarterly" = "/季";
+"cycle.short_yearly" = "/年";
 
 /* Categories */
 "category.streaming" = "流媒体";
@@ -124,6 +128,7 @@
 
 /* Settings */
 "settings.pro_active" = "SubPulse Pro 已激活";
+"settings.pro_badge_active" = "已生效";
 "settings.manage_subscription" = "管理订阅";
 "settings.upgrade_pro" = "升级 SubPulse Pro";
 "settings.pro_card_subtitle" = "解锁无限订阅追踪，支持独立隐私开发";

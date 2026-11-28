@@ -164,7 +164,7 @@ struct SettingsView: View {
                             .font(.headline.weight(.bold))
                             .foregroundStyle(Color(hex: "#10B981"))
                         Spacer()
-                        Text("Active")
+                        Text(NSLocalizedString("settings.pro_badge_active", comment: ""))
                             .font(.caption.weight(.bold))
                             .padding(.horizontal, 10)
                             .padding(.vertical, 4)

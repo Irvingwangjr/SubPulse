@@ -73,7 +73,7 @@ struct SubscriptionFormView: View {
                         .labelsHidden()
                         .frame(width: 110)
 
-                        TextField("0.00", text: $amountText)
+                        TextField(currency.usesDecimals ? "0.00" : "0", text: $amountText)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                     }
@@ -177,7 +177,7 @@ struct SubscriptionFormView: View {
 
     private func applyPreset(_ preset: ServicePreset) {
         name = preset.name
-        amountText = String(format: "%.2f", preset.defaultAmount)
+        amountText = String(format: preset.currency.usesDecimals ? "%.2f" : "%.0f", preset.defaultAmount)
         currency = preset.currency
         billingCycle = preset.cycle
         category = preset.category

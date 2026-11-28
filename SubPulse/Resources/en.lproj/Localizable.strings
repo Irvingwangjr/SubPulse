@@ -9,6 +9,10 @@
 "cycle.monthly" = "Monthly";
 "cycle.quarterly" = "Quarterly";
 "cycle.yearly" = "Yearly";
+"cycle.short_weekly" = "/wk";
+"cycle.short_monthly" = "/mo";
+"cycle.short_quarterly" = "/qtr";
+"cycle.short_yearly" = "/yr";
 
 /* Categories */
 "category.streaming" = "Streaming";
@@ -124,6 +128,7 @@
 
 /* Settings */
 "settings.pro_active" = "SubPulse Pro Unlocked";
+"settings.pro_badge_active" = "Active";
 "settings.manage_subscription" = "Manage Subscription";
 "settings.upgrade_pro" = "Upgrade to SubPulse Pro";
 "settings.pro_card_subtitle" = "Unlock unlimited tracking & support indie development";

@@ -30,6 +30,9 @@ enum Currency: String, CaseIterable, Identifiable, Codable {
     }
 
     var displayName: String {
+        if let localized = Locale.current.localizedString(forCurrencyCode: rawValue), !localized.isEmpty {
+            return "\(localized) (\(rawValue))"
+        }
         switch self {
         case .usd: return "US Dollar (USD)"
         case .eur: return "Euro (EUR)"
@@ -41,6 +44,17 @@ enum Currency: String, CaseIterable, Identifiable, Codable {
         case .hkd: return "Hong Kong Dollar (HKD)"
         case .sgd: return "Singapore Dollar (SGD)"
         }
+    }
+
+    static var systemDefault: Currency {
+        if let code = Locale.current.currency?.identifier.uppercased(),
+           let matched = Currency(rawValue: code) {
+            return matched
+        }
+        if Locale.current.language.languageCode?.identifier == "ja" || Locale.current.region?.identifier == "JP" {
+            return .jpy
+        }
+        return .usd
     }
 
     var flag: String {

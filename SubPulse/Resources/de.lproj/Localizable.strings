@@ -1,0 +1,195 @@
+/* Tabs */
+"tab.overview" = "Übersicht";
+"tab.subscriptions" = "Abos";
+"tab.upcoming" = "Anstehend";
+"tab.settings" = "Einstellungen";
+
+/* Billing Cycles */
+"cycle.weekly" = "Wöchentlich";
+"cycle.monthly" = "Monatlich";
+"cycle.quarterly" = "Vierteljährlich";
+"cycle.yearly" = "Jährlich";
+"cycle.short_weekly" = "/Wo.";
+"cycle.short_monthly" = "/Mo.";
+"cycle.short_quarterly" = "/Qu.";
+"cycle.short_yearly" = "/Jr.";
+
+/* Categories */
+"category.streaming" = "Streaming";
+"category.ai_tools" = "KI-Tools";
+"category.productivity" = "Produktivität";
+"category.cloud" = "Cloud";
+"category.music" = "Musik";
+"category.fitness" = "Fitness";
+"category.gaming" = "Gaming";
+"category.utilities" = "Alltag & Tools";
+"category.other" = "Sonstiges";
+
+/* Overview */
+"overview.tagline" = "Dein entspannter Abo-Radar";
+"overview.mood_trial_soon" = "Achtung! %d Probeabo endet bald — rechtzeitig prüfen.";
+"overview.mood_due_week" = "%d Verlängerung(en) diese Woche — alles im Blick.";
+"overview.mood_calm" = "Alles ruhig — in den nächsten 7 Tagen wird nichts abgebucht.";
+"overview.daily_coffee" = "≈ %1$@/Tag • ca. %2$d Kaffee/Mo.";
+"overview.see_all" = "Alle anzeigen";
+"overview.monthly_spend" = "Monatliche Fixkosten";
+"overview.yearly_projection" = "Jahresprognose";
+"overview.active_subs" = "Aktive Abos";
+"overview.due_soon" = "Bald fällig";
+"overview.next_7_days" = "Nächste 7 Tage";
+"overview.free_trials" = "Probeabos";
+"overview.watch_closely" = "Vor Verlängerung prüfen";
+"overview.upcoming_renewals" = "Nächste Abbuchungen";
+"overview.no_upcoming" = "Keine Verlängerungen in den nächsten 7 Tagen.";
+"overview.category_breakdown" = "Nach Kategorie";
+"overview.empty_chart" = "Füge Abos hinzu, um deine Ausgabenverteilung zu sehen.";
+
+/* Renewal Badges */
+"badge.trial" = "PROBE";
+"renewal.overdue" = "%d T. überfällig";
+"renewal.today" = "Heute fällig";
+"renewal.tomorrow" = "Morgen";
+"renewal.in_days" = "In %d Tagen";
+
+/* Subscriptions List */
+"subs.empty_title" = "Noch keine Abos";
+"subs.empty_desc" = "Behalte Abos, Probezeiträume und Fremdwährungen 100 % lokal auf deinem iPhone im Blick.";
+"subs.add_first" = "Abo hinzufügen";
+"subs.search_prompt" = "Abos durchsuchen";
+"subs.free_quota" = "Kostenlos: %d / %d Abos genutzt";
+"subs.free_quota_desc" = "Alle Funktionen inklusive. Mit Pro unbegrenzt viele Abos verwalten.";
+"filter.all" = "Alle";
+
+/* Actions */
+"action.mark_paid" = "Verlängert";
+"action.delete" = "Löschen";
+"action.cancel" = "Abbrechen";
+"action.save" = "Speichern";
+"action.retry" = "Erneut versuchen";
+
+/* Form */
+"form.quick_presets" = "Beliebte Dienste";
+"form.details" = "Abo-Details";
+"form.name_placeholder" = "Dienstname (z. B. Netflix)";
+"form.currency" = "Währung";
+"form.cycle" = "Abrechnungszyklus";
+"form.category" = "Kategorie";
+"form.billing_reminders" = "Abbuchung & Erinnerung";
+"form.next_billing" = "Nächste Abbuchung";
+"form.is_trial" = "Aktuell im Probeabo";
+"form.reminder_lead" = "Erinnerung";
+"form.notes" = "Notizen";
+"form.notes_placeholder" = "Konto-E-Mail, Kündigungshinweise usw.";
+"form.edit_title" = "Abo bearbeiten";
+"form.new_title" = "Neues Abo";
+
+/* Reminder Lead Times */
+"reminder.1_day" = "1 Tag vorher";
+"reminder.3_days" = "3 Tage vorher";
+"reminder.7_days" = "7 Tage vorher";
+"reminder.14_days" = "14 Tage vorher";
+
+/* Upcoming */
+"upcoming.subtitle" = "Tippe auf „Verlängert“, um das Datum fortzuschreiben";
+"upcoming.empty_title" = "Alles erledigt";
+"upcoming.empty_desc" = "Deine nächsten Verlängerungen erscheinen hier nach Datum sortiert.";
+"upcoming.section_7days" = "Nächste 7 Tage";
+"upcoming.section_30days" = "Nächste 30 Tage";
+"upcoming.section_later" = "Später";
+
+/* Notifications */
+"notif.trial_title" = "%@ Probeabo endet bald";
+"notif.trial_body" = "Wird in %2$d Tag(en) für %1$@ verlängert. Rechtzeitig kündigen, falls nicht benötigt.";
+"notif.renewal_title" = "%@ wird bald verlängert";
+"notif.renewal_body" = "Abbuchung von %1$@ in %2$d Tag(en).";
+
+/* Paywall */
+"paywall.upgrade_cta" = "Auf Pro upgraden";
+"paywall.upgrade_short" = "Pro";
+"paywall.title" = "SubPulse Pro";
+"paywall.subtitle" = "Alle Funktionen sind bereits freigeschaltet. Mit Pro verfolgst du unbegrenzt viele Abos in allen Währungen.";
+"paywall.feat_unlimited" = "Unbegrenzt viele Abos & Probeabos verwalten";
+"paywall.feat_all_included" = "Alle Diagramme, Erinnerungen & CSV-Export inklusive";
+"paywall.feat_future" = "Zukünftige Pro-Funktionen automatisch enthalten";
+"paywall.feat_support" = "Unabhängige, 100 % private App-Entwicklung unterstützen";
+"paywall.load_failed" = "Abo-Optionen konnten nicht geladen werden. Bitte Verbindung prüfen und erneut versuchen.";
+"paywall.best_value" = "BESTER PREIS";
+"paywall.yearly_desc" = "Jährliche Abrechnung • Über 40 % sparen";
+"paywall.monthly_desc" = "Flexibel monatlich kündbar";
+"paywall.free_trial_then" = "%1$@ kostenlos testen, danach %2$@/Jahr";
+"paywall.trial_days" = "%d Tage";
+"paywall.trial_months" = "%d Monate";
+"paywall.trial_years" = "%d Jahre";
+"paywall.continue" = "Weiter";
+"paywall.restore" = "Käufe wiederherstellen";
+"paywall.restore_none" = "Kein aktives Pro-Abo für diesen Apple Account gefunden.";
+"paywall.legal_disclosure" = "Die Zahlung wird bei Kaufbestätigung über deinen Apple Account abgerechnet. Das Abo verlängert sich automatisch, sofern die automatische Verlängerung nicht mindestens 24 Stunden vor Ablauf deaktiviert wird. Du kannst dein Abo jederzeit in den Apple Account-Einstellungen verwalten oder kündigen.";
+"store.pending" = "Kauf wartet auf Bestätigung.";
+
+/* Settings */
+"settings.pro_active" = "SubPulse Pro aktiv";
+"settings.pro_badge_active" = "Aktiv";
+"settings.manage_subscription" = "Abo verwalten";
+"settings.upgrade_pro" = "Auf SubPulse Pro upgraden";
+"settings.pro_card_subtitle" = "Unbegrenzte Abos freischalten & Indie-Entwicklung unterstützen";
+"settings.preferences" = "Einstellungen";
+"settings.base_currency" = "Standardwährung";
+"settings.notifications" = "Mitteilungen";
+"settings.enable_notifications" = "Erinnerungen aktivieren / aktualisieren";
+"settings.data" = "Daten";
+"settings.export_csv" = "CSV exportieren";
+"settings.prepare_csv" = "CSV-Export vorbereiten";
+"settings.load_samples" = "Beispieldaten laden";
+"settings.delete_all" = "Alle lokalen Daten löschen";
+"settings.delete_confirm_title" = "Alle auf diesem Gerät gespeicherten Abos löschen?";
+"settings.legal" = "Rechtliches & Support";
+"settings.privacy" = "Datenschutz";
+"settings.terms" = "Nutzungsbedingungen";
+"settings.support" = "Support";
+"settings.version" = "Version";
+"settings.privacy_footer" = "Alle Abo-Daten bleiben 100 % lokal auf deinem Gerät. SubPulse erhebt keinerlei personenbezogene Daten.";
+
+/* Status */
+"status.enabled" = "Aktiviert";
+"status.denied" = "In iOS-Einstellungen deaktiviert";
+"status.not_set" = "Nicht festgelegt";
+
+/* Onboarding & Zero-Friction Smart Import */
+"onboarding.kinetic_1" = "Alle Fixkosten im Blick";
+"onboarding.kinetic_2" = "Keine Abo-Fallen";
+"onboarding.kinetic_3" = "100 % auf dem Gerät";
+"onboarding.kinetic_4" = "Startklar in 5 Sek.";
+"onboarding.skip" = "Überspringen";
+"onboarding.welcome_sub" = "Erfasse Abos und Probezeiträume in Sekunden — ganz ohne lästiges Abtippen.";
+"onboarding.start_cta" = "Loslegen";
+"onboarding.swipe_hint" = "Nach links wischen oder tippen";
+"onboarding.pick_title" = "Wähle deine Dienste";
+"onboarding.pick_subtitle" = "Bis zu %d Dienste kostenlos auswählen — Icons, Währungen und übliche Preise füllen wir vorab aus.";
+"onboarding.pick_limit_hint" = "Kostenlos bis zu %d Abos — jederzeit in der App auf Pro upgraden.";
+"onboarding.selected_summary" = "%1$d gewählt • ≈ %2$@/Mo.";
+"onboarding.pick_skip_cta" = "Weiter zum Screenshot-Scan";
+"onboarding.pick_continue_cta" = "Mit %d Auswahl weiter";
+"onboarding.scan_title" = "Oder Apple-Abos scannen";
+"onboarding.scan_subtitle" = "Mach einen Screenshot deiner Apple-Abos — SubPulse liest Namen, Preise und Daten lokal auf dem iPhone aus.";
+"onboarding.privacy_note" = "Lokale Apple Vision OCR. Deine Screenshots verlassen niemals dein iPhone.";
+"onboarding.finish_cta" = "Erinnerungen aktivieren & starten";
+
+"import.tab_quick_pick" = "Schnellauswahl";
+"import.tab_scan_ocr" = "Scan / Text";
+"import.nav_title" = "Smart-Import";
+"import.add_selected_cta" = "%d Abo(s) hinzufügen";
+"import.ocr_guide_title" = "Import ohne Tippen";
+"import.ocr_guide_desc" = "Mach einen Screenshot der Apple-Abos oder kopiere eine Rechnungs-E-Mail — 100 % offline erkannt.";
+"import.open_apple_subs" = "Apple-Abos öffnen";
+"import.pick_screenshot" = "Screenshot scannen";
+"import.paste_clipboard" = "Kopierten Text auslesen";
+"import.scanning" = "Wird lokal gelesen...";
+"import.found_count" = "%d Abo(s) erkannt";
+"import.none_found" = "Noch keine Preise erkannt. Bitte einen klareren Screenshot mit Dienstnamen und Preis (z. B. €12,99/Mo.) wählen.";
+"import.clipboard_empty" = "Zwischenablage ist leer. Kopiere zuerst eine Abrechnung oder E-Mail.";
+
+"subs.smart_import" = "Schnellauswahl / Screenshot-Scan";
+"subs.smart_import_short" = "Scan / Schnell";
+"subs.manual_add" = "Oder manuell eingeben";
+"settings.open_apple_subs" = "Apple-Abos öffnen";
+"settings.replay_onboarding" = "Einführung erneut anzeigen";

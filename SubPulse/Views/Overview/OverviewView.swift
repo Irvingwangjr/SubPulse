@@ -144,7 +144,7 @@ struct OverviewView: View {
                         }
                     },
                     badge: {
-                        Text("\(baseCurrency.formatted(monthlyTotal))/mo")
+                        Text("\(baseCurrency.formatted(monthlyTotal))\(BillingCycle.monthly.shortSuffix)")
                             .font(.caption.weight(.bold))
                             .contentTransition(.numericText(value: monthlyTotal))
                             .foregroundStyle(.white)
@@ -535,7 +535,7 @@ struct OverviewView: View {
                                 Text(entry.category.localizedTitle)
                                     .font(.caption.weight(.medium))
                                 Spacer()
-                                Text("\(baseCurrency.formatted(entry.monthlyTotal))/mo")
+                                Text("\(baseCurrency.formatted(entry.monthlyTotal))\(BillingCycle.monthly.shortSuffix)")
                                     .font(.caption.weight(.bold))
                                     .foregroundStyle(.secondary)
                             }

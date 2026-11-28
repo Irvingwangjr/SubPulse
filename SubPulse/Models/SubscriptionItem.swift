@@ -21,10 +21,10 @@ enum BillingCycle: String, CaseIterable, Identifiable, Codable {
 
     var shortSuffix: String {
         switch self {
-        case .weekly: return "/wk"
-        case .monthly: return "/mo"
-        case .quarterly: return "/qtr"
-        case .yearly: return "/yr"
+        case .weekly: return NSLocalizedString("cycle.short_weekly", comment: "")
+        case .monthly: return NSLocalizedString("cycle.short_monthly", comment: "")
+        case .quarterly: return NSLocalizedString("cycle.short_quarterly", comment: "")
+        case .yearly: return NSLocalizedString("cycle.short_yearly", comment: "")
         }
     }
 

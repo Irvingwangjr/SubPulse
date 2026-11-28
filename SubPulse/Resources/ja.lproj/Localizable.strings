@@ -1,0 +1,195 @@
+/* Tabs */
+"tab.overview" = "ホーム";
+"tab.subscriptions" = "サブスク";
+"tab.upcoming" = "更新予定";
+"tab.settings" = "設定";
+
+/* Billing Cycles */
+"cycle.weekly" = "毎週";
+"cycle.monthly" = "毎月";
+"cycle.quarterly" = "3ヶ月ごと";
+"cycle.yearly" = "毎年";
+"cycle.short_weekly" = "/週";
+"cycle.short_monthly" = "/月";
+"cycle.short_quarterly" = "/3ヶ月";
+"cycle.short_yearly" = "/年";
+
+/* Categories */
+"category.streaming" = "動画配信";
+"category.ai_tools" = "AIツール";
+"category.productivity" = "仕事効率化";
+"category.cloud" = "クラウド";
+"category.music" = "音楽";
+"category.fitness" = "フィットネス";
+"category.gaming" = "ゲーム";
+"category.utilities" = "生活・便利";
+"category.other" = "その他";
+
+/* Overview */
+"overview.tagline" = "解約忘れゼロ、安心のサブスク管理";
+"overview.mood_trial_soon" = "要注意！まもなく終了する無料トライアルが %d 件あります";
+"overview.mood_due_week" = "今週の更新は %d 件。しっかり把握できています";
+"overview.mood_calm" = "安心です。今後 7 日間の請求予定はありません";
+"overview.daily_coffee" = "1日あたり約 %1$@ • コーヒー約 %2$d 杯/月";
+"overview.see_all" = "すべて見る";
+"overview.monthly_spend" = "月間支出（目安）";
+"overview.yearly_projection" = "年間見込み額";
+"overview.active_subs" = "契約中の数";
+"overview.due_soon" = "まもなく更新";
+"overview.next_7_days" = "今後7日間";
+"overview.free_trials" = "無料トライアル";
+"overview.watch_closely" = "自動更新に注意";
+"overview.upcoming_renewals" = "もうすぐ更新";
+"overview.no_upcoming" = "今後 7 日間の更新予定はありません。";
+"overview.category_breakdown" = "カテゴリ別の内訳";
+"overview.empty_chart" = "サブスクを登録すると支出の内訳が表示されます。";
+
+/* Renewal Badges */
+"badge.trial" = "無料体験";
+"renewal.overdue" = "%d日経過";
+"renewal.today" = "本日更新";
+"renewal.tomorrow" = "明日更新";
+"renewal.in_days" = "あと%d日";
+
+/* Subscriptions List */
+"subs.empty_title" = "まだ登録がありません";
+"subs.empty_desc" = "月額サービスや無料トライアルを端末内だけで安全に一元管理できます。";
+"subs.add_first" = "サブスクを追加";
+"subs.search_prompt" = "サービス名で検索";
+"subs.free_quota" = "無料プラン：%d / %d 件登録済み";
+"subs.free_quota_desc" = "全機能をご利用いただけます。Pro で登録数の上限を解除できます。";
+"filter.all" = "すべて";
+
+/* Actions */
+"action.mark_paid" = "更新済み";
+"action.delete" = "削除";
+"action.cancel" = "キャンセル";
+"action.save" = "保存";
+"action.retry" = "再試行";
+
+/* Form */
+"form.quick_presets" = "人気サービスから選ぶ";
+"form.details" = "契約内容";
+"form.name_placeholder" = "サービス名（例：Netflix）";
+"form.currency" = "通貨";
+"form.cycle" = "請求サイクル";
+"form.category" = "カテゴリ";
+"form.billing_reminders" = "更新日と通知";
+"form.next_billing" = "次回更新日";
+"form.is_trial" = "無料トライアル中";
+"form.reminder_lead" = "事前通知";
+"form.notes" = "メモ";
+"form.notes_placeholder" = "登録メールや解約手順のメモなど";
+"form.edit_title" = "サブスクを編集";
+"form.new_title" = "サブスクを登録";
+
+/* Reminder Lead Times */
+"reminder.1_day" = "1日前";
+"reminder.3_days" = "3日前";
+"reminder.7_days" = "7日前";
+"reminder.14_days" = "14日前";
+
+/* Upcoming */
+"upcoming.subtitle" = "「更新済み」をタップすると次回更新日に進みます";
+"upcoming.empty_title" = "予定はありません";
+"upcoming.empty_desc" = "登録したサブスクが更新日の近い順に表示されます。";
+"upcoming.section_7days" = "7日以内";
+"upcoming.section_30days" = "30日以内";
+"upcoming.section_later" = "それ以降";
+
+/* Notifications */
+"notif.trial_title" = "%@ の無料トライアル終了間近";
+"notif.trial_body" = "あと %2$d 日で有料プラン（%1$@）へ自動更新されます。不要な場合はお早めに解約してください。";
+"notif.renewal_title" = "%@ の更新日が近づいています";
+"notif.renewal_body" = "あと %2$d 日で %1$@ が請求される予定です。";
+
+/* Paywall */
+"paywall.upgrade_cta" = "Pro にアップグレード";
+"paywall.upgrade_short" = "Pro";
+"paywall.title" = "SubPulse Pro";
+"paywall.subtitle" = "すべての機能はすでに開放済みです。Pro で登録上限（3件）を解除し、すべての固定費を無制限に管理できます。";
+"paywall.feat_unlimited" = "サブスク・無料トライアルを無制限に登録";
+"paywall.feat_all_included" = "グラフ分析・事前通知・CSV出力もすべて込み";
+"paywall.feat_future" = "今後の Pro 新機能も追加料金なしで利用可能";
+"paywall.feat_support" = "完全オフライン・プライバシー重視の個人開発を応援";
+"paywall.load_failed" = "プランを読み込めませんでした。通信環境をご確認のうえ再試行してください。";
+"paywall.best_value" = "一番お得";
+"paywall.yearly_desc" = "年額プラン • 月額より40%以上お得";
+"paywall.monthly_desc" = "いつでも解約できる月額プラン";
+"paywall.free_trial_then" = "%1$@無料トライアル後、年額 %2$@";
+"paywall.trial_days" = "%d日間";
+"paywall.trial_months" = "%dヶ月間";
+"paywall.trial_years" = "%d年間";
+"paywall.continue" = "続ける";
+"paywall.restore" = "購入を復元";
+"paywall.restore_none" = "この Apple Account で有効な Pro プランは見つかりませんでした。";
+"paywall.legal_disclosure" = "購入確定時にお使いの Apple Account に課金されます。現在の契約期間が終了する24時間前までに自動更新をオフにしない限り、契約は自動更新されます。購入後は iPhone の「設定」からいつでも管理・解約できます。";
+"store.pending" = "購入の承認待ちです。";
+
+/* Settings */
+"settings.pro_active" = "SubPulse Pro 有効";
+"settings.pro_badge_active" = "有効";
+"settings.manage_subscription" = "サブスクリプションを管理";
+"settings.upgrade_pro" = "SubPulse Pro にアップグレード";
+"settings.pro_card_subtitle" = "登録数の上限を解除してすべての固定費を管理";
+"settings.preferences" = "基本設定";
+"settings.base_currency" = "基準通貨";
+"settings.notifications" = "通知の状態";
+"settings.enable_notifications" = "更新通知を有効化・再設定";
+"settings.data" = "データ管理";
+"settings.export_csv" = "CSV を書き出す";
+"settings.prepare_csv" = "CSV 出力を準備";
+"settings.load_samples" = "サンプルデータを読み込む";
+"settings.delete_all" = "端末内のデータをすべて削除";
+"settings.delete_confirm_title" = "この端末に保存されているサブスクをすべて削除しますか？";
+"settings.legal" = "規約・サポート";
+"settings.privacy" = "プライバシーポリシー";
+"settings.terms" = "利用規約";
+"settings.support" = "サポート";
+"settings.version" = "バージョン";
+"settings.privacy_footer" = "すべてのデータは 100% お使いの端末内にのみ保存され、外部サーバーへ送信されることはありません。";
+
+/* Status */
+"status.enabled" = "オン";
+"status.denied" = "iOS 設定でオフ";
+"status.not_set" = "未設定";
+
+/* Onboarding & Zero-Friction Smart Import */
+"onboarding.kinetic_1" = "固定費を見える化";
+"onboarding.kinetic_2" = "解約忘れを防止";
+"onboarding.kinetic_3" = "完全オフライン";
+"onboarding.kinetic_4" = "5秒で登録完了";
+"onboarding.skip" = "スキップ";
+"onboarding.welcome_sub" = "人気サービスのタップ選択やスクショ読み取りで、面倒な手入力なしにすぐ始められます。";
+"onboarding.start_cta" = "はじめる";
+"onboarding.swipe_hint" = "左にスワイプ、またはタップして進む";
+"onboarding.pick_title" = "利用中のサービスを選択";
+"onboarding.pick_subtitle" = "無料プランでは %d 件まで選べます。アイコンや目安料金は自動で入力されます。";
+"onboarding.pick_limit_hint" = "無料プランは %d 件まで登録可能。いつでもアプリ内で Pro にアップグレードできます。";
+"onboarding.selected_summary" = "%1$d 件選択中 • 約 %2$@/月";
+"onboarding.pick_skip_cta" = "スキップしてスクショ読み取りへ";
+"onboarding.pick_continue_cta" = "%d 件を登録して次へ";
+"onboarding.scan_title" = "スクショから一括取り込み";
+"onboarding.scan_subtitle" = "Apple のサブスクリプション画面をスクショするだけで、サービス名・金額・更新日を端末内で自動読み取りします。";
+"onboarding.privacy_note" = "Apple 純正の端末内 Vision OCR を使用。画像が外部へ送信されることはありません。";
+"onboarding.finish_cta" = "通知をオンにして始める";
+
+"import.tab_quick_pick" = "かんたん選択";
+"import.tab_scan_ocr" = "スクショ / 貼り付け";
+"import.nav_title" = "スマート取り込み";
+"import.add_selected_cta" = "%d 件をまとめて追加";
+"import.ocr_guide_title" = "手入力いらずの自動取り込み";
+"import.ocr_guide_desc" = "iPhone の「サブスクリプション」画面のスクショや請求メールの文章から、オフラインで一括登録できます。";
+"import.open_apple_subs" = "Apple サブスクを開く";
+"import.pick_screenshot" = "スクショを選ぶ";
+"import.paste_clipboard" = "コピーした明細を読み取る";
+"import.scanning" = "端末内で読み取り中...";
+"import.found_count" = "%d 件のサブスクを検出";
+"import.none_found" = "金額を検出できませんでした。サービス名と料金（例：¥1,590/月）がはっきり写ったスクショをお試しください。";
+"import.clipboard_empty" = "クリップボードが空です。先に請求メールなどのテキストをコピーしてください。";
+
+"subs.smart_import" = "かんたん選択 / スクショ取り込み";
+"subs.smart_import_short" = "まとめて追加";
+"subs.manual_add" = "または手動で入力";
+"settings.open_apple_subs" = "Apple サブスクリプションを開く";
+"settings.replay_onboarding" = "初期設定ガイドをもう一度見る";

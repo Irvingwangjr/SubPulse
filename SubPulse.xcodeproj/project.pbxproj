@@ -60,6 +60,9 @@
 		F00000010000000000000024 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F00000010000000000000025 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		F00000010000000000000026 /* SmartImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartImportView.swift; sourceTree = "<group>"; };
+		F00000010000000000000027 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F00000010000000000000028 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F00000010000000000000029 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,6 +254,9 @@
 			knownRegions = (
 				en,
 				"zh-Hans",
+				ja,
+				de,
+				es,
 				Base,
 			);
 			mainGroup = G00000010000000000000001;
@@ -312,6 +318,9 @@
 			children = (
 				F00000010000000000000024 /* en */,
 				F00000010000000000000025 /* zh-Hans */,
+				F00000010000000000000027 /* ja */,
+				F00000010000000000000028 /* de */,
+				F00000010000000000000029 /* es */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

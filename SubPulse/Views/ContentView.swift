@@ -6,7 +6,7 @@ struct ContentView: View {
     @Environment(StoreManager.self) private var storeManager
     @Query(sort: \SubscriptionItem.nextBillingDate) private var items: [SubscriptionItem]
 
-    @AppStorage("baseCurrencyCode") private var baseCurrencyCode: String = Currency.usd.rawValue
+    @AppStorage("baseCurrencyCode") private var baseCurrencyCode: String = Currency.systemDefault.rawValue
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
 
     @State private var selectedTab: AppTab = .overview
